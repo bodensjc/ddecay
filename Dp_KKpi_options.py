@@ -57,5 +57,5 @@ DaVinci().Simulation = False
 DaVinci().Lumi = not DaVinci().Simulation
 DaVinci().EvtMax = 1000
 
-IOHelper().inputFiles([('root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb//LHCb/Collision17/94000000/Beam6500GeV-VeloClosed-MagDown/Real Data/Turbo04/CHARMCHARGED.MDST')],
+IOHelper().inputFiles([('root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/94000000/Beam6500GeV-VeloClosed-MagDown/Real Data/Turbo04/CHARMCHARGED.MDST')],
                       clear=True)
