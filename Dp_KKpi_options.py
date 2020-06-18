@@ -6,7 +6,7 @@ stream = 'Charmcharged'
 line = 'Hlt2CharmHadDpToKmKpPipTurbo'
 ​
 dtt = DecayTreeTuple('D2KKpi_Tuple')
-dtt.Inputs = ['{0}/Particles'.format(line)]
+dtt.Inputs = ['/Event/{0}/Phys/{1}/Particles'.format(stream, line)] #added /ev - {1 
 dtt.Decay = '[D+ -> ^K- ^K+ ^pi+]CC'
 track_tool = dtt.addTupleTool('TupleToolTrackInfo')
 track_tool.Verbose = True
