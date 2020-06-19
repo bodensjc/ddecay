@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+#coding: utf-8
 from GaudiConf import IOHelper
 from Configurables import DaVinci, DecayTreeTuple
 from DecayTreeTuple.Configuration import *
