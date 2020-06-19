@@ -4,7 +4,7 @@ myApp.directory = "./DaVinciDev_v42r5" #davinci version listed for charmcharged 
 j.application = myApp
 j.application.options = ['Dp_KKpi_options.py'] #ntuple options file
 j.application.platform = 'x86_64-centos7-gcc62-opt' #gcc62 to match davinci version, usually gcc8
-bkPath = '/LHCb/Collision17/94000000/Beam6500GeV-VeloClosed-MagDown/Real Data/Turbo04/CHARMCHARGED.MDST' #path to real data
+bkPath = '/LHCb/Collision17/Beam6500GeV-VeloClosed-MagDown/Real Data/Turbo04/94000000/CHARMCHARGED.MDST' #path to real data
 data = BKQuery(bkPath, dqflag=['OK']).getDataset()
 j.inputdata = data[0:4] #get first 4 data files (out of 4311)
 j.backend = Dirac()
