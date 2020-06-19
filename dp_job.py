@@ -6,9 +6,9 @@ j.application.options = ['Dp_KKpi_options.py'] #ntuple options file
 j.application.platform = 'x86_64-centos7-gcc62-opt' #gcc62 to match davinci version, usually gcc8
 bkPath = '/LHCb/Collision17/Beam6500GeV-VeloClosed-MagDown/Real Data/Turbo04/94000000/CHARMCHARGED.MDST' #path to real data
 data = BKQuery(bkPath, dqflag=['OK']).getDataset()
-j.inputdata = data[0:2] #get first 4 data files (out of 4311)
+j.inputdata = data[0:2] #get first 2 data files (out of 4311)
 j.backend = Dirac()
 j.splitter = SplitByFiles(filesPerJob=1) #should give 2 subjobs (2 files / 1 files per job)
-j.outputfiles = [DiracFile('DVntuple.root')] #store on eos
+j.outputfiles = [DiracFile('D2KKpi_Tuple.root')] #store on eos
 j.submit()
 
