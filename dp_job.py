@@ -1,10 +1,10 @@
-j = Job(name='6-19:1 Dp_KKpi')
+j = Job(name='6-19:1 Dp_KKpi') #"mm-dd:run decay"
 myApp = GaudiExec()
-myApp.directory = "./DaVinciDev_v42r5"
+myApp.directory = "./DaVinciDev_v42r5" #davinci version listed for charmcharged stream
 j.application = myApp
 j.application.options = ['Dp_KKpi_options.py'] #ntuple options file
-j.application.platform = 'x86_64-centos7-gcc62-opt' #maybe gcc8
-bkPath = '/LHCb/Collision17/94000000/Beam6500GeV-VeloClosed-MagDown/Real Data/Turbo04/CHARMCHARGED.MDST'
+j.application.platform = 'x86_64-centos7-gcc62-opt' #gcc62 to match davinci version, usually gcc8
+bkPath = '/LHCb/Collision17/94000000/Beam6500GeV-VeloClosed-MagDown/Real Data/Turbo04/CHARMCHARGED.MDST' #path to real data
 data = BKQuery(bkPath, dqflag=['OK']).getDataset()
 j.inputdata = data[0:4] #get first 4 data files (out of 4311)
 j.backend = Dirac()
