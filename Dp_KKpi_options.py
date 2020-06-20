@@ -33,5 +33,5 @@ DaVinci().DataType = '2017'
 DaVinci().Lumi = False
 DaVinci().EvtMax = -1
 
-IOHelper().inputFiles([
-    'root://hake1.grid.surfsara.nl:1094/pnfs/grid.sara.nl/data/lhcb/LHCb/Collision17/CHARMCHARGED.MDST/00067727/0001/00067727_00012788_1.charmcharged.mdst'], clear=True)
+#IOHelper().inputFiles([
+#    'root://hake1.grid.surfsara.nl:1094/pnfs/grid.sara.nl/data/lhcb/LHCb/Collision17/CHARMCHARGED.MDST/00067727/0001/00067727_00012788_1.charmcharged.mdst'], clear=True)
