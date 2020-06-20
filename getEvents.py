@@ -1,5 +1,5 @@
 # Your list of file names here
-FILES = ['/LHCb/Collision17/Beam6500GeV-VeloClosed-MagDown/Real Data/Turbo04/94000000/CHARMCHARGED.MDST']
+FILES = ['/LHCb/Collision17/Beam6500GeV-VeloClosed-MagDown/Real Data/Turbo04/94000000/CHARMCHARGED.MDST/00066595/0000/00066595_00000136_1.charmcharged.mdst']
 
 if __name__ == '__main__':
     from subprocess import call
