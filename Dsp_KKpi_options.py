@@ -5,18 +5,18 @@ from DecayTreeTuple.Configuration import *
 stream = 'Charmcharged'
 line = 'Hlt2CharmHadDspToKmKpPip_LTUNBTurbo'
 
-dtt = DecayTreeTuple('D2KKpi_Tuple')
+dtt = DecayTreeTuple('Ds2KKpi_Tuple')
 dtt.Inputs = ['{0}/Particles'.format(line)] #/Event/{0}/Phys/{1}/Particles
-dtt.Decay = '[Ds+ -> ^K- ^K+ ^pi+]CC'
+dtt.Decay = '[D_s+ -> ^K- ^K+ ^pi+]CC'
 track_tool = dtt.addTupleTool('TupleToolTrackInfo')
 track_tool.Verbose = True
 dtt.addTupleTool('TupleToolPrimaries')
 
 dtt.addBranches({
-        'Dsplus' : '([^Ds+ -> K- K+ pi+]CC)',
-        'Kminus' : '([Ds+ -> ^K- K+ pi+]CC)',
-        'Kplus' : '([Ds+ -> K- ^K+ pi+]CC)',
-        'Piplus' : '([Ds+ -> K- K+ ^pi+]CC)'
+        'Dsplus' : '([^D_s+ -> K- K+ pi+]CC)',
+        'Kminus' : '([D_s+ -> ^K- K+ pi+]CC)',
+        'Kplus' : '([D_s+ -> K- ^K+ pi+]CC)',
+        'Piplus' : '([D_s+ -> K- K+ ^pi+]CC)'
 })
 
 DaVinci().UserAlgorithms += [dtt]
