@@ -12,13 +12,15 @@ dtt0.Decay = '[D+ -> ^K- ^K+ ^pi+]CC'
 track_tool0 = dtt0.addTupleTool('TupleToolTrackInfo')
 track_tool0.Verbose = True
 dtt0.addTupleTool('TupleToolPrimaries')
-
 dtt0.addBranches({
         'Dplus' : '([^D+ -> K- K+ pi+]CC)',
         'Kminus' : '([D+ -> ^K- K+ pi+]CC)',
         'Kplus' : '([D+ -> K- ^K+ pi+]CC)',
         'Piplus' : '([D+ -> K- K+ ^pi+]CC)'
 })
+dtt0.addTupleTool('TupleToolDecayTreeFitter/ConsDp')
+dtt0.Dplus.ConsDp.constrainToOriginVertex = True
+dtt0.Dplus.ConsDp.Verbose = True
 
 dtt1 = DecayTreeTuple('Ds2KKpi_Tuple')
 dtt1.Inputs = ['{0}/Particles'.format(line1)] #/Event/{0}/Phys/{1}/Particles
@@ -26,13 +28,15 @@ dtt1.Decay = '[D_s+ -> ^K- ^K+ ^pi+]CC'
 track_tool1 = dtt1.addTupleTool('TupleToolTrackInfo')
 track_tool1.Verbose = True
 dtt1.addTupleTool('TupleToolPrimaries')
-
 dtt1.addBranches({
         'Dsplus' : '([^D_s+ -> K- K+ pi+]CC)',
         'Kminus' : '([D_s+ -> ^K- K+ pi+]CC)',
         'Kplus' : '([D_s+ -> K- ^K+ pi+]CC)',
         'Piplus' : '([D_s+ -> K- K+ ^pi+]CC)'
 })
+dtt1.addTupleTool('TupleToolDecayTreeFitter/ConsDsp')
+dtt1.Dsplus.ConsDsp.constrainToOriginVertex = True
+dtt1.Dsplus.ConsDsp.Verbose = True
 
 DaVinci().UserAlgorithms += [dtt0, dtt1]
 
