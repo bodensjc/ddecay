@@ -18,7 +18,7 @@ dtt0.addBranches({
         'Kplus' : '([D+ -> K- ^K+ pi+]CC)',
         'Piplus' : '([D+ -> K- K+ ^pi+]CC)'
 })
-dtt0.addTupleTool('TupleToolDecayTreeFitter/ConsDp')
+dtt0.Dplus.addTupleTool('TupleToolDecayTreeFitter/ConsDp')
 dtt0.Dplus.ConsDp.constrainToOriginVertex = True
 dtt0.Dplus.ConsDp.Verbose = True
 
@@ -34,7 +34,7 @@ dtt1.addBranches({
         'Kplus' : '([D_s+ -> K- ^K+ pi+]CC)',
         'Piplus' : '([D_s+ -> K- K+ ^pi+]CC)'
 })
-dtt1.addTupleTool('TupleToolDecayTreeFitter/ConsDsp')
+dtt1.Dsplus.addTupleTool('TupleToolDecayTreeFitter/ConsDsp')
 dtt1.Dsplus.ConsDsp.constrainToOriginVertex = True
 dtt1.Dsplus.ConsDsp.Verbose = True
 
