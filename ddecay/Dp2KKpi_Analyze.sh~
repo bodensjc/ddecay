@@ -1,0 +1,4 @@
+ml root
+root -l DpDsp2KKpiMagDown.root
+_file0->cd("Dp2KKpi_Tuple")
+DecayTree->Process("Analyze.C")

@@ -1,0 +1,120 @@
+#define dp_background_cxx
+#include "dp_background.h"
+#include <TH2.h>
+#include <TStyle.h>
+
+//**************** Definition Section **************
+TH1 * phisighist = NULL;
+TH1 * phiosbhist = NULL;
+TH1 * phisubhist = NULL;
+TH1 * phiratio = NULL;
+
+
+
+
+
+
+
+void dp_background::Begin(TTree * /*tree*/)
+{
+   TString option = GetOption();
+//************** Initialization Section ************
+   phisighist = new TH1D("phisighist", "D^{+} #rightarrow K^{+}K^{-}#pi^{+}  cut on  #phi(1020)", 100, 1, 1.1);
+   phisighist->GetXaxis()->SetTitle("m^{2}(K^{+}K^{-}) [GeV^{2}/c^{4}]");
+   phisighist->GetYaxis()->SetTitle("Events per GeV^{2}/c^{4}");
+   phisighist->SetStats(0);
+   phisighist->SetLineColor(kBlue);
+
+   phiosbhist = new TH1D("phiosbhist", "background events", 100, 1, 1.1);
+   phiosbhist->SetStats(0);
+   phiosbhist->SetLineColor(kRed);
+   phisubhist = new TH1D("phisubhist", "background subtracted", 100, 1, 1.1);
+   phisubhist->SetStats(0);
+   phisubhist->SetLineColor(kGreen);
+
+
+
+
+}
+
+void dp_background::SlaveBegin(TTree * /*tree*/) {}
+
+Bool_t dp_background::Process(Long64_t entry)
+{
+   fReader.SetLocalEntry(entry);
+   GetEntry(entry);
+//*************** Loop Section ********************
+   TLorentzVector kpLV(*Kplus_PX, *Kplus_PY, *Kplus_PZ, *Kplus_PE);
+   TLorentzVector kmLV(*Kminus_PX, *Kminus_PY, *Kminus_PZ, *Kminus_PE);
+   //initializing the Lorentz Vector for pairing
+   TLorentzVector kpkmLV(kpLV + kmLV);
+   //calculating invariant mass pair
+   double_t mkpkm = kpkmLV.Mag2()/1000000;
+
+   //fill signal bars
+  if (*Dplus_M > 1858 && *Dplus_M < 1880) {
+    phisighist->Fill(mkpkm);
+  }
+
+  if ((*Dplus_M < 1840 && *Dplus_M > 1818) || (*Dplus_M < 1920 && *Dplus_M > 1898)) {
+    phiosbhist->Fill(mkpkm);
+  }
+
+
+
+
+
+
+
+   return kTRUE;
+}
+
+void dp_background::SlaveTerminate() {}
+
+void dp_background::Terminate()
+{
+ //**************** Wrap-up Section ****************
+auto phican = new TCanvas("phican","phican",1600,1200);
+auto philegend = new TLegend(0.55,0.7,0.85,0.9);
+
+
+
+
+ phiosbhist->Add(phiosbhist, -0.5);
+ phisubhist->Add(phisighist, phiosbhist, 1, -1);
+ phisighist->Draw("e0 9");
+ phiosbhist->Draw("e0same 9");
+ phisubhist->Draw("e0same 9");
+ phican->Update();
+ phiratio = (TH1D*)phisighist->Clone();
+ phiratio->SetName("phiratio");
+   phiratio->SetStats(0);
+   phiratio->SetLineColor(kViolet);
+ phiratio->Divide(phiosbhist);
+ float_t rightmax = 1.1*phiratio->GetMaximum();
+ float_t scale = gPad->GetUymax()/rightmax;
+ phiratio->Scale(scale);
+ phiratio->Draw("hist L 9 same");
+
+
+  philegend->SetHeader("Distributions","C");
+  philegend->AddEntry(phisighist, "Signal m^{2}(K^{+}K^{-})", "l");
+  philegend->AddEntry(phiosbhist, "Background m^{2}(K^{+}K^{-})", "l");
+  philegend->AddEntry(phisubhist, "Background Subtracted m^{2}(K^{+}K^{-}) ", "l");
+  philegend->AddEntry(phiratio, "Signal/Background Ratio", "l");
+  philegend->Draw();
+
+
+  auto axis = new TGaxis(gPad->GetUxmax(),gPad->GetUymin(), 
+			   gPad->GetUxmax(),gPad->GetUymax(),
+			   0, rightmax, 510, "+L");
+  axis->SetLineColor(kViolet);
+  axis->SetLabelColor(kViolet);
+  axis->Draw();
+
+  phican->SaveAs("image/dp_phicut_bsub.png");
+
+  //auto ratiocan = new TCanvas("ratiocan","ratiocan",1600,1200);
+  //phiratio->Draw("e0");
+  //ratiocan->SaveAs("image/dp_phicut_ratio.png");
+}
