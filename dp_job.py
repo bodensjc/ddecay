@@ -15,6 +15,6 @@ j.backend = Dirac()
 j.outputfiles = [
 	DiracFile('Dp2KKpiMagDown.root')
 ]
-j.splitter = SplitByFiles(filesPerJob=5) #should give 10 subjobs (100 files / 10 files per job)
+j.splitter = SplitByFiles(filesPerJob=5) 
 j.submit()
 
