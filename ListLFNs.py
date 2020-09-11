@@ -1,4 +1,4 @@
-#Creates .txt file with list of LFNs for all subjobs of job argument, "ganga ListLFNs.py 73"
+#Creates .txt file with list of LFNs for all subjobs of job argument, "ganga ListLFNs.py 73" 73 is job#
 
 import sys
 jobNumber = int(sys.argv[1])

@@ -3,7 +3,7 @@ from Configurables import DaVinci, DecayTreeTuple
 from DecayTreeTuple.Configuration import *
 
 stream = 'Charmcharged'
-line = 'Hlt2CharmHadDspToKmKpPip_LTUNBTurbo'
+line = 'Hlt2CharmHadDspToKmKpPipTurbo'
 
 dtt = DecayTreeTuple('Ds2KKpi_Tuple')
 dtt.Inputs = ['{0}/Particles'.format(line)] #/Event/{0}/Phys/{1}/Particles
