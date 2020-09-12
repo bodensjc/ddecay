@@ -13,7 +13,7 @@ track_tool.Verbose = True
 dtt.addTupleTool('TupleToolPrimaries')
 
 dtt.addBranches({
-        'Dplus' : '([^D+ -> K- K+ pi+]CC)',
+        'Dplus' : '([D+ -> K- K+ pi+]CC)',
         'Kminus' : '([D+ -> ^K- K+ pi+]CC)',
         'Kplus' : '([D+ -> K- ^K+ pi+]CC)',
         'Piplus' : '([D+ -> K- K+ ^pi+]CC)'

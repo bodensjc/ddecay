@@ -1,4 +1,4 @@
-j = Job(name='dp_9-10:test') #"mm-dd:run decay"
+j = Job(name='dp_9-12:test') #"mm-dd:run decay"
 myApp = GaudiExec()
 myApp.directory = "./DaVinciDev_v45r1 " #davinci version listed for charmcharged stream is v42r5 but this oen works
 j.application = myApp
