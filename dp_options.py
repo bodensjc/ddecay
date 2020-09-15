@@ -2,7 +2,7 @@ from GaudiConf import IOHelper
 from Configurables import DaVinci, DecayTreeTuple
 from DecayTreeTuple.Configuration import *
 
-stream = 'Charmcharged'
+stream = 'Charmspec'#Charmcharged
 line = 'Hlt2CharmHadDpToKmKpPipTurbo'
 
 dtt = DecayTreeTuple('D2KKpi')
@@ -22,7 +22,7 @@ dtt.addBranches({
 DaVinci().UserAlgorithms += [dtt]
 
 DaVinci().Turbo = True
-DaVinci().RootInTES = '/Event/Charmcharged/Turbo'
+DaVinci().RootInTES = '/Event/Charmspec/Turbo'#Charmcharged
 DaVinci().InputType = 'MDST'
 #DaVinci().DDDBtag = 'dddb-20171030-3'
 DaVinci().Simulation = False
