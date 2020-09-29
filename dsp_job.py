@@ -1,4 +1,4 @@
-j = Job(name='dsp_9-16') #"mm-dd:run"
+j = Job(name='dsp_9-29') #"mm-dd:run"
 myApp = GaudiExec()
 myApp.directory = "./DaVinciDev_v45r1 " #davinci version listed for charmcharged stream is v42r5 but this oen works
 j.application = myApp
