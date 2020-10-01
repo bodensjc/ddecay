@@ -3,7 +3,7 @@
 import sys
 jobNumber = int(sys.argv[1])
 length = len(jobs(jobNumber).subjobs)
-file = open('LFNs.txt','w')
+file = open('job{0}lfns.txt'.format(jobNumber),'w')
 for i in range(0,length):
     output = jobs(jobNumber).subjobs(i).backend.getOutputDataLFNs()
     if( output.hasLFNs() == True):
