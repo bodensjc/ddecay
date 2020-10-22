@@ -2,8 +2,9 @@
 #include "dp_cuts.h"
 #include <TH2.h>
 #include <TStyle.h>
-#include "scripts/fit1MeV_Gaussian.C"
-#include "scripts/fit1MeV_GaussianPlusCBWithExp.C"
+//#include "scripts/fit1MeV_Gaussian.C"
+//#include "scripts/fit1MeV_GaussianPlusCBWithExp.C"
+#include "scripts/fit1MeV_GaussianPlusCBWithExp_redo.C"
 
 
 //	root -l /share/lazy/D2KKpi/Dp2KKpi.root
@@ -73,29 +74,17 @@ void dp_cuts::Begin(TTree * /*tree*/)
    */
 
 
-   myDpFit = new TF1("myDpFit",fit1MeV_GaussianPlusCBWithExp, 1819, 1919, 9);
+   myDpFit = new TF1("myDpFit",fit1MeV_GaussianPlusCBWithExp_redo, 1819, 1919, 9);
    myDpFit->SetParNames("nSignal", "mu", "rms_wdth", "sigma_1", "gaus_frac", "exp_int","exp_coef","CB_alpha","CB_n");
   myDpFit->SetLineColor(kRed+1);
   myDpFit->SetLineWidth(2);
 
-  myDpFit->SetParameter(0,60000);//nSignal
-//myDpFit->SetParLimits(0,40000,80000);//this is a yikes... need to address
-  myDpFit->SetParameter(1,1869);//mu
-  myDpFit->SetParameter(2,4.);//rms of double gaussian
-  myDpFit->SetParLimits(2,0.,20.);
-  myDpFit->SetParameter(3,7);//sigma_1 of primary gaussian
-  myDpFit->SetParameter(4,0.85);//fraction of signal in primary gaussian
-  myDpFit->SetParLimits(4,0.001,0.0999);
-  myDpFit->SetParameter(5,15);
-  myDpFit->SetParameter(6,-0.004);//coefficient background exponential
-  myDpFit->SetParameter(7, 1.5);//crystal ball alpha
-  myDpFit->SetParameter(8,2.5);//crystal ball n
-  myDpFit->SetParLimits(8,1.00001,5.);
 
 
 
-signalfit = new TF1("signalfit",primaryGaussian, 1819, 1919, 5);
-signalfit->SetParNames("nSignal", "mu", "rms_width", "sigma_1", "gaus_frac");
+
+signalfit = new TF1("signalfit",primaryGaussian, 1819, 1919, 9);
+signalfit->SetParNames("nSignal", "mu", "rms_wdth", "sigma_1", "gaus_frac", "exp_int","exp_coef","CB_alpha","CB_n");
 signalfit->SetLineColor(kGreen+1);
 signalfit->SetLineStyle(8);
 signalfit->SetLineWidth(2);
@@ -238,58 +227,34 @@ void dp_cuts::Terminate()
 {
  //**************** Wrap-up Section ****************
 
-  /*
-auto phican = new TCanvas("phican","phican",1600,800);
- phican->Divide(2,1);
- phican->cd(1);
- phicuthist->Fit("myDpFit");
- phicuthist->Draw();
- phican->cd(2);
- phicutbadhist->Draw();
- phican->SaveAs("image/dp_phicut.png");
 
-*/
+  Double_t maxbin = totalcuthist->GetBinContent(totalcuthist->GetMaximumBin());
+  Double_t firstbin = totalcuthist->GetBinContent(1);//used for intercept guess
+  Double_t lastbin = totalcuthist->GetBinContent(99);//used for slope guess
 
+  Double_t nSignalGuess = (maxbin-firstbin)*15;
+  Double_t expCoefGuess = (lastbin-firstbin)/100;
 
-/*
- auto totalcan = new TCanvas("totalcan", "totalcan", 1600, 800);
- totalcan->Divide(2,1);
- totalcan->cd(1);
- totalcan->SetLeftMargin(0.5);
- totalcuthist->Fit("myDpFit");
- totalcuthist->Draw();
- totalcan->cd(2);
- totalcutrejects->Draw();
- totalcan->SaveAs("image/dp_totalcut.png");
-
-  */
-
-
-  /*
-  myDpFit->SetParameter(0,totalcuthist->GetEntries()*0.95);//nSignal
-  myDpFit->SetParameter(1,totalcuthist->GetMean());//mu
-  myDpFit->SetParameter(2,10);//rms of double gaussian
- //myDpFit->SetParLimits(2,0.,20.);
-  myDpFit->SetParameter(3,1000);//sigma_1 of primary gaussian
+  myDpFit->SetParameter(0,nSignalGuess);//nSignal
+  //myDpFit->SetParLimits(0,200000,230000);//this is a yikes... need to address
+  myDpFit->SetParameter(1,1869);//mu
+  myDpFit->SetParameter(2,4.);//rms of double gaussian
+  myDpFit->SetParLimits(2,0.,20.);
+  myDpFit->SetParameter(3,7);//sigma_1 of primary gaussian
   myDpFit->SetParameter(4,0.85);//fraction of signal in primary gaussian
-  myDpFit->SetParLimits(4,0.55,0.999999);
-
-  Double_t back_ave = 5.;
-for (int binIndex=0; binIndex<20; binIndex++) {
-    back_ave = back_ave+totalcuthist->GetBinContent(binIndex);
- }
-back_ave = back_ave/20.0;
-back_ave = 0.80*back_ave;
-  myDpFit->SetParameter(5,back_ave);
-  myDpFit->SetParameter(6,-0.004);//coefficient background exponential
-  myDpFit->SetParameter(7, 2.0);//crystal ball alpha
+  myDpFit->SetParLimits(4,0.001,0.0999999);
+  myDpFit->SetParameter(5,firstbin);//exp intercept
+  myDpFit->SetParameter(6,expCoefGuess);//coefficient background exponential
+  myDpFit->SetParameter(7, 1.5);//crystal ball alpha
   myDpFit->SetParameter(8,2.5);//crystal ball n
-  myDpFit->SetParLimits(8,1.00001,5.);
+  myDpFit->SetParLimits(8,1.00001,6.);
 
 
-  myDpFit->SetLineColor(kRed+1);
-  myDpFit->SetLineWidth(3);
-  */
+
+
+
+
+
 
 
 auto totalpullcan = new TCanvas("totalpullcan", "totalpullcan", 1000, 800);
@@ -331,6 +296,10 @@ signalfit->SetParameter(1,mu);//mu
 signalfit->SetParameter(2,rms);//rms of double gaussian
 signalfit->SetParameter(3,sigma1);//sigma_1 of primary gaussian
 signalfit->SetParameter(4,f);//fraction of signal in primary gaussian
+signalfit->SetParameter(5,exp_int);
+signalfit->SetParameter(6,exp_coef);
+signalfit->SetParameter(7,CB_alpha);
+signalfit->SetParameter(8,CB_n);
 
 
 
@@ -352,13 +321,13 @@ backgroundfit->Draw("same");
 
 TString muStr;
 TString muStrpm;
-muStr.Form("%5.3f\n",mu);
-muStrpm.Form("%5.3f\n",myDpFit->GetParError(1));
+muStr.Form("%5.6f\n",mu);
+muStrpm.Form("%5.6f\n",myDpFit->GetParError(1));
 
 TString nSignalStr;
 TString nSignalStrpm;
 nSignalStr.Form("%5.0f\n",nSignal);
-nSignalStrpm.Form("%502f\n",myDpFit->GetParError(0));
+nSignalStrpm.Form("%5.0f\n",myDpFit->GetParError(0));
 
 
 
@@ -366,8 +335,8 @@ nSignalStrpm.Form("%502f\n",myDpFit->GetParError(0));
 
 auto lt = new TLatex();
 lt->SetTextSize(0.03);
-lt->DrawLatexNDC(0.63, 0.62, "#mu ="+muStr+" #pm"+muStrpm+" MeV/c^{2}");
-lt->DrawLatexNDC(0.63, 0.57, "Signal Events = "+nSignalStr+" #pm"+nSignalStrpm);
+lt->DrawLatexNDC(0.60, 0.62, "#mu = "+muStr+" #pm "+muStrpm+" MeV/c^{2}");
+lt->DrawLatexNDC(0.60, 0.57, "Signal Events = "+nSignalStr+" #pm "+nSignalStrpm);
 
 
 auto fitlegend = new TLegend(0.7,0.7,0.9,0.9);

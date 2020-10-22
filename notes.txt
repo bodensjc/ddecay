@@ -1,0 +1,15 @@
+to run a file on old (fast) data:
+
+ml root
+root -l /share/lazy/D2KKpi/old_data/D(s)p2KKpi.root
+_file0->cd("D(s)2KKpi_Tuple")
+DecayTree->Process("file.c")
+
+
+
+to run a file on new (slow) data:
+
+ml root
+root -l /share/lazy/D2KKpi/d(s)p2kkpi.root
+_file0->cd("D(sp)2KKpi")
+DecayTree->Process("file.c")

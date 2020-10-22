@@ -2,8 +2,9 @@
 #include "dsp_cuts.h"
 #include <TH2.h>
 #include <TStyle.h>
-#include "scripts/fit1MeV_Gaussian.C"
-#include "scripts/fit1MeV_GaussianPlusCBWithExp.C"
+//#include "scripts/fit1MeV_Gaussian.C"
+//#include "scripts/fit1MeV_GaussianPlusCBWithExp.C"
+#include "scripts/fit1MeV_GaussianPlusCBWithExp_redo.C"
 
 
 //	root -l /share/lazy/D2KKpi/Dsp2KKpi.root
@@ -62,30 +63,19 @@ void dsp_cuts::Begin(TTree * /*tree*/)
     myDspFit->SetParameter(4,0.);
 */
 
-   myDspFit = new TF1("myDspFit",fit1MeV_GaussianPlusCBWithExp, 1919, 2019, 9);
+   myDspFit = new TF1("myDspFit",fit1MeV_GaussianPlusCBWithExp_redo, 1919, 2019, 9);
    myDspFit->SetParNames("nSignal", "mu", "rms_wdth", "sigma_1", "gaus_frac", "exp_int","exp_coef","CB_alpha","CB_n");
   myDspFit->SetLineColor(kRed+1);
   myDspFit->SetLineWidth(2);
 
-  myDspFit->SetParameter(0,200000);//nSignal
-  myDspFit->SetParameter(1,1965);//mu
-  myDspFit->SetParameter(2,4.);//rms of double gaussian
-  myDspFit->SetParLimits(2,0.,20.);
-  myDspFit->SetParameter(3,7);//sigma_1 of primary gaussian
-  myDspFit->SetParameter(4,0.78);//fraction of signal in primary gaussian
-  myDspFit->SetParLimits(4,0.001,0.0999);
-  myDspFit->SetParameter(5,15);
-  myDspFit->SetParameter(6,-0.004);//coefficient background exponential
-  myDspFit->SetParameter(7, 1.5);//crystal ball alpha
-  myDspFit->SetParameter(8,2.5);//crystal ball n
-  myDspFit->SetParLimits(8,1.00001,5.);
 
 
 
 
 
-signalfit = new TF1("signalfit",primaryGaussian, 1919, 2019, 5);
-signalfit->SetParNames("nSignal", "mu", "rms_width", "sigma_1", "gaus_frac");
+
+signalfit = new TF1("signalfit",primaryGaussian, 1919, 2019, 9);
+signalfit->SetParNames("nSignal", "mu", "rms_wdth", "sigma_1", "gaus_frac", "exp_int","exp_coef","CB_alpha","CB_n");
 signalfit->SetLineColor(kGreen+1);
 signalfit->SetLineStyle(8);
 signalfit->SetLineWidth(2);
@@ -213,33 +203,29 @@ void dsp_cuts::SlaveTerminate() {}
 void dsp_cuts::Terminate()
 {
   //*******************Wrap-Up Section********************
-/*
-auto phican = new TCanvas("phican","phican",1600,800);
-
- phican->Divide(2,1);
- phican->cd(1);
- phicuthist->Fit("myDspFit");
- phicuthist->Draw();
- phican->cd(2);
- phicutbadhist->Fit("myDspFit");
- phicutbadhist->Draw();
- phican->SaveAs("image/dsp_phicut.png");
-
-*/
-
-/*
- auto totalcan = new TCanvas("totalcan", "totalcan", 1600, 800);
- totalcan->Divide(2,1);
- totalcan->cd(1);
- totalcan->SetLeftMargin(0.5);
- totalcuthist->Fit("myDspFit");
- totalcuthist->Draw();
- totalcan->cd(2);
- totalcutrejects->Draw();
- totalcan->SaveAs("image/dsp_totalcut.png");
-*/
 
 
+  Double_t maxbin = totalcuthist->GetBinContent(totalcuthist->GetMaximumBin());
+  Double_t firstbin = totalcuthist->GetBinContent(1);//used for intercept guess
+  Double_t lastbin = totalcuthist->GetBinContent(99);//used for slope guess
+
+  Double_t nSignalGuess = (maxbin-firstbin)*15;//triangular guess for signal events
+  Double_t expCoefGuess = (lastbin-firstbin)/100;//exp slope guess
+
+
+
+  myDspFit->SetParameter(0,nSignalGuess);//nSignal
+  myDspFit->SetParameter(1,1965);//mu
+  myDspFit->SetParameter(2,4.);//rms of double gaussian
+  myDspFit->SetParLimits(2,0.,20.);
+  myDspFit->SetParameter(3,7);//sigma_1 of primary gaussian
+  myDspFit->SetParameter(4,0.85);//fraction of signal in primary gaussian
+  myDspFit->SetParLimits(4,0.001,0.0999999);
+  myDspFit->SetParameter(5,firstbin);//exp intercept
+  myDspFit->SetParameter(6,expCoefGuess);//coefficient background exponential
+  myDspFit->SetParameter(7, 1.5);//crystal ball alpha
+  myDspFit->SetParameter(8,2.5);//crystal ball n
+  myDspFit->SetParLimits(8,1.00001,6.);
 
 
 
