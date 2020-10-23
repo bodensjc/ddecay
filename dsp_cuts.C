@@ -209,7 +209,7 @@ void dsp_cuts::Terminate()
   Double_t firstbin = totalcuthist->GetBinContent(1);//used for intercept guess
   Double_t lastbin = totalcuthist->GetBinContent(99);//used for slope guess
 
-  Double_t nSignalGuess = (maxbin-firstbin)*15;//triangular guess for signal events
+  Double_t nSignalGuess = (maxbin-firstbin)*14;//triangular guess for signal events
   Double_t expCoefGuess = (lastbin-firstbin)/100;//exp slope guess
 
 
@@ -270,6 +270,10 @@ signalfit->SetParameter(1,mu);//mu
 signalfit->SetParameter(2,rms);//rms of double gaussian
 signalfit->SetParameter(3,sigma1);//sigma_1 of primary gaussian
 signalfit->SetParameter(4,f);//fraction of signal in primary gaussian
+signalfit->SetParameter(5,exp_int);
+signalfit->SetParameter(6,exp_coef);
+signalfit->SetParameter(7,CB_alpha);
+signalfit->SetParameter(8,CB_n);
 
 backgroundfit->SetParameter(0,nSignal);
 backgroundfit->SetParameter(1,mu);
@@ -290,16 +294,22 @@ backgroundfit->Draw("same");
 
 TString muStr;
 TString muStrpm;
-muStr.Form("%5.2f\n",mu);
-muStrpm.Form("%5.2f\n",myDspFit->GetParError(1));
+muStr.Form("%5.6f\n",mu);
+muStrpm.Form("%5.6f\n",myDspFit->GetParError(1));
+
+TString nSignalStr;
+TString nSignalStrpm;
+nSignalStr.Form("%5.0f\n",nSignal);
+nSignalStrpm.Form("%5.0f\n",myDspFit->GetParError(0));
 
 
 
 
 auto lt = new TLatex();
 lt->SetTextSize(0.03);
-lt->DrawLatexNDC(0.63, 0.62, "#mu ="+muStr+" #pm"+muStrpm+" MeV/c^{2}");
-lt->DrawLatexNDC(0.63, 0.57, "Signal Events = 12529 #pm 1602");
+lt->DrawLatexNDC(0.60, 0.62, "#mu ="+muStr+" #pm"+muStrpm+" MeV/c^{2}");
+lt->DrawLatexNDC(0.60, 0.57, "Signal Events = "+nSignalStr+" #pm "+nSignalStrpm);
+
 
 
 auto fitlegend = new TLegend(0.7,0.7,0.9,0.9);
