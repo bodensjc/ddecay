@@ -95,7 +95,7 @@ Double_t  backgroundCB (Double_t *v, Double_t *par) {
 
 
 //  add an exponential background
-      Double_t fitval =  par[5]*TMath::Exp(par[6]*(v[0]-1820.));
+      Double_t fitval =  par[5]*TMath::Exp(par[6]*(v[0]-1819.));
 
       return fitval;
 }

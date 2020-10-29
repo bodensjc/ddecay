@@ -209,18 +209,18 @@ void dsp_cuts::Terminate()
   Double_t firstbin = totalcuthist->GetBinContent(1);//used for intercept guess
   Double_t lastbin = totalcuthist->GetBinContent(99);//used for slope guess
 
-  Double_t nSignalGuess = (maxbin-firstbin)*14;//triangular guess for signal events
+  Double_t nSignalGuess = (maxbin-firstbin)*15;//triangular guess for signal events
   Double_t expCoefGuess = (lastbin-firstbin)/100;//exp slope guess
 
 
 
   myDspFit->SetParameter(0,nSignalGuess);//nSignal
-  myDspFit->SetParameter(1,1965);//mu
+  myDspFit->SetParameter(1,1969);//mu
   myDspFit->SetParameter(2,4.);//rms of double gaussian
   myDspFit->SetParLimits(2,0.,20.);
   myDspFit->SetParameter(3,7);//sigma_1 of primary gaussian
   myDspFit->SetParameter(4,0.85);//fraction of signal in primary gaussian
-  myDspFit->SetParLimits(4,0.55,0.99999999);
+  myDspFit->SetParLimits(4,0.001,0.0999999);
   myDspFit->SetParameter(5,firstbin);//exp intercept
   myDspFit->SetParameter(6,expCoefGuess);//coefficient background exponential
   myDspFit->SetParameter(7, 1.5);//crystal ball alpha
@@ -308,7 +308,7 @@ nSignalStrpm.Form("%5.0f\n",myDspFit->GetParError(0));
 auto lt = new TLatex();
 lt->SetTextSize(0.03);
 //0.62 and 0.57 for y values if non-log plot
-lt->DrawLatexNDC(0.60, 0.35, "#mu ="+muStr+" #pm "+muStrpm+" MeV/c^{2}");
+lt->DrawLatexNDC(0.60, 0.35, "#mu ="+muStr+" #pm"+muStrpm+" MeV/c^{2}");
 lt->DrawLatexNDC(0.60, 0.30, "Signal Events = "+nSignalStr+" #pm "+nSignalStrpm);
 
 
@@ -346,5 +346,5 @@ totalcutpull->Draw();
 
 
  totalpullcan->cd();
- totalpullcan->SaveAs("image/dsp_totalcut_pull_test3.png");
+ totalpullcan->SaveAs("image/dsp_totalcut_pull_test.png");
 }

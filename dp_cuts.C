@@ -5,11 +5,14 @@
 //#include "scripts/fit1MeV_Gaussian.C"
 //#include "scripts/fit1MeV_GaussianPlusCBWithExp.C"
 #include "scripts/fit1MeV_GaussianPlusCBWithExp_redo.C"
+//using namespace ROOT;
 
 
 //	root -l /share/lazy/D2KKpi/Dp2KKpi.root
+//      ROOT::EnableImplicitMT();
 //	root [1] _file0->cd("D2KKpi_Tuple");
 //	root [2] DecayTree->Process("dp_cuts.C");
+
 
 
 //**************** Definition Section **************
@@ -37,10 +40,6 @@ const double_t kstar_lowerbound = (895.55-kstar_pm)*(895.55-kstar_pm)/1000000;
 
 
 TH1 * probprodhist = NULL;
-
-
-
-
 TF1 * signalfit = NULL;
 TF1 * backgroundfit = NULL;
 
@@ -48,15 +47,17 @@ TF1 * backgroundfit = NULL;
 
 void dp_cuts::Begin(TTree * /*tree*/)
 {
+
+
    TString option = GetOption();
 
 //************** Initialization Section ************
-   phicuthist = new TH1D("phi cut","D^{+} #rightarrow K^{+}K^{-}#pi^{+} Cut on #phi(1020)", 100, 1819,1919);
+phicuthist = new TH1D("phi cut","D^{+} #rightarrow K^{+}K^{-}#pi^{+} Cut on #phi(1020)", 100,1819,1919);
    phicuthist->GetXaxis()->SetTitle("D^{+} Mass [MeV/c^{2}]");
    phicuthist->GetYaxis()->SetTitle("Events per MeV");
    // phicuthist->SetMinimum(0);
 
-   phicutbadhist = new TH1D("phi cut rejects","D^{+} #rightarrow K^{+}K^{-}#pi^{+} Cut on #phi(1020) REJECTS", 100, 1819,1919);
+   phicutbadhist = new TH1D("phi cut rejects","D^{+} #rightarrow K^{+}K^{-}#pi^{+} Cut on #phi(1020) REJECTS", 100,1819,1919);
    phicutbadhist->GetXaxis()->SetTitle("D^{+} Mass [MeV/c^{2}]");
    phicutbadhist->GetYaxis()->SetTitle("Events per MeV");
    phicutbadhist->SetMinimum(0);
@@ -74,7 +75,7 @@ void dp_cuts::Begin(TTree * /*tree*/)
    */
 
 
-   myDpFit = new TF1("myDpFit",fit1MeV_GaussianPlusCBWithExp_redo, 1819, 1919, 9);
+myDpFit = new TF1("myDpFit",fit1MeV_GaussianPlusCBWithExp_redo,1819,1919, 9);
    myDpFit->SetParNames("nSignal", "mu", "rms_wdth", "sigma_1", "gaus_frac", "exp_int","exp_coef","CB_alpha","CB_n");
   myDpFit->SetLineColor(kRed+1);
   myDpFit->SetLineWidth(2);
@@ -83,14 +84,14 @@ void dp_cuts::Begin(TTree * /*tree*/)
 
 
 
-signalfit = new TF1("signalfit",primaryGaussian, 1819, 1919, 9);
+signalfit = new TF1("signalfit",primaryGaussian,1819,1919, 9);
 signalfit->SetParNames("nSignal", "mu", "rms_wdth", "sigma_1", "gaus_frac", "exp_int","exp_coef","CB_alpha","CB_n");
 signalfit->SetLineColor(kGreen+1);
 signalfit->SetLineStyle(8);
 signalfit->SetLineWidth(2);
 
 
-backgroundfit = new TF1("backgroundfit",backgroundCB, 1819, 1919, 9);
+backgroundfit = new TF1("backgroundfit",backgroundCB,1819,1919, 9);
 backgroundfit->SetParNames("nSignal", "mu", "rms_wdth", "sigma_1", "gaus_frac", "exp_int","exp_coef","CB_alpha","CB_n");
 backgroundfit->SetLineColor(kBlack);
 backgroundfit->SetLineStyle(2);
@@ -102,25 +103,25 @@ backgroundfit->SetLineWidth(2);
 
 
 
-   totalcuthist = new TH1D("D^{+} cuts","D^{+} #rightarrow K^{+}K^{-}#pi^{+} Cut and Fit", 100, 1819,1919);
+totalcuthist = new TH1D("D^{+} cuts","D^{+} #rightarrow K^{+}K^{-}#pi^{+} Cut and Fit",100,1819,1919);
    //totalcuthist->GetXaxis()->SetTitle("D^{+} Mass [MeV/c^{2}]");
 totalcuthist->SetStats(0);
    totalcuthist->SetTitleFont(43);
    totalcuthist->SetTitleSize(35);
    totalcuthist->GetYaxis()->SetTitle("Candidates/(1 MeV/c^{2})");
-   totalcuthist->SetMinimum(0);
+   totalcuthist->SetMinimum(1);//make minimum 1 so logy doesnt break
    totalcuthist->GetYaxis()->SetTitleFont(43);
 totalcuthist->GetYaxis()->SetTitleSize(30);
  totalcuthist->GetYaxis()->CenterTitle(true);
 
-   totalcutrejects = new TH1D("D^{+} cut rejects","D^{+} #rightarrow K^{+}K^{-}#pi^{+} Cut on #phi(1020), log(probNN), and IP #chi^{2} - REJECTS", 100, 1819,1919);
+totalcutrejects = new TH1D("D^{+} cut rejects","D^{+} #rightarrow K^{+}K^{-}#pi^{+} Cut on #phi(1020), log(probNN), and IP #chi^{2} - REJECTS",100,1819,1919);
    totalcutrejects->GetXaxis()->SetTitle("D^{+} Mass [MeV/c^{2}]");
    totalcutrejects->GetYaxis()->SetTitle("Events per MeV/c^{2}");
    totalcutrejects->SetMinimum(0);
 
 
 
-   totalcutpull = new TH1D("total cut pull plot", "Pull Plot", 100, 1819, 1919);
+   totalcutpull = new TH1D("total cut pull plot", "Pull Plot", 100,1819,1919);
 totalcutpull->SetStats(0);
  totalcutpull->GetYaxis()->SetTitle("Pull");
  totalcutpull->GetYaxis()->SetTitleSize(30);
@@ -138,6 +139,7 @@ totalcutpull->GetXaxis()->SetTitle("D^{+} mass [MeV/c^{2}]");
  totalcutpull->SetLineColor(kBlue);
 totalcutpull->SetBit(TH1::kNoTitle);
 totalcutpull->GetYaxis()->SetNdivisions(7);
+
 
 }
 
@@ -189,7 +191,7 @@ Bool_t kstarcutpass = (mkmpi > kstar_lowerbound && mkmpi < kstar_upperbound);//k
    Bool_t probcutpass = (kminuslog > 5 && kpluslog > 5 && pipluslog > 0);//5, 5, 0 comes from section 3 of the paper saved in slack
    Bool_t ipchi2cutpass = (*Dplus_IPCHI2_OWNPV < 5);//not sure what exactly IPchi2 is... 
 Bool_t momentumcutpass = (*Dplus_P > 1000 && *Dplus_PT > 100 && *Kplus_P > 1000 && *Kplus_PT > 100 && *Kminus_P > 1000 && *Kminus_PT > 100 && *Piplus_P >1000 && *Piplus_PT > 100);//this cut has NO EFFECT
-Bool_t fdchi2cutpass = (TMath::Log(*Dplus_FDCHI2_OWNPV) > 5 && TMath::Log(*Dplus_FDCHI2_OWNPV) < 11);
+ Bool_t fdchi2cutpass = (*Dplus_FDCHI2_OWNPV > 175);
 //Bool_t ipchi2cutpass = (*Dplus_IPCHI2_OWNPV < 5 && *Kplus_IPCHI2_OWNPV > 9 && *Kminus_IPCHI2_OWNPV > 9 && *Piplus_IPCHI2_OWNPV > 9);
 
 
@@ -205,7 +207,7 @@ Bool_t resonancecutpass = (phicutpass || kstarcutpass);//dont cut on k*
 
 
 
-   if (phicutpass && probcutpass && ipchi2cutpass && momentumcutpass) {
+   if (phicutpass && probcutpass && ipchi2cutpass && momentumcutpass && fdchi2cutpass) {
      totalcuthist->Fill(*Dplus_M);//*Dplus_M or mkpkmpi
    } else {
      totalcutrejects->Fill(*Dplus_M);
@@ -236,13 +238,13 @@ void dp_cuts::Terminate()
   Double_t expCoefGuess = (lastbin-firstbin)/100;
 
   myDpFit->SetParameter(0,nSignalGuess);//nSignal
-  //myDpFit->SetParLimits(0,200000,230000);//this is a yikes... need to address
+  myDpFit->SetParLimits(0,2500000,3500000);//this is a yikes... need to address
   myDpFit->SetParameter(1,1869);//mu
   myDpFit->SetParameter(2,4.);//rms of double gaussian
   myDpFit->SetParLimits(2,0.,20.);
   myDpFit->SetParameter(3,7);//sigma_1 of primary gaussian
   myDpFit->SetParameter(4,0.85);//fraction of signal in primary gaussian
-  myDpFit->SetParLimits(4,0.001,0.0999999);
+  myDpFit->SetParLimits(4,0.0000001,0.9999999);
   myDpFit->SetParameter(5,firstbin);//exp intercept
   myDpFit->SetParameter(6,expCoefGuess);//coefficient background exponential
   myDpFit->SetParameter(7, 1.5);//crystal ball alpha
@@ -263,18 +265,20 @@ auto totalpullcan = new TCanvas("totalpullcan", "totalpullcan", 1000, 800);
 TPad *pad1 = new TPad("pad1","pad1",0,0.25,1,1.0);
 TPad *pad2 = new TPad("pad2","pad2",0,0.0,1,0.25);
 
-pad1->SetBottomMargin(0);
- pad1->SetLeftMargin(0.15);
- //pad1->SetGridx(); // puts vertical lines... trying it without
-pad1->Draw();
+ pad1->Draw();
+ pad2->Draw();
 
-pad2->SetTopMargin(0);
- pad2->SetBottomMargin(0.4);
- pad2->SetLeftMargin(0.15);
- pad2->SetGridx();
-pad2->Draw();
+
 
 pad1->cd();
+pad1->SetBottomMargin(0);
+ pad1->SetLeftMargin(0.15);
+
+ //pad1->SetLogy();//comment this line out to have a non-log plot
+
+
+
+
  totalcuthist->Fit("myDpFit","RL");
 
 Double_t nSignal  = myDpFit->GetParameter(0);
@@ -335,8 +339,8 @@ nSignalStrpm.Form("%5.0f\n",myDpFit->GetParError(0));
 
 auto lt = new TLatex();
 lt->SetTextSize(0.03);
-lt->DrawLatexNDC(0.60, 0.62, "#mu = "+muStr+" #pm "+muStrpm+" MeV/c^{2}");
-lt->DrawLatexNDC(0.60, 0.57, "Signal Events = "+nSignalStr+" #pm "+nSignalStrpm);
+ lt->DrawLatexNDC(0.60, 0.35, "#mu = "+muStr+" #pm "+muStrpm+" MeV/c^{2}");//0.62 for y if not log
+ lt->DrawLatexNDC(0.60, 0.30, "Signal Events = "+nSignalStr+" #pm "+nSignalStrpm);//0.57 for y if not log
 
 
 auto fitlegend = new TLegend(0.7,0.7,0.9,0.9);
@@ -346,7 +350,14 @@ fitlegend->AddEntry(backgroundfit, "Background Fit", "l");
 fitlegend->Draw();
 
 
+
 pad2->cd();
+pad2->SetTopMargin(0);
+ pad2->SetBottomMargin(0.4);
+ pad2->SetLeftMargin(0.15);
+ pad2->SetGridx();
+
+
  Double_t xVals[100];
  Double_t yVals[100];
  for (Int_t i=1;i<100;i++) {
@@ -361,10 +372,11 @@ pad2->cd();
 totalcutpull->Draw();
 
 
+
  totalpullcan->cd();
 
 
- totalpullcan->SaveAs("image/dp_totalcut_pull.png");
+ totalpullcan->SaveAs("image/dp_totalcut_pull_liny_10-29.png");
 
 /*
 auto sigcan = new TCanvas("sigcan", "sigcan", 1000, 800);

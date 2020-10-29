@@ -1,2 +1,3 @@
+ROOT::EnableImplicitMT();
 _file0->cd("Dsp2KKpi")
 DecayTree->Process("dsp_cuts.C")

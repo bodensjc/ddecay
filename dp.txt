@@ -1,2 +1,3 @@
+ROOT::EnableImplicitMT();
 _file0->cd("D2KKpi")
 DecayTree->Process("dp_cuts.C")
