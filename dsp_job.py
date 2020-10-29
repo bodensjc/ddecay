@@ -6,7 +6,7 @@ j.application.options = ['dsp_options.py'] #ntuple options file
 j.application.platform = 'x86_64-centos7-gcc8-opt' #gcc8 to match davinci version, gcc62 for v42r5
 bkPath = '/LHCb/Collision17/Beam6500GeV-VeloClosed-MagUp/Real Data/Turbo04/94000000/CHARMSPEC.MDST' #path to real data
 data = BKQuery(bkPath, dqflag=['OK']).getDataset()
-j.inputdata = data[0:12693] #get first 5 data files
+j.inputdata = data[0:13551] #get first 5 data files
 j.backend = Dirac()
 
 #can use the below line to not run on russian servers if its going to be an issue again...
