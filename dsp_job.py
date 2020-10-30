@@ -1,6 +1,6 @@
 j = Job(name='dsp_10-29') #"mm-dd:run"
 myApp = GaudiExec()
-myApp.directory = "./DaVinciDev_v45r1 " #davinci version listed for charmcharged stream is v42r5 but this oen works
+myApp.directory = "./DaVinciDev_v45r1" #davinci version listed for charmcharged stream is v42r5 but this oen works
 j.application = myApp
 j.application.options = ['dsp_options.py'] #ntuple options file
 j.application.platform = 'x86_64-centos7-gcc8-opt' #gcc8 to match davinci version, gcc62 for v42r5
