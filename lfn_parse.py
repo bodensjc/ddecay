@@ -23,7 +23,7 @@ for line in lines:
 
     if dsp != -1:
         line=line.replace('\n',' ')
-        dsplfn.write(line[dsp+23:])
+        dsplfn.write(line[dsp+21:])
         dspi += 1
         if dspi==60:
             dspj+=1
@@ -31,7 +31,7 @@ for line in lines:
             dspi=0     
     if dp != -1:
         line=line.replace('\n',' ')
-        dplfn.write(line[dp+22:])
+        dplfn.write(line[dp+20:])
         dpi += 1
         if dpi==60:
             dpj+=1
