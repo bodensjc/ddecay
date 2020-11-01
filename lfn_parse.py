@@ -3,7 +3,7 @@ os.chdir('C:\\Users\\johnb\\Documents\\LHCb\\LHCb')
 
 
 
-lfn = open('lfns.txt','r')
+lfn = open('maguplfns.txt','r')
 dplfn = open('dplfns.txt', 'w')
 dsplfn = open('dsplfns.txt','w')
 
@@ -11,6 +11,11 @@ lines = lfn.readlines()
 
 dspi=0
 dpi=0
+dspj=1
+dpj=1
+
+dsplfn.write('dsp{0}.root\n'.format(dspj))
+dplfn.write('dp{0}.root\n'.format(dpj))
 
 for line in lines:
     dsp = line.find('Dsp')
@@ -21,15 +26,18 @@ for line in lines:
         dsplfn.write(line[dsp+23:])
         dspi += 1
         if dspi==60:
-            dsplfn.write('\n\n\n')
-            dspi=0
+            dspj+=1
+            dsplfn.write('\n\ndsp{0}.root\n'.format(dspj))
+            dspi=0     
     if dp != -1:
         line=line.replace('\n',' ')
         dplfn.write(line[dp+22:])
         dpi += 1
         if dpi==60:
-            dplfn.write('\n\n\n')
+            dpj+=1
+            dplfn.write('\n\ndp{0}.root\n'.format(dpj))
             dpi=0
+
     else:
         pass
 
