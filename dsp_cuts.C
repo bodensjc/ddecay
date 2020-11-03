@@ -3,8 +3,8 @@
 #include <TH2.h>
 #include <TStyle.h>
 //#include "scripts/fit1MeV_Gaussian.C"
-//#include "scripts/fit1MeV_GaussianPlusCBWithExp.C"
-#include "scripts/fit1MeV_GaussianPlusCBWithExp_redo.C"
+#include "scripts/fit1MeV_GaussianPlusCBWithExp.C"
+//#include "scripts/fit1MeV_GaussianPlusCBWithExp_redo.C"
 
 
 //	root -l /share/lazy/D2KKpi/Dsp2KKpi.root
@@ -63,7 +63,7 @@ void dsp_cuts::Begin(TTree * /*tree*/)
     myDspFit->SetParameter(4,0.);
 */
 
-   myDspFit = new TF1("myDspFit",fit1MeV_GaussianPlusCBWithExp_redo, 1919, 2019, 9);
+   myDspFit = new TF1("myDspFit",fit1MeV_GaussianPlusCBWithExp, 1919, 2019, 9);
    myDspFit->SetParNames("nSignal", "mu", "rms_wdth", "sigma_1", "gaus_frac", "exp_int","exp_coef","CB_alpha","CB_n");
   myDspFit->SetLineColor(kRed+1);
   myDspFit->SetLineWidth(2);
@@ -209,18 +209,19 @@ void dsp_cuts::Terminate()
   Double_t firstbin = totalcuthist->GetBinContent(1);//used for intercept guess
   Double_t lastbin = totalcuthist->GetBinContent(99);//used for slope guess
 
-  Double_t nSignalGuess = (maxbin-firstbin)*14;//triangular guess for signal events
+  Double_t nSignalGuess = (maxbin-firstbin)*15;//triangular guess for signal events
   Double_t expCoefGuess = (lastbin-firstbin)/100;//exp slope guess
 
 
 
   myDspFit->SetParameter(0,nSignalGuess);//nSignal
+  myDspFit->SetParLimits(0,2500000,3750000);
   myDspFit->SetParameter(1,1965);//mu
   myDspFit->SetParameter(2,4.);//rms of double gaussian
   myDspFit->SetParLimits(2,0.,20.);
   myDspFit->SetParameter(3,7);//sigma_1 of primary gaussian
   myDspFit->SetParameter(4,0.85);//fraction of signal in primary gaussian
-  myDspFit->SetParLimits(4,0.55,0.99999999);
+  myDspFit->SetParLimits(4,0.001,0.0999999);
   myDspFit->SetParameter(5,firstbin);//exp intercept
   myDspFit->SetParameter(6,expCoefGuess);//coefficient background exponential
   myDspFit->SetParameter(7, 1.5);//crystal ball alpha
@@ -346,5 +347,5 @@ totalcutpull->Draw();
 
 
  totalpullcan->cd();
- totalpullcan->SaveAs("image/dsp_totalcut_pull_test3.png");
+ totalpullcan->SaveAs("image/dsp_totalcut_pull_logy_exp1919test.png");
 }

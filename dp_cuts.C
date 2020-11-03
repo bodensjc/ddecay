@@ -244,7 +244,7 @@ void dp_cuts::Terminate()
   myDpFit->SetParLimits(2,0.,20.);
   myDpFit->SetParameter(3,7);//sigma_1 of primary gaussian
   myDpFit->SetParameter(4,0.85);//fraction of signal in primary gaussian
-  myDpFit->SetParLimits(4,0.0000001,0.9999999);
+  myDpFit->SetParLimits(4,0.001,0.09999999);
   myDpFit->SetParameter(5,firstbin);//exp intercept
   myDpFit->SetParameter(6,expCoefGuess);//coefficient background exponential
   myDpFit->SetParameter(7, 1.5);//crystal ball alpha
@@ -274,7 +274,7 @@ pad1->cd();
 pad1->SetBottomMargin(0);
  pad1->SetLeftMargin(0.15);
 
- //pad1->SetLogy();//comment this line out to have a non-log plot
+ pad1->SetLogy();//comment this line out to have a non-log plot
 
 
 
@@ -376,7 +376,7 @@ totalcutpull->Draw();
  totalpullcan->cd();
 
 
- totalpullcan->SaveAs("image/dp_totalcut_pull_liny_10-29.png");
+ totalpullcan->SaveAs("image/dp_totalcut_pull_logy_fdcut.png");
 
 /*
 auto sigcan = new TCanvas("sigcan", "sigcan", 1000, 800);
