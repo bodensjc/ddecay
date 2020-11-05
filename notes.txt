@@ -13,3 +13,11 @@ ml root
 root -l /share/lazy/D2KKpi/d(s)p2kkpi.root
 _file0->cd("D(sp)2KKpi")
 DecayTree->Process("file.c")
+
+
+
+
+to run an rdf file:
+$ ml root
+$ root -l
+$ .X filename.C
