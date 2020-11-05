@@ -10,7 +10,7 @@ EnableImplicitMT();
 
 
 //create rdataframe for dp magdown data
-RDataFrame dpdf("D2KKpi/DecayTree", "/share/lazy/D2KKpi/dp2kkpi.root");
+RDataFrame dpdf("D2KKpi/DecayTree", "/share/lazy/D2KKpi/dp2kkpi_magdown.root");
 
 /*get and print number of entries
 auto dpdf_count = dpdf.Count();
