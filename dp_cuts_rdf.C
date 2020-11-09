@@ -6,7 +6,7 @@
 using namespace std;
 using namespace ROOT;
 
-EnableImplicitMT();
+//EnableImplicitMT();
 
 
 //create rdataframe for dp magdown data
@@ -74,18 +74,18 @@ pad1->cd();
 
 
 
-auto totalcuthist = dp_cut.Histo1D({"D^{+} cuts","D^{+} #rightarrow K^{+}K^{-}#pi^{+} Cut and Fit",nbins, binmin, binmax}, "Dplus_MM");
+auto totalcuthist = dp_cut.Fill<double>(TH1D("totalcuthist","D+ cut and fit",nbins, binmin, binmax), {"Dplus_MM"});//D^{+} #rightarrow K^{+}K^{-}#pi^{+} Cut and Fit
 	totalcuthist->SetStats(0);
     totalcuthist->SetTitleFont(43);
     totalcuthist->SetTitleSize(35);
-    totalcuthist->GetYaxis()->SetTitle("Candidates/(1 MeV/c^{2})");
-    totalcuthist->SetMinimum(1);//make minimum 1 so logy doesnt break
+    totalcuthist->GetYaxis()->SetTitle("events per 1mev");//Candidates/(1 MeV/c^{2})
+    totalcuthist->SetMinimum(100);//make minimum 1 so logy doesnt break, make 100 or better viewing
     totalcuthist->GetYaxis()->SetTitleFont(43);
 	totalcuthist->GetYaxis()->SetTitleSize(30);
 	totalcuthist->GetYaxis()->CenterTitle(true);
 
 /*
-myDpFit = new TF1("myDpFit",fit1MeV_GaussianPlusCBWithExp_redo,binmin, binmax, 9);
+auto myDpFit = new TF1("myDpFit",fit1MeV_GaussianPlusCBWithExp_redo,binmin, binmax, 9);
 	myDpFit->SetParNames("nSignal", "mu", "rms_wdth", "sigma_1", "gaus_frac", "exp_int","exp_coef","CB_alpha","CB_n");
 	myDpFit->SetLineColor(kRed+1);
 	myDpFit->SetLineWidth(2);

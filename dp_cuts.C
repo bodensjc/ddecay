@@ -109,7 +109,7 @@ totalcuthist->SetStats(0);
    totalcuthist->SetTitleFont(43);
    totalcuthist->SetTitleSize(35);
    totalcuthist->GetYaxis()->SetTitle("Candidates/(1 MeV/c^{2})");
-   totalcuthist->SetMinimum(1);//make minimum 1 so logy doesnt break
+   totalcuthist->SetMinimum(100);//make minimum 1 so logy doesnt break
    totalcuthist->GetYaxis()->SetTitleFont(43);
 totalcuthist->GetYaxis()->SetTitleSize(30);
  totalcuthist->GetYaxis()->CenterTitle(true);
@@ -376,7 +376,7 @@ totalcutpull->Draw();
  totalpullcan->cd();
 
 
- totalpullcan->SaveAs("image/dp_totalcut_pull_logy_fdcut.png");
+ totalpullcan->SaveAs("image/dp_totalcut_pull_logy_magdown.png");
 
 /*
 auto sigcan = new TCanvas("sigcan", "sigcan", 1000, 800);
