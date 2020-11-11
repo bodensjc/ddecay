@@ -15,7 +15,7 @@ RDataFrame dspdf("Dsp2KKpi/DecayTree", "/share/lazy/D2KKpi/dsp2kkpi_magdown.root
 
 
 
-const double phi_pm = 10;//12 for regular cut
+const double phi_pm = 12;//12 for regular cut
 const double phiupperbound = (1019.455+phi_pm)*(1019.455+phi_pm)/1000000; 
 const double philowerbound = (1019.455-phi_pm)*(1019.455-phi_pm)/1000000; 
 
@@ -31,8 +31,9 @@ auto inv_m_func = [](double px1, double py1, double pz1, double pe1, double px2,
 auto prob_func = [](double prob1, double prob2) {return TMath::Log(prob1) - TMath::Log(prob2) ;};
 
 
-auto cut_ipchi2 = [](double x) {return x < 3 ;};//5 for regular cut
-auto cut_fdchi2 = [](double x) {return x > 200 ;};//175 for regular cut
+auto cut_ipchi2 = [](double x) {return x < 5 ;};//5 for regular cut
+auto cut_fdchi2 = [](double x) {return x > 175 ;};//175 for regular cut
+auto cut_endvertexchi2 = [](double x) {return x < 3 ;};
 auto cut_phi = [phiupperbound, philowerbound](double x) {return x > philowerbound && x < phiupperbound ;};
 auto cut_prob_5 = [] (double x) {return x>5 ;};
 auto cut_prob_0 = [] (double x) {return x>0 ;};
@@ -41,6 +42,7 @@ auto cut_prob_0 = [] (double x) {return x>0 ;};
 
 auto dp_cut = dpdf.Filter(cut_ipchi2, {"Dplus_IPCHI2_OWNPV"})
 				   .Filter(cut_fdchi2, {"Dplus_FDCHI2_OWNPV"})
+				   .Filter(cut_endvertexchi2, {"Dplus_ENDVERTEX_CHI2"})
 				   .Define("kminuslog", prob_func, {"Kminus_MC15TuneV1_ProbNNk", "Kminus_MC15TuneV1_ProbNNpi"})
 				   .Define("kpluslog", prob_func, {"Kplus_MC15TuneV1_ProbNNk", "Kplus_MC15TuneV1_ProbNNpi"})
 				   .Define("pipluslog", prob_func, {"Piplus_MC15TuneV1_ProbNNpi", "Piplus_MC15TuneV1_ProbNNk"})
@@ -52,6 +54,7 @@ auto dp_cut = dpdf.Filter(cut_ipchi2, {"Dplus_IPCHI2_OWNPV"})
 
 auto dsp_cut = dspdf.Filter(cut_ipchi2, {"Dsplus_IPCHI2_OWNPV"})
 				   .Filter(cut_fdchi2, {"Dsplus_FDCHI2_OWNPV"})
+				   .Filter(cut_endvertexchi2, {"Dsplus_ENDVERTEX_CHI2"})
 				   .Define("kminuslog", prob_func, {"Kminus_MC15TuneV1_ProbNNk", "Kminus_MC15TuneV1_ProbNNpi"})
 				   .Define("kpluslog", prob_func, {"Kplus_MC15TuneV1_ProbNNk", "Kplus_MC15TuneV1_ProbNNpi"})
 				   .Define("pipluslog", prob_func, {"Piplus_MC15TuneV1_ProbNNpi", "Piplus_MC15TuneV1_ProbNNk"})

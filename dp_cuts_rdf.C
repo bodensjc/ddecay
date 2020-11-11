@@ -6,7 +6,7 @@
 using namespace std;
 using namespace ROOT;
 
-//EnableImplicitMT();
+EnableImplicitMT();
 
 
 //create rdataframe for dp magdown data
@@ -41,6 +41,7 @@ auto prob_func = [](double prob1, double prob2) {return TMath::Log(prob1) - TMat
 
 auto cut_ipchi2 = [](double x) {return x < 5 ;};
 auto cut_fdchi2 = [](double x) {return x > 175 ;};
+auto cut_endvertexchi2 = [](double x) {return x < 3 ;};
 auto cut_phi = [phiupperbound, philowerbound](double x) {return x > philowerbound && x < phiupperbound ;};
 auto cut_prob_5 = [] (double x) {return x>5 ;};
 auto cut_prob_0 = [] (double x) {return x>5 ;};
@@ -49,6 +50,7 @@ auto cut_prob_0 = [] (double x) {return x>5 ;};
 
 auto dp_cut = dpdf.Filter(cut_ipchi2, {"Dplus_IPCHI2_OWNPV"})
 				   .Filter(cut_fdchi2, {"Dplus_FDCHI2_OWNPV"})
+				   .Filter(cut_endvertexchi2, {"Dplus_ENDVERTEX_CHI2"})
 				   .Define("kminuslog", prob_func, {"Kminus_MC15TuneV1_ProbNNk", "Kminus_MC15TuneV1_ProbNNpi"})
 				   .Define("kpluslog", prob_func, {"Kplus_MC15TuneV1_ProbNNk", "Kplus_MC15TuneV1_ProbNNpi"})
 				   .Define("pipluslog", prob_func, {"Piplus_MC15TuneV1_ProbNNpi", "Piplus_MC15TuneV1_ProbNNk"})
@@ -61,18 +63,6 @@ auto dp_cut = dpdf.Filter(cut_ipchi2, {"Dplus_IPCHI2_OWNPV"})
 
 
 
-auto totalpullcan = new TCanvas("totalpullcan", "totalpullcan", 1000, 800);
-	TPad *pad1 = new TPad("pad1","pad1",0,0.25,1,1.0);
-	TPad *pad2 = new TPad("pad2","pad2",0,0.0,1,0.25);
-		pad1->Draw();
-		pad2->Draw();
-
-pad1->cd();
-	pad1->SetBottomMargin(0);
-	pad1->SetLeftMargin(0.15);
-	//pad1->SetLogy();
-
-
 
 auto totalcuthist = dp_cut.Fill<double>(TH1D("totalcuthist","D+ cut and fit",nbins, binmin, binmax), {"Dplus_MM"});//D^{+} #rightarrow K^{+}K^{-}#pi^{+} Cut and Fit
 	totalcuthist->SetStats(0);
@@ -83,15 +73,16 @@ auto totalcuthist = dp_cut.Fill<double>(TH1D("totalcuthist","D+ cut and fit",nbi
     totalcuthist->GetYaxis()->SetTitleFont(43);
 	totalcuthist->GetYaxis()->SetTitleSize(30);
 	totalcuthist->GetYaxis()->CenterTitle(true);
+auto totalcuthistROOT = totalcuthist->DrawCopy();//converts Rhist into ROOThist
 
-/*
+
 auto myDpFit = new TF1("myDpFit",fit1MeV_GaussianPlusCBWithExp_redo,binmin, binmax, 9);
 	myDpFit->SetParNames("nSignal", "mu", "rms_wdth", "sigma_1", "gaus_frac", "exp_int","exp_coef","CB_alpha","CB_n");
 	myDpFit->SetLineColor(kRed+1);
 	myDpFit->SetLineWidth(2);
-		double maxbin = totalcuthist->GetBinContent(totalcuthist->GetMaximumBin());
-		double firstbin = totalcuthist->GetBinContent(1);//used for intercept guess
-		double lastbin = totalcuthist->GetBinContent(nbins-1);//used for slope guess
+		double maxbin = totalcuthistROOT->GetBinContent(totalcuthistROOT->GetMaximumBin());
+		double firstbin = totalcuthistROOT->GetBinContent(1);//used for intercept guess
+		double lastbin = totalcuthistROOT->GetBinContent(nbins-1);//used for slope guess
 		double nSignalGuess = (maxbin-firstbin)*15;
 		double expCoefGuess = (lastbin-firstbin)/nbins;
 	myDpFit->SetParameter(0,nSignalGuess);//nSignal
@@ -108,9 +99,7 @@ auto myDpFit = new TF1("myDpFit",fit1MeV_GaussianPlusCBWithExp_redo,binmin, binm
 	myDpFit->SetParameter(8,2.5);//crystal ball n
 	myDpFit->SetParLimits(8,1.00001,6.);
 
-totalcuthist->Fit("myDpFit","RL");
-*/
-totalcuthist->Draw();
+
 
 
 
@@ -155,9 +144,49 @@ auto dp_pull = dp_cut.Define("pull",
    xVals[i]=x;
    yVals[i]=pull;
    }
-totalcutpull->Draw();
+
 */
-totalpullcan->SaveAs("image/dp_cut_fit_pull_rdf.png");
+
+
+auto totalpullcanliny = new TCanvas("totalpullcanliny", "totalpullcanliny", 1000, 800);
+	TPad *pad1 = new TPad("pad1","pad1",0,0.25,1,1.0);
+	TPad *pad2 = new TPad("pad2","pad2",0,0.0,1,0.25);
+		pad1->Draw();
+		pad2->Draw();
+	pad1->cd();
+		pad1->SetBottomMargin(0);
+		pad1->SetLeftMargin(0.15);
+		//pad1->SetLogy();
+			totalcuthistROOT->Fit("myDpFit","RL");
+			totalcuthistROOT->Draw();
+	pad2->cd();
+		pad2->SetTopMargin(0);
+		pad2->SetBottomMargin(0.4);
+		pad2->SetLeftMargin(0.15);
+		pad2->SetGridx();
+			//totalcutpull->Draw();
+totalpullcanliny->SaveAs("image/dp_cut_fit_pull_rdf_liny.png");
+
+
+
+auto totalpullcanlogy = new TCanvas("totalpullcanlogy", "totalpullcanlogy", 1000, 800);
+	TPad *pad11 = new TPad("pad11","pad11",0,0.25,1,1.0);
+	TPad *pad22 = new TPad("pad22","pad22",0,0.0,1,0.25);
+		pad11->Draw();
+		pad22->Draw();
+	pad11->cd();
+		pad11->SetBottomMargin(0);
+		pad11->SetLeftMargin(0.15);
+		pad11->SetLogy();
+			totalcuthistROOT->Fit("myDpFit","RL");
+			totalcuthistROOT->Draw();
+	pad22->cd();
+		pad22->SetTopMargin(0);
+		pad22->SetBottomMargin(0.4);
+		pad22->SetLeftMargin(0.15);
+		pad22->SetGridx();
+			//totalcutpull->Draw();
+totalpullcanlogy->SaveAs("image/dp_cut_fit_pull_rdf_logy.png");
 
 }//end
 
