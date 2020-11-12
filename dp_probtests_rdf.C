@@ -14,7 +14,7 @@ RDataFrame dpdf("D2KKpi/DecayTree", "/share/lazy/D2KKpi/dp2kkpi_magdown.root");
 RDataFrame dspdf("Dsp2KKpi/DecayTree", "/share/lazy/D2KKpi/dsp2kkpi_magdown.root");
 
 
-const double phi_pm = 10;
+const double phi_pm = 10;//nominally 12
 const double phiupperbound = (1019.455+phi_pm)*(1019.455+phi_pm)/1000000; 
 const double philowerbound = (1019.455-phi_pm)*(1019.455-phi_pm)/1000000; 
 
@@ -27,8 +27,8 @@ auto inv_m_func = [](double px1, double py1, double pz1, double pe1, double px2,
 auto prob_func = [](double prob1, double prob2) {return TMath::Log(prob1) - TMath::Log(prob2) ;};
 auto probNNx_func = [](double prob1, double prob2, double prob3) {return prob1*prob2*prob3 ;};
 
-auto cut_ipchi2 = [](double x) {return x < 4 ;};
-auto cut_fdchi2 = [](double x) {return x > 200 ;};
+auto cut_ipchi2 = [](double x) {return x < 4 ;};//nominally 5
+auto cut_fdchi2 = [](double x) {return x > 200 ;};//nominally 175
 auto cut_endvertexchi2 = [](double x) {return x < 3 ;};
 auto cut_phi = [phiupperbound, philowerbound](double x) {return x > philowerbound && x < phiupperbound ;};
 auto cut_prob_5 = [] (double x) {return x>5 ;};
@@ -84,6 +84,7 @@ auto dsp_probnn4 = dsp_cut.Filter(cut_probnn4, {"ProbNNx"});
 
 
 /* This block is used to produce the distribution of ProbNnx for all dp
+
 auto probNNxhist = dp_cut.Fill<double>(TH1D("probNNxhist","ProbNNx after all cuts",20, 0, 1), {"ProbNNx"});
 	probNNxhist->SetStats(0);
     probNNxhist->SetTitleFont(43);
@@ -92,7 +93,7 @@ auto probNNxhist = dp_cut.Fill<double>(TH1D("probNNxhist","ProbNNx after all cut
     probNNxhist->GetYaxis()->SetTitleFont(43);
 	probNNxhist->GetYaxis()->SetTitleSize(30);
 	probNNxhist->GetYaxis()->CenterTitle(true);
-    probNNxhist->GetXaxis()->SetTitle("events per 0.05");//Candidates/(1 MeV/c^{2})
+    probNNxhist->GetXaxis()->SetTitle("ProbNNx");//Candidates/(1 MeV/c^{2})
     probNNxhist->GetXaxis()->SetTitleFont(43);
 	probNNxhist->GetXaxis()->SetTitleSize(30);
 	probNNxhist->GetXaxis()->SetTitleOffset(1.2);
@@ -107,6 +108,11 @@ probNNxcan->SaveAs("image/dp_probnnx.png");
 */
 
 
+
+
+
+/*This block is used to produce the big plot for mass distributions of both dp and dsp
+	separated into four sets based off of probnnx
 
 auto dpprobnn1hist = dp_probnn1.Fill<double>(TH1D("dpprobnn1hist","D^{+}_{(s)} #rightarrow K^{+}K^{-}#pi^{+}",nbins, binmin, binmax), {"Dplus_MM"});//D^{+} #rightarrow K^{+}K^{-}#pi^{+} Cut and Fit
 	dpprobnn1hist->SetStats(0);
@@ -278,14 +284,89 @@ auto logyprobnncan = new TCanvas("logyprobnncan", "logyprobnncan", 1600, 1200);
 
 
 logyprobnncan->SaveAs("image/dp_dsp_ProbNN_tightcuts.png");
+*/
 
 
 
 
 
 
+auto cut_uppermass = [] (double x) {return x > 1885 ;};
+auto cut_middlemass = [] (double x) {return (x >= 1855 && x <= 1885) ;};
+auto cut_lowermass = [] (double x) {return x < 1855 ;};
 
 
+auto dp_uppermass = dp_cut.Filter(cut_uppermass, {"Dplus_MM"});
+auto dp_lowermass = dp_cut.Filter(cut_lowermass, {"Dplus_MM"});
+auto dp_middlemass = dp_cut.Filter(cut_middlemass, {"Dplus_MM"});
+
+
+auto dpprobnnkplushist = dp_uppermass.Fill<double>(TH1D("dpprobnnkplushist","ProbNNp for Kaons from D^{+} #rightarrow K^{+}K^{-}#pi^{+}",100,0,1), {"Kplus_MC15TuneV1_ProbNNp"});//D^{+} #rightarrow K^{+}K^{-}#pi^{+} Cut and Fit
+	dpprobnnkplushist->SetStats(0);
+    dpprobnnkplushist->SetTitleFont(43);
+    dpprobnnkplushist->SetTitleSize(33);
+    dpprobnnkplushist->GetYaxis()->SetTitle("events per 0.01");
+    dpprobnnkplushist->GetYaxis()->SetTitleFont(43);
+	dpprobnnkplushist->GetYaxis()->SetTitleSize(30);
+	dpprobnnkplushist->GetYaxis()->CenterTitle(true);
+    dpprobnnkplushist->GetXaxis()->SetTitle("ProbNNp");
+    dpprobnnkplushist->GetXaxis()->SetTitleFont(43);
+	dpprobnnkplushist->GetXaxis()->SetTitleSize(25);
+	dpprobnnkplushist->GetXaxis()->CenterTitle(true);
+	dpprobnnkplushist->GetXaxis()->SetTitleOffset(1.2);
+	dpprobnnkplushist->SetLineColor(kRed);
+
+auto dpprobnnkplushist2 = dp_lowermass.Fill<double>(TH1D("dpprobnnkplushist2","ProbNNp for Kaons from D^{+} #rightarrow K^{+}K^{-}#pi^{+}",100,0,1), {"Kplus_MC15TuneV1_ProbNNp"});//D^{+} #rightarrow K^{+}K^{-}#pi^{+} Cut and Fit
+	dpprobnnkplushist2->SetStats(0);
+    dpprobnnkplushist2->SetTitleFont(43);
+    dpprobnnkplushist2->SetTitleSize(33);
+    dpprobnnkplushist2->GetYaxis()->SetTitle("events per 0.01");
+    dpprobnnkplushist2->GetYaxis()->SetTitleFont(43);
+	dpprobnnkplushist2->GetYaxis()->SetTitleSize(30);
+	dpprobnnkplushist2->GetYaxis()->CenterTitle(true);
+    dpprobnnkplushist2->GetXaxis()->SetTitle("ProbNNp");
+    dpprobnnkplushist2->GetXaxis()->SetTitleFont(43);
+	dpprobnnkplushist2->GetXaxis()->SetTitleSize(25);
+	dpprobnnkplushist2->GetXaxis()->CenterTitle(true);
+	dpprobnnkplushist2->GetXaxis()->SetTitleOffset(1.2);
+	dpprobnnkplushist2->SetLineColor(kBlue);
+
+
+
+auto dpprobnnkplushist3 = dp_middlemass.Fill<double>(TH1D("dpprobnnkplushist3","ProbNNp for Kaons from D^{+} #rightarrow K^{+}K^{-}#pi^{+}",100,0,1), {"Kplus_MC15TuneV1_ProbNNp"});//D^{+} #rightarrow K^{+}K^{-}#pi^{+} Cut and Fit
+	dpprobnnkplushist3->SetStats(0);
+    dpprobnnkplushist3->SetTitleFont(43);
+    dpprobnnkplushist3->SetTitleSize(33);
+    dpprobnnkplushist3->GetYaxis()->SetTitle("events per 0.01");
+    dpprobnnkplushist3->GetYaxis()->SetTitleFont(43);
+	dpprobnnkplushist3->GetYaxis()->SetTitleSize(30);
+	dpprobnnkplushist3->GetYaxis()->CenterTitle(true);
+    dpprobnnkplushist3->GetXaxis()->SetTitle("ProbNNp");
+    dpprobnnkplushist3->GetXaxis()->SetTitleFont(43);
+	dpprobnnkplushist3->GetXaxis()->SetTitleSize(25);
+	dpprobnnkplushist3->GetXaxis()->CenterTitle(true);
+	dpprobnnkplushist3->GetXaxis()->SetTitleOffset(1.2);
+	dpprobnnkplushist3->SetLineColor(kBlack);
+
+
+auto dpprobnnpkaonslegend = new TLegend(0.70,0.75,0.9,0.9);
+	dpprobnnpkaonslegend->AddEntry(dpprobnnkplushist2.GetPtr(), "K^{+}, m(D+) < 1855", "l");
+	dpprobnnpkaonslegend->AddEntry(dpprobnnkplushist3.GetPtr(), "K^{+}, 1855 <= m(D+)<= 1885", "l");
+	dpprobnnpkaonslegend->AddEntry(dpprobnnkplushist.GetPtr(), "K^{-},  1885 < m(D+)", "l");
+
+
+auto dpprobnnpkaonscan = new TCanvas("dpprobnnpkaonscan", "dpprobnnpkaonscan", 1200, 800);
+	dpprobnnpkaonscan->cd();
+		TPad *pad1 = new TPad("pad1","pad1",0,0,1,1);
+			pad1->Draw();
+			pad1->cd();
+			pad1->SetLogy();
+	dpprobnnkplushist3->Draw();
+	dpprobnnkplushist->Draw("same");
+	dpprobnnkplushist2->Draw("same");
+
+	dpprobnnpkaonslegend->Draw("same");
+dpprobnnpkaonscan->SaveAs("image/dp_kaon_probnnp_masscut_logy.png");
 
 
 
