@@ -352,7 +352,7 @@ auto dpprobnnkplushist3 = dp_middlemass.Fill<double>(TH1D("dpprobnnkplushist3","
 auto dpprobnnpkaonslegend = new TLegend(0.70,0.75,0.9,0.9);
 	dpprobnnpkaonslegend->AddEntry(dpprobnnkplushist2.GetPtr(), "K^{+}, m(D+) < 1855", "l");
 	dpprobnnpkaonslegend->AddEntry(dpprobnnkplushist3.GetPtr(), "K^{+}, 1855 <= m(D+)<= 1885", "l");
-	dpprobnnpkaonslegend->AddEntry(dpprobnnkplushist.GetPtr(), "K^{-},  1885 < m(D+)", "l");
+	dpprobnnpkaonslegend->AddEntry(dpprobnnkplushist.GetPtr(), "K^{+},  1885 < m(D+)", "l");
 
 
 auto dpprobnnpkaonscan = new TCanvas("dpprobnnpkaonscan", "dpprobnnpkaonscan", 1200, 800);
