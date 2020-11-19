@@ -40,15 +40,15 @@ auto cut_phi = [phiupperbound, philowerbound](double x) {return x > philowerboun
 auto cut_prob_5 = [] (double x) {return x>5 ;};
 auto cut_prob_0 = [] (double x) {return x>0 ;};
 auto cut_probnnx = [] (double x) {return x >= 0.70 ;};
-auto cut_pK_ambiguity = [] (double x) {return x> 10000 ;}; //10,000 MeV = 10GeV
+auto cut_pK_ambiguity = [] (double x) {return x> 20000 ;}; //10,000 MeV = 10GeV
 
 
 
 auto dp_cut = dpdf.Filter(cut_ipchi2, {"Dplus_IPCHI2_OWNPV"})
 				   .Filter(cut_fdchi2, {"Dplus_FDCHI2_OWNPV"})
 				   .Filter(cut_endvertexchi2, {"Dplus_ENDVERTEX_CHI2"})
-				   .Filter(cut_pK_ambiguity, {"Kplus_P"})
-				   .Filter(cut_pK_ambiguity, {"Kminus_P"})
+				   //.Filter(cut_pK_ambiguity, {"Kplus_P"})
+				   //.Filter(cut_pK_ambiguity, {"Kminus_P"})
 				   .Define("kminuslog", prob_func, {"Kminus_MC15TuneV1_ProbNNk", "Kminus_MC15TuneV1_ProbNNpi"})
 				   .Define("kpluslog", prob_func, {"Kplus_MC15TuneV1_ProbNNk", "Kplus_MC15TuneV1_ProbNNpi"})
 				   .Define("pipluslog", prob_func, {"Piplus_MC15TuneV1_ProbNNpi", "Piplus_MC15TuneV1_ProbNNk"})
@@ -63,8 +63,8 @@ auto dp_cut = dpdf.Filter(cut_ipchi2, {"Dplus_IPCHI2_OWNPV"})
 auto dsp_cut = dspdf.Filter(cut_ipchi2, {"Dsplus_IPCHI2_OWNPV"})
 				   .Filter(cut_fdchi2, {"Dsplus_FDCHI2_OWNPV"})
 				   .Filter(cut_endvertexchi2, {"Dsplus_ENDVERTEX_CHI2"})
-				   .Filter(cut_pK_ambiguity, {"Kplus_P"})
-				   .Filter(cut_pK_ambiguity, {"Kminus_P"})
+				   //.Filter(cut_pK_ambiguity, {"Kplus_P"})
+				   //.Filter(cut_pK_ambiguity, {"Kminus_P"})
 				   .Define("kminuslog", prob_func, {"Kminus_MC15TuneV1_ProbNNk", "Kminus_MC15TuneV1_ProbNNpi"})
 				   .Define("kpluslog", prob_func, {"Kplus_MC15TuneV1_ProbNNk", "Kplus_MC15TuneV1_ProbNNpi"})
 				   .Define("pipluslog", prob_func, {"Piplus_MC15TuneV1_ProbNNpi", "Piplus_MC15TuneV1_ProbNNk"})
@@ -128,7 +128,7 @@ auto linytotalpullcan = new TCanvas("linytotalpullcan", "linytotalpullcan", 1600
 	dsptotalcuthist->Draw();
 	dptotalcuthist->Draw("same");
 	dpdsplegend->Draw("same");
-linytotalpullcan->SaveAs("image/aaaaaaaaaa_cut_dp_dsp_continuous_liny.png");
+linytotalpullcan->SaveAs("image/dp_dsp_liny_tightcuts-probnnx.png");
 
 auto logytotalpullcan = new TCanvas("logytotalpullcan", "logytotalpullcan", 1600, 1200);
 	logytotalpullcan->cd();
@@ -139,7 +139,7 @@ auto logytotalpullcan = new TCanvas("logytotalpullcan", "logytotalpullcan", 1600
 	dsptotalcuthist->Draw();
 	dptotalcuthist->Draw("same");
 	dpdsplegend->Draw("same");
-logytotalpullcan->SaveAs("image/aaaaaaaaaa_cut_dp_dsp_continuous_logy.png");
+logytotalpullcan->SaveAs("image/dp_dsp_logy_tightcuts-probnnx.png");
 
 
 
