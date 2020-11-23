@@ -10,9 +10,16 @@ EnableImplicitMT();
 
 
 //create rdataframe for dp, dsp magdown data
+
 RDataFrame dpdf("D2KKpi/DecayTree", {"/share/lazy/D2KKpi/dp2kkpi_magdown.root","/share/lazy/D2KKpi/dp2kkpi_magup.root"});
 RDataFrame dspdf("Dsp2KKpi/DecayTree", {"/share/lazy/D2KKpi/dsp2kkpi_magdown.root","/share/lazy/D2KKpi/dsp2kkpi_magup.root"});
 
+
+//smaller test sets
+/*
+RDataFrame dpdf("D2KKpi/DecayTree", "/share/lazy/D2KKpi/magdowndata/dp1.root");
+RDataFrame dspdf("Dsp2KKpi/DecayTree", "/share/lazy/D2KKpi/magdowndata/dsp01.root");
+*/
 
 
 
@@ -23,6 +30,8 @@ const double philowerbound = (1019.455-phi_pm)*(1019.455-phi_pm)/1000000;
 const int binmin = 1790;//1790 absolute minimum for dp
 const int binmax = 2050;//max value for dsp is 2050
 const int nbins = 100;
+
+
 
 
 
@@ -40,15 +49,15 @@ auto cut_phi = [phiupperbound, philowerbound](double x) {return x > philowerboun
 auto cut_prob_5 = [] (double x) {return x>5 ;};
 auto cut_prob_0 = [] (double x) {return x>0 ;};
 auto cut_probnnx = [] (double x) {return x >= 0.70 ;};
-auto cut_pK_ambiguity = [] (double x) {return x> 20000 ;}; //10,000 MeV = 10GeV
+auto cut_pK_ambiguity = [] (double x) {return x> 10000 ;}; //10,000 MeV = 10GeV
 
 
 
 auto dp_cut = dpdf.Filter(cut_ipchi2, {"Dplus_IPCHI2_OWNPV"})
 				   .Filter(cut_fdchi2, {"Dplus_FDCHI2_OWNPV"})
 				   .Filter(cut_endvertexchi2, {"Dplus_ENDVERTEX_CHI2"})
-				   //.Filter(cut_pK_ambiguity, {"Kplus_P"})
-				   //.Filter(cut_pK_ambiguity, {"Kminus_P"})
+				   .Filter(cut_pK_ambiguity, {"Kplus_P"})
+				   .Filter(cut_pK_ambiguity, {"Kminus_P"})
 				   .Define("kminuslog", prob_func, {"Kminus_MC15TuneV1_ProbNNk", "Kminus_MC15TuneV1_ProbNNpi"})
 				   .Define("kpluslog", prob_func, {"Kplus_MC15TuneV1_ProbNNk", "Kplus_MC15TuneV1_ProbNNpi"})
 				   .Define("pipluslog", prob_func, {"Piplus_MC15TuneV1_ProbNNpi", "Piplus_MC15TuneV1_ProbNNk"})
@@ -63,8 +72,8 @@ auto dp_cut = dpdf.Filter(cut_ipchi2, {"Dplus_IPCHI2_OWNPV"})
 auto dsp_cut = dspdf.Filter(cut_ipchi2, {"Dsplus_IPCHI2_OWNPV"})
 				   .Filter(cut_fdchi2, {"Dsplus_FDCHI2_OWNPV"})
 				   .Filter(cut_endvertexchi2, {"Dsplus_ENDVERTEX_CHI2"})
-				   //.Filter(cut_pK_ambiguity, {"Kplus_P"})
-				   //.Filter(cut_pK_ambiguity, {"Kminus_P"})
+				   .Filter(cut_pK_ambiguity, {"Kplus_P"})
+				   .Filter(cut_pK_ambiguity, {"Kminus_P"})
 				   .Define("kminuslog", prob_func, {"Kminus_MC15TuneV1_ProbNNk", "Kminus_MC15TuneV1_ProbNNpi"})
 				   .Define("kpluslog", prob_func, {"Kplus_MC15TuneV1_ProbNNk", "Kplus_MC15TuneV1_ProbNNpi"})
 				   .Define("pipluslog", prob_func, {"Piplus_MC15TuneV1_ProbNNpi", "Piplus_MC15TuneV1_ProbNNk"})
@@ -78,58 +87,88 @@ auto dsp_cut = dspdf.Filter(cut_ipchi2, {"Dsplus_IPCHI2_OWNPV"})
 
 
 
+//auto blackhist = new TH1D("blackhist", "", 1, binmin, 
+
+
+
 
 
 auto dptotalcuthist = dp_cut.Fill<double>(TH1D("dptotalcuthist","D^{+}_{(s)} #rightarrow K^{+}K^{-}#pi^{+}",nbins, binmin, binmax), {"Dplus_MM"});//D^{+} #rightarrow K^{+}K^{-}#pi^{+} Cut and Fit
 	dptotalcuthist->SetStats(0);
-    dptotalcuthist->SetTitleFont(43);
-    dptotalcuthist->SetTitleSize(33);
+	dptotalcuthist->SetTitle("");//this is for no title for nsf plot
+    //dptotalcuthist->SetTitleFont(43);
+    //dptotalcuthist->SetTitleSize(33);
     dptotalcuthist->GetYaxis()->SetTitle("Events / 1 MeV/c^{2}");//Candidates/(1 MeV/c^{2})
     dptotalcuthist->SetMinimum(100);//make minimum 100 so logy doesnt break, make 100 or better viewing
     dptotalcuthist->GetYaxis()->SetTitleFont(43);
-	dptotalcuthist->GetYaxis()->SetTitleSize(30);
+	dptotalcuthist->GetYaxis()->SetTitleSize(50);
 	dptotalcuthist->GetYaxis()->CenterTitle(true);
+	dptotalcuthist->GetYaxis()->SetTitleOffset(1.3);
     dptotalcuthist->GetXaxis()->SetTitle("m(K^{+}K^{-}#pi^{+}) [MeV]");//"m(K^{+}K^{-}#pi^{+}) [MeV]"
     dptotalcuthist->GetXaxis()->SetTitleFont(43);
-	dptotalcuthist->GetXaxis()->SetTitleSize(33);
+	dptotalcuthist->GetXaxis()->SetTitleSize(50);
 	dptotalcuthist->GetXaxis()->CenterTitle(true);
-	dptotalcuthist->GetXaxis()->SetTitleOffset(1.3);
+	dptotalcuthist->GetXaxis()->SetTitleOffset(1.4);
 	dptotalcuthist->SetLineColor(kRed);
 	dptotalcuthist->SetLineWidth(5);
+	dptotalcuthist->GetXaxis()->SetLabelSize(50);
+	dptotalcuthist->GetXaxis()->SetLabelFont(43);
+	dptotalcuthist->GetYaxis()->SetLabelSize(50);
+	dptotalcuthist->GetYaxis()->SetLabelFont(43);
+
 
 auto dsptotalcuthist = dsp_cut.Fill<double>(TH1D("dsptotalcuthist","D^{+}_{(s)} #rightarrow K^{+}K^{-}#pi^{+}",nbins, binmin, binmax), {"Dsplus_MM"});//D^{+}_{s} #rightarrow K^{+}K^{-}#pi^{+} Cut and Fit
 	dsptotalcuthist->SetStats(0);
-    dsptotalcuthist->SetTitleFont(43);
-    dsptotalcuthist->SetTitleSize(33);
+	dsptotalcuthist->SetTitle("");//this is for no title for nsf plot
+    //dsptotalcuthist->SetTitleFont(43);
+    //dsptotalcuthist->SetTitleSize(33);
     dsptotalcuthist->GetYaxis()->SetTitle("Events / 1 MeV");//Candidates/(1 MeV/c^{2})
     dsptotalcuthist->SetMinimum(100);//make minimum 100 so logy doesnt break, make 100 or better viewing
     dsptotalcuthist->GetYaxis()->SetTitleFont(43);
-	dsptotalcuthist->GetYaxis()->SetTitleSize(30);
+	dsptotalcuthist->GetYaxis()->SetTitleSize(50);
 	dsptotalcuthist->GetYaxis()->CenterTitle(true);
+	dsptotalcuthist->GetYaxis()->SetTitleOffset(1.4);
     dsptotalcuthist->GetXaxis()->SetTitle("m(K^{+}K^{-}#pi^{+}) [MeV]");
     dsptotalcuthist->GetXaxis()->SetTitleFont(43);
-	dsptotalcuthist->GetXaxis()->SetTitleSize(33);
+	dsptotalcuthist->GetXaxis()->SetTitleSize(50);
 	dsptotalcuthist->GetXaxis()->CenterTitle(true);
 	dsptotalcuthist->GetXaxis()->SetTitleOffset(1.3);
 	dsptotalcuthist->SetLineColor(kBlue);
 	dsptotalcuthist->SetLineWidth(5);
+	dsptotalcuthist->GetXaxis()->SetLabelSize(50);
+	dsptotalcuthist->GetXaxis()->SetLabelFont(43);
+	dsptotalcuthist->GetYaxis()->SetLabelSize(50);
+	dsptotalcuthist->GetYaxis()->SetLabelFont(43);
 
 
 
-
-auto dpdsplegend = new TLegend(0.8,0.8,0.9,0.9);
+	//gStyle()->SetLegendTextSize(30);
+auto dpdsplegend = new TLegend(0.25,0.7,0.46,0.85);
+	//dpdsplegend->SetTextSize(30);
 	dpdsplegend->AddEntry(dptotalcuthist.GetPtr(), "D^{+}  Data ", "l");
 	dpdsplegend->AddEntry(dsptotalcuthist.GetPtr(), "D^{+}_{s}  Data", "l");
-
+	//dpentry->SetTextSize(30);
+	//dspentry->SetTextSize(30);
 
 
 auto linytotalpullcan = new TCanvas("linytotalpullcan", "linytotalpullcan", 1600, 1200);
 	linytotalpullcan->cd();
+	linytotalpullcan->SetLeftMargin(0.15);
+	linytotalpullcan->SetRightMargin(0.09);
+	linytotalpullcan->SetBottomMargin(0.15);
+/*
+		TPad *pad2 = new TPad("pad2", "pad2", 0,0,1,1);
+		pad2->Draw();
+		pad2->cd();
+*/
 	dsptotalcuthist->Draw();
 	dptotalcuthist->Draw("same");
 	dpdsplegend->Draw("same");
-linytotalpullcan->SaveAs("image/dp_dsp_liny_tightcuts-probnnx.png");
 
+linytotalpullcan->Update();
+
+linytotalpullcan->SaveAs("image/dp_dsp_nsf-plot_liny.png");
+/*
 auto logytotalpullcan = new TCanvas("logytotalpullcan", "logytotalpullcan", 1600, 1200);
 	logytotalpullcan->cd();
 		TPad *pad1 = new TPad("pad1","pad1",0,0,1,1);
@@ -139,8 +178,8 @@ auto logytotalpullcan = new TCanvas("logytotalpullcan", "logytotalpullcan", 1600
 	dsptotalcuthist->Draw();
 	dptotalcuthist->Draw("same");
 	dpdsplegend->Draw("same");
-logytotalpullcan->SaveAs("image/dp_dsp_logy_tightcuts-probnnx.png");
-
+logytotalpullcan->SaveAs("image/dp_dsp_nsf-plot_logy.png");
+*/
 
 
 
