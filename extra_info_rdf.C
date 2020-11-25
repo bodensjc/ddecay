@@ -10,16 +10,37 @@ EnableImplicitMT();
 
 
 //create rdataframe for dp, dsp magdown data
-
+/*
 RDataFrame dpdf("D2KKpi/DecayTree", {"/share/lazy/D2KKpi/dp2kkpi_magdown.root","/share/lazy/D2KKpi/dp2kkpi_magup.root"});
 RDataFrame dspdf("Dsp2KKpi/DecayTree", {"/share/lazy/D2KKpi/dsp2kkpi_magdown.root","/share/lazy/D2KKpi/dsp2kkpi_magup.root"});
-
+*/
 
 //smaller test sets
-/*
+
 RDataFrame dpdf("D2KKpi/DecayTree", "/share/lazy/D2KKpi/magdowndata/dp1.root");
 RDataFrame dspdf("Dsp2KKpi/DecayTree", "/share/lazy/D2KKpi/magdowndata/dsp01.root");
+
+
+
+
+//get and print number of entries
+/*
+auto dpdf_count = dpdf.Count();
+double dpdfEntries = *dpdf_count;
+cout << "Dp MagDown Raw Entries: " << dpdfEntries << endl;
 */
+
+//get and print column names
+auto colNames = dpdf.GetColumnNames();
+for (auto &&colName : colNames) std::cout << colName << std::endl;
+
+
+
+
+
+
+
+
 
 
 
@@ -50,7 +71,6 @@ auto cut_prob_5 = [] (double x) {return x>5 ;};
 auto cut_prob_0 = [] (double x) {return x>0 ;};
 auto cut_probnnx = [] (double x) {return x >= 0.70 ;};
 auto cut_pK_ambiguity = [] (double x) {return x> 10000 ;}; //10,000 MeV = 10GeV
-auto cut_dira = [] (double x) {return x>0.99995);
 
 
 
@@ -142,45 +162,6 @@ auto dsptotalcuthist = dsp_cut.Fill<double>(TH1D("dsptotalcuthist","D^{+}_{(s)} 
 	dsptotalcuthist->GetYaxis()->SetLabelFont(43);
 
 
-
-	//gStyle()->SetLegendTextSize(30);
-auto dpdsplegend = new TLegend(0.25,0.7,0.46,0.85);
-	//dpdsplegend->SetTextSize(30);
-	dpdsplegend->AddEntry(dptotalcuthist.GetPtr(), "D^{+}  Data ", "l");
-	dpdsplegend->AddEntry(dsptotalcuthist.GetPtr(), "D^{+}_{s}  Data", "l");
-	//dpentry->SetTextSize(30);
-	//dspentry->SetTextSize(30);
-
-
-auto linytotalpullcan = new TCanvas("linytotalpullcan", "linytotalpullcan", 1600, 1200);
-	linytotalpullcan->cd();
-	linytotalpullcan->SetLeftMargin(0.15);
-	linytotalpullcan->SetRightMargin(0.09);
-	linytotalpullcan->SetBottomMargin(0.15);
-/*
-		TPad *pad2 = new TPad("pad2", "pad2", 0,0,1,1);
-		pad2->Draw();
-		pad2->cd();
-*/
-	dsptotalcuthist->Draw();
-	dptotalcuthist->Draw("same");
-	dpdsplegend->Draw("same");
-
-linytotalpullcan->Update();
-
-linytotalpullcan->SaveAs("image/dp_dsp_nsf-plot_liny.png");
-/*
-auto logytotalpullcan = new TCanvas("logytotalpullcan", "logytotalpullcan", 1600, 1200);
-	logytotalpullcan->cd();
-		TPad *pad1 = new TPad("pad1","pad1",0,0,1,1);
-		pad1->Draw();
-		pad1->cd();
-		pad1->SetLogy();
-	dsptotalcuthist->Draw();
-	dptotalcuthist->Draw("same");
-	dpdsplegend->Draw("same");
-logytotalpullcan->SaveAs("image/dp_dsp_nsf-plot_logy.png");
-*/
 
 
 
