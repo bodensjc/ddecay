@@ -49,7 +49,7 @@ auto cut_prob_5 = [] (double x) {return x>5 ;};
 auto cut_prob_0 = [] (double x) {return x>5 ;};
 auto cut_probnnx = [] (double x) {return x >= 0.70 ;};
 auto cut_pK_ambiguity = [] (double x) {return x> 10000 ;}; //10,000 MeV = 10GeV
-auto cut_dira = [] (double x) {return  x > 0.99995;};
+auto cut_dira = [] (double x) {return  x > 0.99999;};
 
 
 
