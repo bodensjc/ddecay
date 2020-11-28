@@ -29,7 +29,7 @@ const double philowerbound = (1019.455-phi_pm)*(1019.455-phi_pm)/1000000;
 
 const int binmin = 1880;//1790 absolute minimum for dp
 const int binmax = 2050;//1950 absolute minimum for dp
-const int nbins = binmax-binmin;
+const int nbins = (binmax-binmin)/5;
 
 
 
