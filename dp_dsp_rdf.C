@@ -50,7 +50,7 @@ auto cut_prob_5 = [] (double x) {return x>5 ;};
 auto cut_prob_0 = [] (double x) {return x>0 ;};
 auto cut_probnnx = [] (double x) {return x >= 0.70 ;};
 auto cut_pK_ambiguity = [] (double x) {return x> 10000 ;}; //10,000 MeV = 10GeV
-auto cut_dira = [] (double x) {return x>0.99995);
+auto cut_dira = [] (double x) {return x>0.99999);
 
 
 
@@ -68,7 +68,9 @@ auto dp_cut = dpdf.Filter(cut_ipchi2, {"Dplus_IPCHI2_OWNPV"})
 				   .Define("ProbNNx", probNNx_func, {"Kminus_MC15TuneV1_ProbNNk", "Kplus_MC15TuneV1_ProbNNk", "Piplus_MC15TuneV1_ProbNNpi"})
 				   .Filter(cut_probnnx, {"ProbNNx"})
 				   .Define("mkpkm", inv_m_func, {"Kplus_PX", "Kplus_PY", "Kplus_PZ", "Kplus_PE", "Kminus_PX", "Kminus_PY", "Kminus_PZ", "Kminus_PE"})
-				   .Filter(cut_phi, {"mkpkm"});
+				   .Filter(cut_phi, {"mkpkm"})
+				   .Filter(cut_dira, {"Dplus_DIRA_OWNPV"});
+
 
 auto dsp_cut = dspdf.Filter(cut_ipchi2, {"Dsplus_IPCHI2_OWNPV"})
 				   .Filter(cut_fdchi2, {"Dsplus_FDCHI2_OWNPV"})
@@ -84,7 +86,8 @@ auto dsp_cut = dspdf.Filter(cut_ipchi2, {"Dsplus_IPCHI2_OWNPV"})
 				   .Define("ProbNNx", probNNx_func, {"Kminus_MC15TuneV1_ProbNNk", "Kplus_MC15TuneV1_ProbNNk", "Piplus_MC15TuneV1_ProbNNpi"})
 				   .Filter(cut_probnnx, {"ProbNNx"})
 				   .Define("mkpkm", inv_m_func, {"Kplus_PX", "Kplus_PY", "Kplus_PZ", "Kplus_PE", "Kminus_PX", "Kminus_PY", "Kminus_PZ", "Kminus_PE"})
-				   .Filter(cut_phi, {"mkpkm"});
+				   .Filter(cut_phi, {"mkpkm"})
+				   .Filter(cut_dira, {"Dsplus_DIRA_OWNPV"});
 
 
 
