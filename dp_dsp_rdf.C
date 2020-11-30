@@ -50,7 +50,7 @@ auto cut_prob_5 = [] (double x) {return x>5 ;};
 auto cut_prob_0 = [] (double x) {return x>0 ;};
 auto cut_probnnx = [] (double x) {return x >= 0.70 ;};
 auto cut_pK_ambiguity = [] (double x) {return x> 10000 ;}; //10,000 MeV = 10GeV
-auto cut_dira = [] (double x) {return x>0.99999);
+auto cut_dira = [] (double x) {return x>0.99999;};
 
 
 
@@ -146,33 +146,29 @@ auto dsptotalcuthist = dsp_cut.Fill<double>(TH1D("dsptotalcuthist","D^{+}_{(s)} 
 
 
 
-	//gStyle()->SetLegendTextSize(30);
-auto dpdsplegend = new TLegend(0.25,0.7,0.46,0.85);
-	//dpdsplegend->SetTextSize(30);
-	dpdsplegend->AddEntry(dptotalcuthist.GetPtr(), "D^{+}  Data ", "l");
-	dpdsplegend->AddEntry(dsptotalcuthist.GetPtr(), "D^{+}_{s}  Data", "l");
-	//dpentry->SetTextSize(30);
-	//dspentry->SetTextSize(30);
+auto dpdsplegendlogy = new TLegend(0.7,0.75,0.9,0.9);;
+	dpdsplegendlogy->AddEntry(dptotalcuthist.GetPtr(), "D^{+}  Data ", "l");
+	dpdsplegendlogy->AddEntry(dsptotalcuthist.GetPtr(), "D^{+}_{s}  Data", "l");
 
 
+auto dpdsplegendliny = new TLegend(0.25,0.7,0.46,0.85);
+	dpdsplegendliny->AddEntry(dptotalcuthist.GetPtr(), "D^{+}  Data ", "l");
+	dpdsplegendliny->AddEntry(dsptotalcuthist.GetPtr(), "D^{+}_{s}  Data", "l");
+
+/*
 auto linytotalpullcan = new TCanvas("linytotalpullcan", "linytotalpullcan", 1600, 1200);
 	linytotalpullcan->cd();
 	linytotalpullcan->SetLeftMargin(0.15);
 	linytotalpullcan->SetRightMargin(0.09);
 	linytotalpullcan->SetBottomMargin(0.15);
-/*
-		TPad *pad2 = new TPad("pad2", "pad2", 0,0,1,1);
-		pad2->Draw();
-		pad2->cd();
-*/
 	dsptotalcuthist->Draw();
 	dptotalcuthist->Draw("same");
 	dpdsplegend->Draw("same");
 
 linytotalpullcan->Update();
 
-linytotalpullcan->SaveAs("image/dp_dsp_nsf-plot_liny.png");
-/*
+linytotalpullcan->SaveAs("image/dp_dsp_nsf-plot_dira_liny.png");
+*/
 auto logytotalpullcan = new TCanvas("logytotalpullcan", "logytotalpullcan", 1600, 1200);
 	logytotalpullcan->cd();
 		TPad *pad1 = new TPad("pad1","pad1",0,0,1,1);
@@ -181,9 +177,9 @@ auto logytotalpullcan = new TCanvas("logytotalpullcan", "logytotalpullcan", 1600
 		pad1->SetLogy();
 	dsptotalcuthist->Draw();
 	dptotalcuthist->Draw("same");
-	dpdsplegend->Draw("same");
-logytotalpullcan->SaveAs("image/dp_dsp_nsf-plot_logy.png");
-*/
+	dpdsplegendlogy->Draw("same");
+logytotalpullcan->SaveAs("image/dp_dsp_nsf-plot_dira_logy.png");
+
 
 
 

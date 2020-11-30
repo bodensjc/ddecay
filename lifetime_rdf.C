@@ -10,8 +10,11 @@ EnableImplicitMT();
 
 
 //create rdataframe for dp magdown data
-RDataFrame dpdf("D2KKpi/DecayTree", "/share/lazy/D2KKpi/magdowndata/dp1.root");
-RDataFrame dspdf("Dsp2KKpi/DecayTree", "/share/lazy/D2KKpi/magdowndata/dsp01.root");
+//RDataFrame dpdf("D2KKpi/DecayTree", "/share/lazy/D2KKpi/magdowndata/dp1.root");
+//RDataFrame dspdf("Dsp2KKpi/DecayTree", "/share/lazy/D2KKpi/magdowndata/dsp01.root");
+
+RDataFrame dpdf("D2KKpi/DecayTree", {"/share/lazy/D2KKpi/dp2kkpi_magdown.root","/share/lazy/D2KKpi/dp2kkpi_magup.root"});
+RDataFrame dspdf("Dsp2KKpi/DecayTree", {"/share/lazy/D2KKpi/dsp2kkpi_magdown.root","/share/lazy/D2KKpi/dsp2kkpi_magup.root"});
 
 
 const double phi_pm = 12;
@@ -21,7 +24,7 @@ const double philowerbound = (1019.455-phi_pm)*(1019.455-phi_pm)/1000000;
 const int binmin = 1880;//1790 absolute minimum for dp
 const int binmax = 2050;//1950 absolute minimum for dp
 //const int nbins = (binmax-binmin)/5;
-const int nbins = 500;
+const int nbins = 100;
 
 const int cc = 299792458;//speed of light in m/s
 
@@ -141,7 +144,7 @@ auto dsplifetimecan = new TCanvas("dsplifetimecan", "dsplifetimecan", 1600, 1200
 	dsplifetimehist->Draw();
 	dplifetimehist->Draw("same");
 	dpdsplegend->Draw("same");
-dsplifetimecan->SaveAs("image/lifetime_dp_dsp_logy.png");
+dsplifetimecan->SaveAs("image/lifetime_dp_dsp_cut_logy.png");
 
 
 
