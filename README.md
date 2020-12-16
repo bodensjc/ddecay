@@ -1,6 +1,8 @@
 # LHCb Research
 ## Data collection repository
-Research measuring mass difference between D+ and Ds+ mesons. This repository includes relevant ntuple options, ganga jobs, and related lfn files. For root/analysis files, see: https://github.com/bodensjc/ddecay
+Research measuring mass difference between D+ and Ds+ mesons. This repository includes relevant ntuple options, ganga jobs, and related lfn files. 
+
+For more information on how this data is used, see: https://github.com/bodensjc/ddecay
 
 
 Some relevant links: 
