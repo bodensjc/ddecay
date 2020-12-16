@@ -3,7 +3,10 @@
 Research measuring mass difference between D+ and Ds+ mesons. This repository includes relevant ntuple options, ganga jobs, and related lfn files. For root/analysis files, see: https://github.com/bodensjc/ddecay
 
 
-Some relevant links: https://arxiv.org/pdf/hep-ex/0501075.pdf, https://journals.aps.org/prd/pdf/10.1103/PhysRevD.98.056021, http://hyperphysics.phy-astr.gsu.edu/hbase/Particles/dmeson.html
+Some relevant links: 
+ * [Precision measurement of D meson mass differences](https://arxiv.org/pdf/1304.6865.pdf "d meson mass differences")
+ * [D+ → K−K+π+](https://arxiv.org/pdf/hep-ex/0501075.pdf "D -> KKpi")
+ * [LHCb StarterKit Lessons](https://lhcb.github.io/starterkit-lessons/ "lhcb starterkit")
 
 
 
