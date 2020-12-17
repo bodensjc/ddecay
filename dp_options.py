@@ -24,9 +24,16 @@ dtt.addTupleTool('TupleToolPrimaries')
 ##  7950mm
 ##  8630mm
 ##  9315mm
-TupleToolTrackPosition = TupleToolTrackPosition('TupleToolTrackPosition')
-TupleToolTrackPosition.Z = 8630
-dtt.addTupleTool('TupleToolTrackPosition')
+#TupleToolTrackPosition = TupleToolTrackPosition('TupleToolTrackPosition')
+#TupleToolTrackPosition.Z = 8630
+#dtt.addTupleTool('TupleToolTrackPosition')
+
+
+#another method
+track_position_tool = dtt.addTupleTool('TupleToolTrackPosition')
+track_position_tool.Z = 8630
+
+
 
 dtt.addBranches({
         'Dplus' : '([D+ -> K- K+ pi+]CC)',
