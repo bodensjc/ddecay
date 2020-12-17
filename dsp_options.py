@@ -1,5 +1,5 @@
 from GaudiConf import IOHelper
-from Configurables import DaVinci, DecayTreeTuple
+from Configurables import DaVinci, DecayTreeTuple,TupleToolTrackPosition
 from DecayTreeTuple.Configuration import *
 
 stream = 'Charmspec'#Charmcharged no work
@@ -12,12 +12,30 @@ track_tool = dtt.addTupleTool('TupleToolTrackInfo')
 track_tool.Verbose = True
 dtt.addTupleTool('TupleToolPrimaries')
 
+#I believe these five are included in Primaries
+#dtt.addTupleTool('TupleToolGeometry')
+#dtt.addTupleTool('TupleToolKinematic')
+#dtt.addTupleTool('TupleToolPid')
+#dtt.addTupleTool('TupleToolANNPid')
+#dtt.addTupleTool('TupleToolEventInfo')
+
+## from Michel De Cian 151213
+##  The positions of the T stations are (about):
+##  7950mm
+##  8630mm
+##  9315mm
+TupleToolTrackPosition = TupleToolTrackPosition('TupleToolTrackPosition')
+TupleToolTrackPosition.Z = 8630
+dtt.addTupleTool('TupleToolTrackPosition')
+
 dtt.addBranches({
         'Dsplus' : '([D_s+ -> K- K+ pi+]CC)',
         'Kminus' : '([D_s+ -> ^K- K+ pi+]CC)',
         'Kplus' : '([D_s+ -> K- ^K+ pi+]CC)',
         'Piplus' : '([D_s+ -> K- K+ ^pi+]CC)'
 })
+
+dtt.Dsplus.addTupleTool('TupleToolPropertime')
 
 DaVinci().UserAlgorithms += [dtt]
 

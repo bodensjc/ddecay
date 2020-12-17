@@ -37,7 +37,6 @@ dtt.addBranches({
 
 dtt.Dplus.addTupleTool('TupleToolPropertime')
 
-
 DaVinci().UserAlgorithms += [dtt]
 
 DaVinci().Turbo = True
