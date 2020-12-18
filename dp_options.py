@@ -28,12 +28,9 @@ dtt.addTupleTool('TupleToolPrimaries')
 #TupleToolTrackPosition.Z = 8630
 #dtt.addTupleTool('TupleToolTrackPosition')
 
-
 #another method
 track_position_tool = dtt.addTupleTool('TupleToolTrackPosition')
 track_position_tool.Z = 8630
-
-
 
 dtt.addBranches({
         'Dplus' : '([D+ -> K- K+ pi+]CC)',
@@ -51,7 +48,7 @@ DaVinci().RootInTES = '/Event/Charmcharged/Turbo'#Charmspec doesnt work
 DaVinci().InputType = 'MDST'
 #DaVinci().DDDBtag = 'dddb-20171030-3'
 DaVinci().Simulation = False
-DaVinci().TupleFile = 'Dp2KKpiMagUp.root'
+DaVinci().TupleFile = 'Dp2KKpiMagDown.root'
 DaVinci().PrintFreq = 50000
 DaVinci().DataType = '2017'
 DaVinci().Lumi = False
