@@ -29,8 +29,8 @@ const double phiupperbound = (1019.455+phi_pm)*(1019.455+phi_pm)/1000000;
 const double philowerbound = (1019.455-phi_pm)*(1019.455-phi_pm)/1000000; 
 
 
-const double taubinmin = 0;//
-const double taubinmax = 0.01;//
+const double taubinmin = 0;
+const double taubinmax = 0.005;
 const int nbins = 100;
 
 
@@ -54,6 +54,8 @@ auto cut_dira = [] (double x) {return x>0.99999 ;};
 
 auto signalregion = [](double x) {return ((x > 1855) && (x < 1885)) ;};
 auto backgroundregion = [](double x) {return ((x>1810 && x < 1840) || (x > 1900 && x < 1930)) ;};
+auto rightbackgroundregion = [](double x) {return (x > 1900 && x < 1950) ;};
+auto leftbackgroundregion = [](double x) {return (x > 1790 && x < 1840) ;};
 
 
 auto dp_cut = dpdf.Filter(cut_ipchi2, {"Dplus_IPCHI2_OWNPV"})
@@ -76,14 +78,18 @@ auto dp_cut = dpdf.Filter(cut_ipchi2, {"Dplus_IPCHI2_OWNPV"})
 
 
 
-auto dp_sig_df = dpdf.Filter(signalregion, {"Dplus_MM"});
-auto dp_bg_df = dpdf.Filter(backgroundregion, {"Dplus_MM"});
+auto dp_sig_df = dp_cut.Filter(signalregion, {"Dplus_MM"});
+auto dp_bgd_df = dp_cut.Filter(backgroundregion, {"Dplus_MM"});
+auto dp_left = dp_cut.Filter(leftbackgroundregion, {"Dplus_MM"});
+auto dp_right = dp_cut.Filter(rightbackgroundregion, {"Dplus_MM"});
+
+
+//Tau tests
 
 /*
-//Tau tests
 auto dptaucan = new TCanvas("dptaucan", "dptaucan", 1200, 800);
 	dptaucan->cd();
-auto dptausighist = dp_sig_df.Fill<double>(TH1D("signalhist","D+ sample #tau",nbins, taubinmin, taubinmax), {"Dplus_TAU"});
+auto dptausighist = dp_sig_df.Fill<double>(TH1D("signalhist","D+ sample #tau, cut",nbins, taubinmin, taubinmax), {"Dplus_TAU"});
 	dptausighist->SetStats(0);
 	dptausighist->SetTitleFont(43);
 	dptausighist->SetTitleSize(35);
@@ -98,28 +104,33 @@ auto dptausighist = dp_sig_df.Fill<double>(TH1D("signalhist","D+ sample #tau",nb
 	dptausighist->GetXaxis()->SetTitleOffset(1.2);
 	dptausighist->SetLineColor(kRed);
 	dptausighist->SetLineWidth(3);
-auto dptaubgdhist = dp_bg_df.Fill<double>(TH1D("bgdhist","D+ sample #tau",nbins, taubinmin, taubinmax), {"Dplus_TAU"});
+
+auto dptaubgdhist = dp_bgd_df.Fill<double>(TH1D("bgdhist","D+ sample #tau",nbins, taubinmin, taubinmax), {"Dplus_TAU"});
 	dptaubgdhist->SetStats(0);
-	dptaubgdhist->SetTitleFont(43);
-	dptaubgdhist->SetTitleSize(35);
-	dptaubgdhist->GetYaxis()->SetTitle("events per bin");
-	dptaubgdhist->GetYaxis()->SetTitleFont(43);
-	dptaubgdhist->GetYaxis()->SetTitleSize(30);
-	dptaubgdhist->GetYaxis()->CenterTitle(true);
-	dptaubgdhist->GetXaxis()->SetTitle("decay time (ns)");
-	dptaubgdhist->GetXaxis()->SetTitleFont(43);
-	dptaubgdhist->GetXaxis()->SetTitleSize(25);
-	dptaubgdhist->GetXaxis()->CenterTitle(true);
-	dptaubgdhist->GetXaxis()->SetTitleOffset(1.2);
 	dptaubgdhist->SetLineColor(kBlue);
 	dptaubgdhist->SetLineWidth(3);
+
+auto dptaulefthist = dp_left.Fill<double>(TH1D("dptaulefthist","D+ sample #tau, cut",nbins, taubinmin, taubinmax), {"Dplus_TAU"});
+	dptaulefthist->SetStats(0);
+	dptaulefthist->SetLineColor(kBlue);
+	dptaulefthist->SetLineWidth(3);
+
+auto dptaurighthist = dp_right.Fill<double>(TH1D("bgdhist","D+ sample #tau, cut",nbins, taubinmin, taubinmax), {"Dplus_TAU"});
+	dptaurighthist->SetStats(0);
+	dptaurighthist->SetLineColor(kGreen + 2);
+	dptaurighthist->SetLineWidth(3);
+
 auto taulegend = new TLegend(0.7,0.8,0.9,0.9);
 	taulegend->AddEntry(dptausighist.GetPtr(), "Signal Region", "lp");
-	taulegend->AddEntry(dptaubgdhist.GetPtr(), "Background Region", "lp");
+	//taulegend->AddEntry(dptaubgdhist.GetPtr(), "Background Region", "lp");
+	taulegend->AddEntry(dptaulefthist.GetPtr(), "Left Background", "lp");
+	taulegend->AddEntry(dptaurighthist.GetPtr(), "Right Background", "lp");
+
 dptausighist->Draw("");
-dptaubgdhist->Draw("same");
+dptaulefthist->Draw("same");
+dptaurighthist->Draw("same");
 taulegend->Draw("same");
-dptaucan->SaveAs("image/dp_tau_sigbg_cut.png");
+dptaucan->SaveAs("image/dp_tau_cut.png");
 */
 
 
@@ -129,7 +140,7 @@ dptaucan->SaveAs("image/dp_tau_sigbg_cut.png");
 
 //particle_x, particle_y
 
-
+/*
 auto pip_pos = dpdf.Fill<double, double>(TH2D("pip_pos", "#pi^{+} _X, _Y (uncut sample)",100,-3000,3000,100,-3000,3000), {"Piplus_X","Piplus_Y"});
 	pip_pos->SetStats(0);
 	pip_pos->GetXaxis()->SetTitle("Piplus_X");
@@ -139,8 +150,7 @@ pip_pos_can = new TCanvas("pip_pos_can", "pip_pos_can", 1000, 800);
 	pip_pos_can->SetLeftMargin(0.15);
 	pip_pos_can->cd();
 pip_pos->Draw("colz");
-pip_pos_can->SaveAs("image/dp_XY_sample_uncut_pip.png");
-
+pip_pos_can->SaveAs("image/dp_XY_uncut_pip.png");
 
 
 auto kp_pos = dpdf.Fill<double, double>(TH2D("kp_pos", "K^{+} _X, _Y (uncut sample)",100,-3000,3000,100,-3000,3000), {"Kplus_X","Kplus_Y"});
@@ -152,8 +162,7 @@ kp_pos_can = new TCanvas("kp_pos_can", "kp_pos_can", 1000, 800);
 	kp_pos_can->SetLeftMargin(0.15);
 	kp_pos_can->cd();
 kp_pos->Draw("colz");
-kp_pos_can->SaveAs("image/dp_XY_sample_uncut_kp.png");
-
+kp_pos_can->SaveAs("image/dp_XY_uncut_kp.png");
 
 
 auto km_pos = dpdf.Fill<double, double>(TH2D("km_pos", "K^{-} _X, _Y (uncut sample)",100,-3000,3000,100,-3000,3000), {"Kminus_X","Kminus_Y"});
@@ -165,9 +174,9 @@ km_pos_can = new TCanvas("km_pos_can", "km_pos_can", 1000, 800);
 	km_pos_can->SetLeftMargin(0.15);
 	km_pos_can->cd();
 km_pos->Draw("colz");
-km_pos_can->SaveAs("image/dp_XY_sample_uncut_km.png");
+km_pos_can->SaveAs("image/dp_XY_uncut_km.png");
 
-
+*/
 
 
 
