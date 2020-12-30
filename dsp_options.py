@@ -2,7 +2,7 @@ from GaudiConf import IOHelper
 from Configurables import DaVinci, DecayTreeTuple,TupleToolTrackPosition
 from DecayTreeTuple.Configuration import *
 
-stream = 'Charmspec'#Charmcharged no work
+stream = 'Charmspec'#Charmcharged doesnt work
 line = 'Hlt2CharmHadDspToKmKpPipTurbo'
 
 dtt = DecayTreeTuple('Dsp2KKpi')
@@ -24,9 +24,8 @@ dtt.addTupleTool('TupleToolPrimaries')
 ##  7950mm
 ##  8630mm
 ##  9315mm
-TupleToolTrackPosition = TupleToolTrackPosition('TupleToolTrackPosition')
-TupleToolTrackPosition.Z = 8630
-dtt.addTupleTool('TupleToolTrackPosition')
+track_position_tool = dtt.addTupleTool('TupleToolTrackPosition')
+track_position_tool.Z = 8630
 
 dtt.addBranches({
         'Dsplus' : '([D_s+ -> K- K+ pi+]CC)',
