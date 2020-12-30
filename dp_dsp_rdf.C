@@ -109,7 +109,7 @@ auto dptotalcuthist = dp_cut.Fill<double>(TH1D("dptotalcuthist","D^{+}_{(s)} #ri
     dptotalcuthist->SetTitleFont(43);
     dptotalcuthist->SetTitleSize(33);
     dptotalcuthist->GetYaxis()->SetTitle("Events / 1 MeV/c^{2}");//Candidates/(1 MeV/c^{2})
-    dptotalcuthist->SetMinimum(100);//make minimum 100 so logy doesnt break, make 100 or better viewing
+    dptotalcuthist->SetMinimum(100);//make minimum 100 so logy doesnt break, make 100 for better viewing
     dptotalcuthist->GetYaxis()->SetTitleFont(43);
 	dptotalcuthist->GetYaxis()->SetTitleSize(35);
 	dptotalcuthist->GetYaxis()->CenterTitle(true);
@@ -134,7 +134,7 @@ auto dsptotalcuthist = dsp_cut.Fill<double>(TH1D("dsptotalcuthist","D^{+}_{(s)} 
     dsptotalcuthist->SetTitleFont(43);
     dsptotalcuthist->SetTitleSize(33);
     dsptotalcuthist->GetYaxis()->SetTitle("Events / 1 MeV");//Candidates/(1 MeV/c^{2})
-    dsptotalcuthist->SetMinimum(100);//make minimum 100 so logy doesnt break, make 100 or better viewing
+    dsptotalcuthist->SetMinimum(100);//make minimum 100 so logy doesnt break, make 100 for better viewing
     dsptotalcuthist->GetYaxis()->SetTitleFont(43);
 	dsptotalcuthist->GetYaxis()->SetTitleSize(35);
 	dsptotalcuthist->GetYaxis()->CenterTitle(true);

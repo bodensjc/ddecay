@@ -10,7 +10,7 @@ EnableImplicitMT();
 
 
 //create rdataframe for dp magdown data
-RDataFrame dpdf("D2KKpi/DecayTree", "/share/lazy/D2KKpi/test/dptest1.root");
+RDataFrame dpdf("D2KKpi/DecayTree", {"/share/lazy/D2KKpi/dpmagdown_dec20.root","/share/lazy/D2KKpi/dpmagup_dec20.root"});
 
 //get and print number of entries
 /*
@@ -140,8 +140,8 @@ dptaucan->SaveAs("image/dp_tau_cut.png");
 
 //particle_x, particle_y
 
-/*
-auto pip_pos = dpdf.Fill<double, double>(TH2D("pip_pos", "#pi^{+} _X, _Y (uncut sample)",100,-3000,3000,100,-3000,3000), {"Piplus_X","Piplus_Y"});
+
+auto pip_pos = dpdf.Fill<double, double>(TH2D("pip_pos", "#pi^{+} _X, _Y (uncut sample)",300,-3000,3000,300,-3000,3000), {"Piplus_X","Piplus_Y"});
 	pip_pos->SetStats(0);
 	pip_pos->GetXaxis()->SetTitle("Piplus_X");
 	pip_pos->GetYaxis()->SetTitle("Piplus_Y");
@@ -153,7 +153,7 @@ pip_pos->Draw("colz");
 pip_pos_can->SaveAs("image/dp_XY_uncut_pip.png");
 
 
-auto kp_pos = dpdf.Fill<double, double>(TH2D("kp_pos", "K^{+} _X, _Y (uncut sample)",100,-3000,3000,100,-3000,3000), {"Kplus_X","Kplus_Y"});
+auto kp_pos = dpdf.Fill<double, double>(TH2D("kp_pos", "K^{+} _X, _Y (uncut sample)",300,-3000,3000,300,-3000,3000), {"Kplus_X","Kplus_Y"});
 	kp_pos->SetStats(0);
 	kp_pos->GetXaxis()->SetTitle("Kplus_X");
 	kp_pos->GetYaxis()->SetTitle("Kplus_Y");
@@ -165,7 +165,7 @@ kp_pos->Draw("colz");
 kp_pos_can->SaveAs("image/dp_XY_uncut_kp.png");
 
 
-auto km_pos = dpdf.Fill<double, double>(TH2D("km_pos", "K^{-} _X, _Y (uncut sample)",100,-3000,3000,100,-3000,3000), {"Kminus_X","Kminus_Y"});
+auto km_pos = dpdf.Fill<double, double>(TH2D("km_pos", "K^{-} _X, _Y (uncut sample)",300,-3000,3000,300,-3000,3000), {"Kminus_X","Kminus_Y"});
 	km_pos->SetStats(0);
 	km_pos->GetXaxis()->SetTitle("Kminus_X");
 	km_pos->GetYaxis()->SetTitle("Kminus_Y");
@@ -176,7 +176,7 @@ km_pos_can = new TCanvas("km_pos_can", "km_pos_can", 1000, 800);
 km_pos->Draw("colz");
 km_pos_can->SaveAs("image/dp_XY_uncut_km.png");
 
-*/
+
 
 
 
