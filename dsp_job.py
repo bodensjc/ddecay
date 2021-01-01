@@ -1,4 +1,4 @@
-j = Job(name='dsp_up_12-30:0') #"mm-dd:run"
+j = Job(name='dsp_up_1-1:0') #"mm-dd:run"
 #only need below line if its first time running with DaVinci version
 #myApp = prepareGaudiExec('DaVinci', 'v45r1', myPath='.')
 
