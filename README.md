@@ -20,12 +20,12 @@ $ lb-dirac bash --norc
 $ lhcb-proxy-init
 ```
 
-2. get a list of lfns older than d days, this will output "lhcb-user-u-username.lfns" into current directory
+2. get a list of lfns older than d days, this will output "lhcb-user-u-username.lfns" into current directory ("u-username" in my case is j-jbodensc)
 ```
 $ dirac-dms-user-lfns --Days=d
 ```
 
-3. (optional) if you need to get rid of older data, run the above command isolating all data older than d days, then run the following ocmmand to remove these lfns. WARNING: they are not going to come back
+3. (optional) if you need to get rid of older data, run the above command isolating all data older than d days, then run the following command to remove these lfns. WARNING: they are not going to come back
 ```
 $ dirac-dms-remove-files --File=lhcb-user-u-username.lfns
 ```
