@@ -30,8 +30,11 @@ $ dirac-dms-user-lfns --Days=d
 $ dirac-dms-remove-files --File=lhcb-user-u-username.lfns
 ```
 
-4. get the access URLs to the lfns, this can then be put through the parder then scrdp'd into ntubles that can be rsync'd from uc to cern
+4. get the access URLs to the lfns, run the below command with your file containing the LFNs
 ```
 $dirac-dms-lfn-accessURL --File=lhcb-user-u-username.lfns > somefilename.txt 
 ```
+
+5. Now run the "somefilename.txt" through a parser, selesting the accessURLs. Then these can hadd'd on lxplus, then rsync'd to UC from CERN.
+
 
