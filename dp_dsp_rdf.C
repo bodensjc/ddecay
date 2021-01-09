@@ -47,7 +47,7 @@ auto lifetime_func = [cc](double fd, double m, double p) {return (fd*m)/(p*cc*(1
 auto cut_ipchi2 = [](double x) {return x < 4 ;};//5 for regular cut
 auto cut_fdchi2 = [](double x) {return x > 225 ;};//175 for regular cut
 auto cut_endvertexchi2 = [](double x) {return x < 9 ;};
-auto cut_phi = [phiupperbound, philowerbound](double x) {return x > philowerbound && x < phiupperbound ;};
+auto cut_phi = [&phiupperbound, &philowerbound](double x) {return x > philowerbound && x < phiupperbound ;};
 auto cut_prob_5 = [] (double x) {return x>5 ;};
 auto cut_prob_0 = [] (double x) {return x>0 ;};
 auto cut_probnnx = [] (double x) {return x >= 0.70 ;};

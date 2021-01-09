@@ -1,6 +1,4 @@
-
 #include <TMath.h>
-
 #include <Math/ProbFuncMathCore.h>
 #include <Math/PdfFuncMathCore.h> 
 //comes from share/lazy/Nov17Code/lhcb_correction/Trigger_DTF_10Feb/fit0p5MeV_GaussianPlusCBWithExp.c
