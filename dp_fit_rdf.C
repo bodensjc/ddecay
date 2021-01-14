@@ -8,7 +8,7 @@
 using namespace std;
 using namespace ROOT;
 
-EnableImplicitMT();
+//EnableImplicitMT();
 
 
 //create rdataframe for dp data
@@ -154,6 +154,7 @@ auto linytotalpullcan = new TCanvas("linytotalpullcan", "linytotalpullcan", 1600
 	linytotalpullcan->SetLeftMargin(0.15);
 	linytotalpullcan->SetRightMargin(0.09);
 	linytotalpullcan->SetBottomMargin(0.15);
+
 	dptotalcuthist->Fit(myDpFit,"R");
 	dptotalcuthist->Draw();
 	dplegendliny->Draw("same");
