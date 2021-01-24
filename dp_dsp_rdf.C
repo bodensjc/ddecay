@@ -11,14 +11,14 @@ EnableImplicitMT();
 
 //create rdataframe for dp, dsp magdown data
 
-RDataFrame dpdf("D2KKpi/DecayTree", {"/share/lazy/D2KKpi/dp2kkpi_magdown.root","/share/lazy/D2KKpi/dp2kkpi_magup.root"});
-RDataFrame dspdf("Dsp2KKpi/DecayTree", {"/share/lazy/D2KKpi/dsp2kkpi_magdown.root","/share/lazy/D2KKpi/dsp2kkpi_magup.root"});
+RDataFrame dpdf("D2KKpi/DecayTree", {"/share/lazy/D2KKpi/dpmagup_dec20.root","/share/lazy/D2KKpi/dpmagdown_dec20.root"});
+RDataFrame dspdf("Dsp2KKpi/DecayTree", {"/share/lazy/D2KKpi/dspmagup_dec20.root","/share/lazy/D2KKpi/dspmagdown_dec20.root"});
 
 
 //smaller test sets
 /*
-RDataFrame dpdf("D2KKpi/DecayTree", "/share/lazy/D2KKpi/magdowndata/dp1.root");
-RDataFrame dspdf("Dsp2KKpi/DecayTree", "/share/lazy/D2KKpi/magdowndata/dsp01.root");
+RDataFrame dpdf("D2KKpi/DecayTree", "/share/lazy/D2KKpi/dp_data_dec20/dpmagup01.root");
+RDataFrame dspdf("Dsp2KKpi/DecayTree", "/share/lazy/D2KKpi/dsp_data_dec20/dspmagdown01.root");
 */
 
 
@@ -41,7 +41,7 @@ const int nbins = 100;
 auto inv_m_func = [](double px1, double py1, double pz1, double pe1, double px2, double py2, double pz2, double pe2) {return TLorentzVector(TLorentzVector(px1, py1, pz1, pe1)+TLorentzVector(px2, py2, pz2, pe2)).Mag2()/1000000 ;};
 auto prob_func = [](double prob1, double prob2) {return TMath::Log(prob1) - TMath::Log(prob2) ;};
 auto probNNx_func = [](double prob1, double prob2, double prob3) {return prob1*prob2*prob3 ;};
-auto lifetime_func = [cc](double fd, double m, double p) {return (fd*m)/(p*cc*(10^3)) ;};
+auto lifetime_func = [&cc](double fd, double m, double p) {return (fd*m)/(p*cc*(10^3)) ;};
 
 
 auto cut_ipchi2 = [](double x) {return x < 4 ;};//5 for regular cut
@@ -72,9 +72,9 @@ auto dp_cut = dpdf.Filter(cut_ipchi2, {"Dplus_IPCHI2_OWNPV"})
 				   .Define("ProbNNx", probNNx_func, {"Kminus_MC15TuneV1_ProbNNk", "Kplus_MC15TuneV1_ProbNNk", "Piplus_MC15TuneV1_ProbNNpi"})
 				   .Filter(cut_probnnx, {"ProbNNx"})
 				   .Define("mkpkm", inv_m_func, {"Kplus_PX", "Kplus_PY", "Kplus_PZ", "Kplus_PE", "Kminus_PX", "Kminus_PY", "Kminus_PZ", "Kminus_PE"})
-				   .Filter(cut_phi, {"mkpkm"})
-				   .Define("dp_lifetime", lifetime_func, {"Dplus_FD_OWNPV", "Dplus_MM", "Dplus_P"})
-				   .Filter(cut_tau, {"dp_lifetime"});
+				   .Filter(cut_phi, {"mkpkm"});
+//				   .Define("dp_lifetime", lifetime_func, {"Dplus_FD_OWNPV", "Dplus_MM", "Dplus_P"})
+//				   .Filter(cut_tau, {"dp_lifetime"});
 
 
 auto dsp_cut = dspdf.Filter(cut_ipchi2, {"Dsplus_IPCHI2_OWNPV"})
@@ -92,9 +92,9 @@ auto dsp_cut = dspdf.Filter(cut_ipchi2, {"Dsplus_IPCHI2_OWNPV"})
 				   .Define("ProbNNx", probNNx_func, {"Kminus_MC15TuneV1_ProbNNk", "Kplus_MC15TuneV1_ProbNNk", "Piplus_MC15TuneV1_ProbNNpi"})
 				   .Filter(cut_probnnx, {"ProbNNx"})
 				   .Define("mkpkm", inv_m_func, {"Kplus_PX", "Kplus_PY", "Kplus_PZ", "Kplus_PE", "Kminus_PX", "Kminus_PY", "Kminus_PZ", "Kminus_PE"})
-				   .Filter(cut_phi, {"mkpkm"})
-				   .Define("dsp_lifetime", lifetime_func, {"Dsplus_FD_OWNPV", "Dsplus_MM", "Dsplus_P"})
-			   	   .Filter(cut_tau, {"dsp_lifetime"});
+				   .Filter(cut_phi, {"mkpkm"});
+//				   .Define("dsp_lifetime", lifetime_func, {"Dsplus_FD_OWNPV", "Dsplus_MM", "Dsplus_P"})
+//			   	   .Filter(cut_tau, {"dsp_lifetime"});
 
 
 
@@ -108,7 +108,7 @@ auto dptotalcuthist = dp_cut.Fill<double>(TH1D("dptotalcuthist","D^{+}_{(s)} #ri
 	dptotalcuthist->SetStats(0);
     dptotalcuthist->SetTitleFont(43);
     dptotalcuthist->SetTitleSize(33);
-    dptotalcuthist->GetYaxis()->SetTitle("Events / 1 MeV/c^{2}");//Candidates/(1 MeV/c^{2})
+    dptotalcuthist->GetYaxis()->SetTitle("Events / 1 MeV");//Candidates/(1 MeV/c^{2})
     dptotalcuthist->SetMinimum(100);//make minimum 100 so logy doesnt break, make 100 for better viewing
     dptotalcuthist->GetYaxis()->SetTitleFont(43);
 	dptotalcuthist->GetYaxis()->SetTitleSize(35);
@@ -176,7 +176,7 @@ auto linytotalpullcan = new TCanvas("linytotalpullcan", "linytotalpullcan", 1600
 
 linytotalpullcan->Update();
 
-linytotalpullcan->SaveAs("image/dp_dsp_taucut_liny.png");
+linytotalpullcan->SaveAs("image/dp_dsp_liny.png");
 
 auto logytotalpullcan = new TCanvas("logytotalpullcan", "logytotalpullcan", 1600, 1200);
 	logytotalpullcan->cd();
@@ -187,7 +187,7 @@ auto logytotalpullcan = new TCanvas("logytotalpullcan", "logytotalpullcan", 1600
 	dsptotalcuthist->Draw();
 	dptotalcuthist->Draw("same");
 	dpdsplegendlogy->Draw("same");
-logytotalpullcan->SaveAs("image/dp_dsp_taucut_logy.png");
+logytotalpullcan->SaveAs("image/dp_dsp_logy.png");
 
 
 
