@@ -11,7 +11,8 @@ EnableImplicitMT(); //run in parallel!
 
 //create rdataframe for dp, dsp magdown data
 
-RDataFrame dpdf("D2KKpi/DecayTree", {"/share/lazy/D2KKpi/dpmagup_dec20.root","/share/lazy/D2KKpi/dpmagdown_dec20.root"});
+//RDataFrame dpdf("D2KKpi/DecayTree", {"/share/lazy/D2KKpi/dpmagup_dec20.root","/share/lazy/D2KKpi/dpmagdown_dec20.root"});
+RDataFrame dpdf("Dsp2KKpi/DecayTree", "/share/lazy/D2KKpi/dspmagdown_dec20.root");
 RDataFrame dspdf("Dsp2KKpi/DecayTree", {"/share/lazy/D2KKpi/dspmagup_dec20.root","/share/lazy/D2KKpi/dspmagdown_dec20.root"});
 
 
@@ -25,7 +26,7 @@ RDataFrame dspdf("Dsp2KKpi/DecayTree", "/share/lazy/D2KKpi/dsp_data_dec20/dspmag
 
 //get and print number of entries
 	
-	auto dpdf_count = dspdf.Count();
+	auto dpdf_count = dpdf.Count();
 	double dpdfEntries = *dpdf_count;
 	cout << "Raw Entries: " << dpdfEntries << endl;
 	
@@ -58,7 +59,7 @@ RDataFrame dspdf("Dsp2KKpi/DecayTree", "/share/lazy/D2KKpi/dsp_data_dec20/dspmag
 
 //information about OdinTCK - I believe the OdinTCK is the 
 
-	auto odinTCK = dspdf.Fill<unsigned int>(TH1D("odinTCK","D+ odin tck", 1300000, 290300000, 291600000), {"OdinTCK"});
+	auto odinTCK = dpdf.Fill<unsigned int>(TH1D("odinTCK","D+ odin tck", 1300000, 290300000, 291600000), {"OdinTCK"});
 	int xVals[1300000];
 	int tck[1300000];
 	int temp = 0;
