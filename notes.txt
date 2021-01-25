@@ -1,23 +1,36 @@
-to run a file on old (fast) data:
+TCK information:
+	All D+:
+		OdinTCK 114e17026 has 845795 entries.
+		OdinTCK 114e17030 has 444438 entries.
+		OdinTCK 115017030 has 5827866 entries.
+		OdinTCK 115017040 has 5833837 entries.
+		OdinTCK 115017050 has 24339655 entries.
+		OdinTCK 115017060 has 4666929 entries.
+		OdinTCK 115417070 has 17069760 entries.
+		OdinTCK 115417a70 has 100028 entries.
+		OdinTCK 115617070 has 59291497 entries.
+		OdinTCK 116017070 has 22155068 entries.
+		OdinTCK 116017080 has 25118499 entries.
+		OdinTCK 116117070 has 23961103 entries.
+		OdinTCK 116117080 has 33942010 entries.
+		OdinTCK 116117090 has 128917629 entries.
+			Total TCK counted entries: 352514114
+	All Ds+:
+		OdinTCK 114e17026 has 1197600 entries.
+		OdinTCK 114e17030 has 629308 entries.
+		OdinTCK 115017030 has 8261743 entries.
+		OdinTCK 115017040 has 8342386 entries.
+		OdinTCK 115017050 has 34387907 entries.
+		OdinTCK 115017060 has 6592163 entries.
+		OdinTCK 115417070 has 24180498 entries.
+		OdinTCK 115417a70 has 141106 entries.
+		OdinTCK 115617070 has 83996503 entries.
+		OdinTCK 116017070 has 31582384 entries.
+		OdinTCK 116017080 has 35837291 entries.
+		OdinTCK 116117070 has 33950950 entries.
+		OdinTCK 116117080 has 48232828 entries.
+		OdinTCK 116117090 has 184046525 entries.
+			Total TCK counted entries: 501379192
 
-ml root
-root -l /share/lazy/D2KKpi/old_data/D(s)p2KKpi.root
-_file0->cd("D(s)2KKpi_Tuple")
-DecayTree->Process("file.c")
 
 
-
-to run a file on new (slow) data:
-
-ml root
-root -l /share/lazy/D2KKpi/d(s)p2kkpi.root
-_file0->cd("D(sp)2KKpi")
-DecayTree->Process("file.c")
-
-
-
-
-to run an rdf file:
-$ ml root
-$ root -l
-$ .X filename.C
