@@ -1,4 +1,9 @@
 TCK information:
+
+Both of the following contain both magup and magdown data:
+*OdinTCK 115617070	*OdinTCK 116117090
+The rest are isolated.
+
 	All D+:
 		OdinTCK 114e17026 has 845795 entries.
 		OdinTCK 114e17030 has 444438 entries.
@@ -8,12 +13,12 @@ TCK information:
 		OdinTCK 115017060 has 4666929 entries.
 		OdinTCK 115417070 has 17069760 entries.
 		OdinTCK 115417a70 has 100028 entries.
-		OdinTCK 115617070 has 59291497 entries.
+		*OdinTCK 115617070 has 59291497 entries.
 		OdinTCK 116017070 has 22155068 entries.
 		OdinTCK 116017080 has 25118499 entries.
 		OdinTCK 116117070 has 23961103 entries.
 		OdinTCK 116117080 has 33942010 entries.
-		OdinTCK 116117090 has 128917629 entries.
+		*OdinTCK 116117090 has 128917629 entries.
 			Total TCK counted entries: 352514114
 	D+ magup:
 		OdinTCK 114e17026 has 845795 entries.
@@ -22,18 +27,18 @@ TCK information:
 		OdinTCK 115017040 has 5833837 entries.
 		OdinTCK 115017050 has 24339655 entries.
 		OdinTCK 115017060 has 4666929 entries.
-		OdinTCK 115617070 has 16397100 entries.
+		*OdinTCK 115617070 has 16397100 entries.
 		OdinTCK 116017070 has 22155068 entries.
 		OdinTCK 116017080 has 25118499 entries.
-		OdinTCK 116117090 has 66993974 entries.
+		*OdinTCK 116117090 has 66993974 entries.
 			Total TCK counted entries: 172623161
 	D+ magdown:
 		OdinTCK 115417076 has 17069760 entries.
 		OdinTCK 115417a70 has 100028 entries.
-		OdinTCK 115617070 has 42894397 entries.
+		*OdinTCK 115617070 has 42894397 entries.
 		OdinTCK 116117070 has 23961103 entries.
 		OdinTCK 116117080 has 33942010 entries.
-		OdinTCK 116117090 has 61923655 entries.
+		*OdinTCK 116117090 has 61923655 entries.
 			Total TCK counted entries: 179890953
 
 	All Ds+:
@@ -45,12 +50,12 @@ TCK information:
 		OdinTCK 115017060 has 6592163 entries.
 		OdinTCK 115417070 has 24180498 entries.
 		OdinTCK 115417a70 has 141106 entries.
-		OdinTCK 115617070 has 83996503 entries.
+		*OdinTCK 115617070 has 83996503 entries.
 		OdinTCK 116017070 has 31582384 entries.
 		OdinTCK 116017080 has 35837291 entries.
 		OdinTCK 116117070 has 33950950 entries.
 		OdinTCK 116117080 has 48232828 entries.
-		OdinTCK 116117090 has 184046525 entries.
+		*OdinTCK 116117090 has 184046525 entries.
 			Total TCK counted entries: 501379192
 	Ds+ magup:
 		OdinTCK 114e17026 has 1197600 entries.
@@ -59,18 +64,18 @@ TCK information:
 		OdinTCK 115017040 has 8342386 entries.
 		OdinTCK 115017050 has 34387907 entries.
 		OdinTCK 115017060 has 6592163 entries.
-		OdinTCK 115617070 has 23194963 entries.
+		*OdinTCK 115617070 has 23194963 entries.
 		OdinTCK 116017070 has 31582384 entries.
 		OdinTCK 116017080 has 35837291 entries.
-		OdinTCK 116117090 has 96109454 entries.
+		*OdinTCK 116117090 has 96109454 entries.
 			Total TCK counted entries: 246135199
 	Ds+ magdown:
 		OdinTCK 115417076 has 24180498 entries.
 		OdinTCK 115417a70 has 141106 entries.
-		OdinTCK 115617070 has 60801540 entries.
+		*OdinTCK 115617070 has 60801540 entries.
 		OdinTCK 116117070 has 33950950 entries.
 		OdinTCK 116117080 has 48232828 entries.
-		OdinTCK 116117090 has 87937071 entries.
+		*OdinTCK 116117090 has 87937071 entries.
 			Total TCK counted entries: 255243993
 
 
