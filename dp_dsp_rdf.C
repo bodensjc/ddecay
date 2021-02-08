@@ -30,9 +30,9 @@ const int cc = 299792458;//speed of light in m/s
 
 const int binmin = 1790;//1790 absolute minimum for dp
 const int binmax = 2050;//max value for dsp is 2050
-const int nbins = 100;
+const int nbins = binmax-binmin;//to get events / MeV, should be 260 bins
 
-
+cout << "there are " << nbins << " bins" << endl;
 
 
 
@@ -98,7 +98,7 @@ auto dsp_cut = dspdf.Filter(cut_ipchi2, {"Dsplus_IPCHI2_OWNPV"})
 
 
 
-//auto blackhist = new TH1D("blackhist", "", 1, binmin, 
+
 
 
 
