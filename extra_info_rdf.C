@@ -86,14 +86,14 @@ auto dsp_cut = dspdf.Filter(cut_ipchi2, {"Dsplus_IPCHI2_OWNPV"})
 
 
 //get and print number of entries
-	
+/*
 	auto dpdf_count = dp_cut.Count();
 	double dpdfEntries = *dpdf_count;
 	cout << "Dplus Entries: " << dpdfEntries << endl;
 	auto dspdf_count = dsp_cut.Count();
 	double dspdfEntries = *dspdf_count;
 	cout << "Dsplus Entries: " << dspdfEntries << endl;
-	
+*/	
 
 
 //get and print column names
@@ -144,7 +144,7 @@ auto dsp_cut = dspdf.Filter(cut_ipchi2, {"Dsplus_IPCHI2_OWNPV"})
 
 
 //information about events per bin in the "overlap region" (1880 - 1960 MeV)
-
+/*
 	auto dpmasshist = dp_cut.Fill<double>(TH1D("dpmasshist","d -> kkpi",nbins, binmin, binmax), {"Dplus_MM"});
 	auto dspmasshist = dsp_cut.Fill<double>(TH1D("dspmasshist","ds -> kkpi",nbins, binmin, binmax), {"Dsplus_MM"});
 	int xVals[nbins];
@@ -161,9 +161,46 @@ auto dsp_cut = dspdf.Filter(cut_ipchi2, {"Dsplus_IPCHI2_OWNPV"})
 		dspVals[i] = dspm;
 		std::cout << x << '\t' << dpm << '\t' << dspm << endl;
 	}
+*/
+//these values are the overlap region as produced above
+	int MeV[81] = {1878, 1879, 1880, 1881, 1882, 1883, 1884, 1885, 1886, 1887, 1888, 1889, 1890, 1891, 1892, 1893, 1894, 1895, 1896, 1897, 1898, 1899, 1900, 1901, 1902, 1903, 1904, 1905, 1906, 1907, 1908, 1909, 1910, 1911, 1912, 1913, 1914, 1915, 1916, 1917, 1918, 1919, 1920, 1921, 1922, 1923, 1924, 1925, 1926, 1927, 1928, 1929, 1930, 1931, 1932, 1933, 1934, 1935, 1936, 1937, 1938, 1939, 1940, 1941, 1942, 1943, 1944, 1945, 1946, 1947, 1948, 1949, 1950, 1951, 1952, 1953, 1954, 1955, 1956, 1957, 1958};
+	int nD[81] = {86014, 65453, 49013, 36850, 27061, 19801, 14523, 10895, 8124, 6395, 4969, 3993, 3278, 2618, 2267, 1936, 1769, 1605, 1491, 1447, 1335, 1338, 1264, 1254, 1139, 1118, 1146, 1142, 1132, 1145, 1112, 1148, 1122, 1161, 1165, 1147, 1180, 1205, 1255, 1309, 1338, 1328, 1290, 1344, 1420, 1473, 1486, 1524, 1548, 1614, 1636, 1709, 1811, 1829, 1917, 2030, 2128, 2170, 2288, 2477, 2646, 2695, 2929, 3319, 3470, 4051, 4140, 4843, 5523, 6116, 5797, 1627, 271, 91, 44, 23, 15, 5, 5, 3, 0};
+	int nDs[81] = {0, 3, 7, 8, 5, 16, 34, 41, 82, 231, 933, 2781, 2946, 2489, 2213, 1900, 1759, 1602, 1485, 1450, 1339, 1341, 1267, 1255, 1142, 1123, 1156, 1155, 1133, 1147, 1114, 1152, 1126, 1165, 1170, 1156, 1188, 1206, 1257, 1315, 1344, 1335, 1294, 1356, 1428, 1478, 1487, 1534, 1560, 1621, 1642, 1719, 1813, 1835, 1930, 2036, 2140, 2180, 2301, 2498, 2656, 2715, 2951, 3348, 3490, 4076, 4189, 4943, 5682, 6573, 7874, 9806, 11853, 15115, 19459, 25523, 33764, 44958, 59800, 79143, 104298};
+	int pm[81];
+	auto diffhist = new TH1D("diffhist", "n(Ds - D) in overlap region)", 81, MeV[0], MeV[80]);
+		diffhist->SetStats(0);
+		diffhist->SetTitleFont(43);
+		diffhist->SetTitleSize(35);
+		diffhist->GetYaxis()->SetTitle("n(Ds - D) /(1 MeV/c^{2})");
+		//diffhist->SetMinimum(10);//for logy, but might not be a good idea since +/- values
+		diffhist->GetYaxis()->SetTitleFont(43);
+		diffhist->GetYaxis()->SetTitleSize(30);
+		diffhist->GetYaxis()->CenterTitle(true);
+	for (int i=0; i<81; i++) {
+		int diff = nDs[i] - nD[i];
+		if (diff > 0) {
+			pm[i]=1;		
+		}
+		if (diff < 0) {
+			pm[i]=-1;		
+		}
+		if (diff > 0) {
+			pm[i]=0;		
+		}
+		diffhist->SetBinContent(i+1, diff);
 
-
-
+	}
+	auto can = new TCanvas("cab", "can", 1600, 1200);
+		can->cd();
+		//can->SetLeftMargin(0.15);
+		//can->SetRightMargin(0.09);
+		//can->SetBottomMargin(0.15);
+		TPad *pad1 = new TPad("pad1","pad1",0,0,1,1);
+		pad1->Draw();
+		pad1->cd();
+		pad1->SetLogy();
+	diffhist->Draw();
+	can->SaveAs("image/aaa_overlap_difference.png");
 
 
 
