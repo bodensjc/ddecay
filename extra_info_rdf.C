@@ -31,6 +31,7 @@ auto cut_pK_ambiguity = [] (double x) {return x> 10000 ;};
 auto cut_dira = [] (double x) {return x>0.99999 ;};
 auto cut_tau = [] (double x) {return x > 0.0000000001 ;};
 
+auto cut_run = [] (unsigned int x) {return x != 193695 ;};
 
 
 
@@ -84,15 +85,38 @@ auto dsp_cut = dspdf.Filter(cut_ipchi2, {"Dsplus_IPCHI2_OWNPV"})
 				   .Filter(cut_phi, {"mkpkm"});
 
 
+auto dp_runcut = dp_cut.Filter(cut_run, {"runNumber"});
+auto dsp_runcut = dsp_cut.Filter(cut_run, {"runNumber"});
+
+
+
+
+
 //get and print number of entries
 /*
-	auto dpdf_count = dp_cut.Count();
+	std::cout << std::dec << std::fixed << std::cout.precision(0);
+	
+	auto dpdf_count = dpdf.Count();
 	double dpdfEntries = *dpdf_count;
-	cout << "Dplus Entries: " << dpdfEntries << endl;
-	auto dspdf_count = dsp_cut.Count();
+	cout << "Dplus Raw Entries: " << dpdfEntries << endl;
+	auto dspdf_count = dspdf.Count();
 	double dspdfEntries = *dspdf_count;
-	cout << "Dsplus Entries: " << dspdfEntries << endl;
-*/	
+	cout << "Dsplus Raw Entries: " << dspdfEntries << endl;
+
+	auto dpdf_cut_count = dp_cut.Count();
+	double dpdf_cutEntries = *dpdf_cut_count;
+	cout << "Dplus Cut Entries: " << dpdf_cutEntries << endl;
+	auto dspdf_cut_count = dsp_cut.Count();
+	double dspdf_cutEntries = *dspdf_cut_count;
+	cout << "Dsplus Cut Entries: " << dspdf_cutEntries << endl;
+
+	auto dpdf_runcut_count = dp_runcut.Count();
+	double dpdf_runcutEntries = *dpdf_runcut_count;
+	cout << "Dplus Run Cut Entries: " << dpdf_runcutEntries << endl;
+	auto dspdf_runcut_count = dsp_runcut.Count();
+	double dspdf_runcutEntries = *dspdf_runcut_count;
+	cout << "Dsplus Run Cut Entries: " << dspdf_runcutEntries << endl;
+*/
 
 
 //get and print column names
@@ -146,16 +170,16 @@ auto dsp_cut = dspdf.Filter(cut_ipchi2, {"Dsplus_IPCHI2_OWNPV"})
 /*
 	auto dpmasshist = dp_cut.Fill<double>(TH1D("dpmasshist","d -> kkpi",nbins, binmin, binmax), {"Dplus_MM"});
 	auto dspmasshist = dsp_cut.Fill<double>(TH1D("dspmasshist","ds -> kkpi",nbins, binmin, binmax), {"Dsplus_MM"});
-	int xVals[nbins];
 	int dpVals[nbins];
 	int dspVals[nbins];
+	int diff;
 		std::cout << "Events per MeV:" << endl;
 		std::cout << "Bin\tD\tDs" << endl;
 	for (int i=1; i<nbins; i++) {
-		int x = dpmasshist->GetBinCenter(i);
+		int massbin = dpmasshist->GetBinCenter(i);
 		int dpm = dpmasshist->GetBinContent(i);
 		int dspm = dspmasshist->GetBinContent(i);
-		xVals[i] = x;
+		MeV[i] = massbin;
 		dpVals[i] = dpm;
 		dspVals[i] = dspm;
 		std::cout << x << '\t' << dpm << '\t' << dspm << endl;
@@ -206,6 +230,7 @@ auto dsp_cut = dspdf.Filter(cut_ipchi2, {"Dsplus_IPCHI2_OWNPV"})
 
 
 //looking at entries per run number to see why Ds seems to have more data than D+
+	//both cut and uncut, d+ and ds, had a range of (19228, 202897)
 /*
 auto dpMin = dp_cut.Min("runNumber");
 auto dpMax = dp_cut.Max("runNumber");
@@ -217,9 +242,9 @@ auto dspMax = dsp_cut.Max("runNumber");
 int dspMinRunN = *dspMin;
 int dspMaxRunN = *dspMax;
 cout << "Ds min run number: " << dspMinRunN << "\nDs max run number: " << dspMaxRunN << endl;
-*/     //both cut and uncut, d+ and ds, had a range of (19228, 202897)
-
-
+*/     
+	//getting the counts per run entry and printing. only one with 0 d+ is 0193695
+/*
 auto dpRunNumberHist = dpdf.Fill<unsigned int>(TH1D("dpRunNumberHist"," ", 11000, 192000, 203000), {"runNumber"});
 auto dspRunNumberHist = dspdf.Fill<unsigned int>(TH1D("dspRunNumberHist"," ", 11000, 192000, 203000), {"runNumber"});
 
@@ -250,11 +275,47 @@ for (int i=1; i<11000; i++) {
 	std::cout << runNi << "\t" << dpCounti << "\t" << dspCounti << "\t" << dpCountcuti << "\t" << dspCountcuti << endl;
 	}
 }
+*/
 
 
 
+//second look at overlap region after cutting excess run from ds
 
+	auto dpmasshist = dp_cut.Fill<double>(TH1D("dpmasshist","d -> kkpi",nbins, binmin, binmax), {"Dplus_MM"});
+	auto dspmasshist = dsp_cut.Fill<double>(TH1D("dspmasshist","ds -> kkpi",nbins, binmin, binmax), {"Dsplus_MM"});
+	auto diffhist = new TH1D("diffhist", "n(Ds - D) in overlap region)", nbins, binmin, binmax);
+		diffhist->SetStats(0);
+		diffhist->SetTitleFont(43);
+		diffhist->SetTitleSize(35);
+		diffhist->GetYaxis()->SetTitle("n(Ds - D) /(1 MeV/c^{2})");
+		//diffhist->SetMinimum(10);//for logy, but might not be a good idea since +/- values
+		diffhist->GetYaxis()->SetTitleFont(43);
+		diffhist->GetYaxis()->SetTitleSize(30);
+		diffhist->GetYaxis()->CenterTitle(true);
+		diffhist->SetLineWidth(3);
+		diffhist->SetLineColor(kRed);
+		diffhist->GetXaxis()->SetRangeUser(1890, 1948);
 
+	for (int i=0; i<nbins; i++) {
+		int massbin = dpmasshist->GetBinCenter(i);
+		int dpm = dpmasshist->GetBinContent(i);
+		int dspm = dspmasshist->GetBinContent(i);
+		int diff = dspm - dpm;
+		diffhist->SetBinContent(i, diff);
+	}
+
+	auto can = new TCanvas("can", "can", 1600, 1200);
+		can->cd();
+		//can->SetLeftMargin(0.15);
+		//can->SetRightMargin(0.09);
+		//can->SetBottomMargin(0.15);
+		TPad *pad1 = new TPad("pad1","pad1",0,0,1,1);
+		pad1->Draw();
+		pad1->cd();
+		//pad1->SetLogy();
+	diffhist->Draw();
+	diffhist->Draw("TEXT same");
+	can->SaveAs("image/overlap_difference.png");
 
 
 
