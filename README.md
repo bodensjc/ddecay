@@ -1,5 +1,5 @@
 # LHCb Research
-## Data Collectio and AnalysisRepository
+## Data Collection and Analysis Repository
 Research measuring mass difference between D+ and Ds+ mesons. This repository includes all analysis files, including RDataFrames and the more standard MakeSelectors. Also included in the ```LHCb``` subdirectory are the Ganga scripts and DaVinci ntuple options used to collect the raw data.
 
 Some relevant links: 
