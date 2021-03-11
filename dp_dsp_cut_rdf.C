@@ -9,17 +9,25 @@ using namespace ROOT;
 EnableImplicitMT();
 
 
+
+//need to make ntuples for the cut data
+//one with D+ in overlap, one with Ds in overlap
+//per the image "overlap_difference", use 1896 - 1944 as edges for overlap
+//	ideally, could repeat this process at each MeV, i.e. using D+ up until 1896, 1897, 1898...
+
+
+//this file creates snapshots of the cut d/ds data that can then be combined with hadd
+//into one root file with general column labels and a variabel indicating if the observation
+//originated from the d or ds data
+
+
+
 //create rdataframe for dp, dsp magdown data
 
 RDataFrame dpdf("D2KKpi/DecayTree", {"/share/lazy/D2KKpi/dpmagup_dec20.root","/share/lazy/D2KKpi/dpmagdown_dec20.root"});
 RDataFrame dspdf("Dsp2KKpi/DecayTree", {"/share/lazy/D2KKpi/dspmagup_dec20.root","/share/lazy/D2KKpi/dspmagdown_dec20.root"});
 
 
-//smaller test sets
-/*
-RDataFrame dpdf("D2KKpi/DecayTree", "/share/lazy/D2KKpi/dp_data_dec20/dpmagup01.root");
-RDataFrame dspdf("Dsp2KKpi/DecayTree", "/share/lazy/D2KKpi/dsp_data_dec20/dspmagdown01.root");
-*/
 
 
 
@@ -28,19 +36,15 @@ const double phiupperbound = (1019.455+phi_pm)*(1019.455+phi_pm)/1000000;
 const double philowerbound = (1019.455-phi_pm)*(1019.455-phi_pm)/1000000; 
 const int cc = 299792458;//speed of light in m/s
 
-const int binmin = 1790;//1790 absolute minimum for dp
-const int binmax = 2050;//max value for dsp is 2050
-const int nbins = binmax-binmin;//to get events / MeV, should be 260 bins
-
-cout << "there are " << nbins << " bins" << endl;
-
-
-
 
 
 auto inv_m_func = [](double px1, double py1, double pz1, double pe1, double px2, double py2, double pz2, double pe2) {return TLorentzVector(TLorentzVector(px1, py1, pz1, pe1)+TLorentzVector(px2, py2, pz2, pe2)).Mag2()/1000000 ;};
 auto prob_func = [](double prob1, double prob2) {return TMath::Log(prob1) - TMath::Log(prob2) ;};
 auto probNNx_func = [](double prob1, double prob2, double prob3) {return prob1*prob2*prob3 ;};
+
+auto rename_func = [](double varb) {return varb ;};//used to make columns with same name accross both dfs
+auto isdp_func = [](double varb) {return 1;}; //this and below used to differentiate between dp/dsp
+auto isdsp_func = [](double varb) {return 0;}; //1 meaning is dp, 0 meaning is dsp
 
 
 auto cut_ipchi2 = [](double x) {return x < 4 ;};//5 for regular cut
@@ -93,11 +97,34 @@ auto dsp_cut = dspdf.Filter(cut_ipchi2, {"Dsplus_IPCHI2_OWNPV"})
 
 
 
-//need to make ntuples for the cut data
-//one with D+ in overlap, one with Ds in overlap
-//per image: overlap_difference, use 1896 - 1944 as edges for overlap
+
+auto dp_standardized = dp_cut.Define("particle_MM", rename_func, {"Dplus_MM"})
+							 .Define("particle_TAU", rename_func, {"Dplus_TAU"})
+							 .Define("particle_PX", rename_func, {"Dplus_PX"})
+							 .Define("particle_PY", rename_func, {"Dplus_PY"})
+							 .Define("particle_PZ", rename_func, {"Dplus_PZ"})
+							 .Define("particle_PT", rename_func, {"Dplus_PT"})
+							 .Define("isDp", isdp_func, {"Dplus_MM"});
 
 
+auto dsp_standardized = dsp_cut.Define("particle_MM", rename_func, {"Dsplus_MM"})
+							 .Define("particle_TAU", rename_func, {"Dsplus_TAU"})
+							 .Define("particle_PX", rename_func, {"Dsplus_PX"})
+							 .Define("particle_PY", rename_func, {"Dsplus_PY"})
+							 .Define("particle_PZ", rename_func, {"Dsplus_PZ"})
+							 .Define("particle_PT", rename_func, {"Dsplus_PT"})
+							 .Define("isDp", isdsp_func, {"Dsplus_MM"});
+
+
+
+
+auto treeName = "DecayTree";
+
+auto dpoutFileName = "/share/lazy/D2KKpi/dp_cut.root";
+dp_standardized.Snapshot(treeName, dpoutFileName, {"particle_MM", "particle_TAU", "particle_PX", "particle_PY", "particle_PZ", "particle_PT", "isDp", "Polarity"});
+
+auto dspoutFileName = "/share/lazy/D2KKpi/dsp_cut.root";
+dsp_standardized.Snapshot(treeName, dspoutFileName, {"particle_MM", "particle_TAU", "particle_PX", "particle_PY", "particle_PZ", "particle_PT", "isDp", "Polarity"});
 
 
 
