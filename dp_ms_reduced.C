@@ -30,7 +30,7 @@ EnableImplicitMT();
 //RDataFrame dpdf("D2KKpi/DecayTree", {"/share/lazy/D2KKpi/dp_data_dec20/dpmagup01.root", "/share/lazy/D2KKpi/dp_data_dec20/dpmagdown01.root"});//smaller file for tests
 RDataFrame dpdf("D2KKpi/DecayTree", {"/share/lazy/D2KKpi/dpmagup_dec20.root","/share/lazy/D2KKpi/dpmagdown_dec20.root"});
 
-//slight redundancy with merging magup and magdown here then cutting on them later. oops
+//slight redundancy with merging magup and magdown here then cutting on them later
 
 
 
