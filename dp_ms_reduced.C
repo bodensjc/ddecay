@@ -15,35 +15,34 @@ EnableImplicitMT();
 //used for the momentum scaling steps 1 and 2
 
 
+
 //These are all of the variables that appear in the Step1 and Step2 Code:
+//(I added polarity and runNumber)
 /*
-"Kminus_ID", "Dplus_P", "Kplus_PE", "Kminus_X", "Dplus_DIRA_OWNPV", "Dplus_FDCHI2_OWNPV", "Kminus_PY", "Piplus_MC15TuneV1_ProbNNpi", "Dplus_PE", "Kplus_ID", "Piplus_PZ", "Dplus_PT", "Kminus_P", "Piplus_PT", "Piplus_isMuon", "Dplus_IPCHI2_OWNPV", "Kplus_IPCHI2_OWNPV", "Piplus_MC15TuneV1_ProbNNp", "Kminus_PZ", "Kplus_PT", "Kplus_Y", "Piplus_PY", "Piplus_X", "Dplus_TAU", "Kplus_M", "Kminus_PT", "Kminus_PX", "Kplus_MC15TuneV1_ProbNNk", "Kplus_PY", "Piplus_ID", "Kminus_M", "Dplus_PX", "Kminus_Y", "Piplus_Y", "Kminus_PE", "Dplus_M", "Dplus_PY", "Dplus_PZ", "Kplus_PZ", "Kplus_PX", "Kplus_X", "Piplus_PX", "Dplus_ENDVERTEX_CHI2", "Kminus_IPCHI2_OWNPV", "Kminus_MC15TuneV1_ProbNNk", "Kplus_isMuon", "Kplus_P", "Piplus_PE", "Piplus_P", "Piplus_M", "Kplus_PIDe", "Piplus_PIDe", "Piplus_IPCHI2_OWNPV", "Dplus_ID"
+'Dplus_DIRA_OWNPV', 'Dplus_ENDVERTEX_CHI2', 'Dplus_FDCHI2_OWNPV', 'Dplus_ID', 'Dplus_IPCHI2_OWNPV', 'Dplus_M', 'Dplus_P', 'Dplus_PE', 'Dplus_PT', 'Dplus_PX', 'Dplus_PY', 'Dplus_PZ', 'Dplus_TAU', 'Kminus_ID', 'Kminus_IPCHI2_OWNPV', 'Kminus_M', 'Kminus_MC15TuneV1_ProbNNk', 'Kminus_P', 'Kminus_PE', 'Kminus_PT', 'Kminus_PX', 'Kminus_PY', 'Kminus_PZ', 'Kminus_X', 'Kminus_Y', 'Kplus_ID', 'Kplus_IPCHI2_OWNPV', 'Kplus_M', 'Kplus_MC15TuneV1_ProbNNk', 'Kplus_P', 'Kplus_PE', 'Kplus_PIDe', 'Kplus_PT', 'Kplus_PX', 'Kplus_PY', 'Kplus_PZ', 'Kplus_X', 'Kplus_Y', 'Kplus_isMuon', 'Piplus_ID', 'Piplus_IPCHI2_OWNPV', 'Piplus_M', 'Piplus_MC15TuneV1_ProbNNp', 'Piplus_MC15TuneV1_ProbNNpi', 'Piplus_P', 'Piplus_PE', 'Piplus_PIDe', 'Piplus_PT', 'Piplus_PX', 'Piplus_PY', 'Piplus_PZ', 'Piplus_X', 'Piplus_Y', 'Piplus_isMuon', 'Polarity', 'runNumber'
 */
 
 
 
 
 
-
 //create rdataframe for dp data
+RDataFrame dpdf("D2KKpi/DecayTree", "/share/lazy/D2KKpi/dp_data_dec20/dpmagup01.root");//smaller file for tests
+//RDataFrame dpdf("D2KKpi/DecayTree", {"/share/lazy/D2KKpi/dpmagup_dec20.root","/share/lazy/D2KKpi/dpmagdown_dec20.root"});
 
-//RDataFrame dpdf("D2KKpi/DecayTree", "/share/lazy/D2KKpi/dp_data_dec20/dpmagup01.root");//smaller file for tests
-RDataFrame dpdf("D2KKpi/DecayTree", {"/share/lazy/D2KKpi/dpmagup_dec20.root","/share/lazy/D2KKpi/dpmagdown_dec20.root"});
 
+
+//main set of cuts, slightly relaxed from what is done in Step1
 auto cut_dp_fdchi2 = [](double x) {return x > 150 ;};
 auto cut_dp_ipchi2 = [](double x) {return x < 15 ;};
 auto cut_dp_dira = [](double x) {return x > 0.99 ;};
 auto cut_dp_PZ = [](double x) {return x > 8000 ;};
-
 auto cut_kkpi_P = [](double x) {return x > 2500 ;};
 auto cut_kkpi_PT = [](double x) {return x > 250 ;};
 auto cut_kkpi_ipchi2 = [](double x) {return x > 5 ;};
 auto cut_kkpi_probNNsame = [](double x) {return x > 0.6 ;};
 auto cut_kkpi_PIDe = [](double x) {return x < 0 ;};
-auto cut_kkpi_isMuon = [](double x) {return !x ;};
-
-
-
+auto cut_kkpi_isMuon = [](bool x) {return !x ;};
 
 
 auto dp_cut  =  dpdf.Filter(cut_dp_fdchi2, {"Dplus_FDCHI2_OWNPV"})
@@ -67,7 +66,16 @@ auto dp_cut  =  dpdf.Filter(cut_dp_fdchi2, {"Dplus_FDCHI2_OWNPV"})
 					.Filter(cut_kkpi_isMuon, {"Piplus_isMuon"});
 
 
-				 
+
+auto cut_magup = [](double x) {return x == 1 ;};
+auto cut_magdown = [](double x) {return x == -1 ;};
+
+auto dp_magup = dp_cut.Filter(cut_magup, {"Polarity"});
+auto dp_magdown = dp_cut.Filter(cut_magdown, {"Polarity"});
+
+
+
+
 
 
 
@@ -77,10 +85,9 @@ auto dp_cut  =  dpdf.Filter(cut_dp_fdchi2, {"Dplus_FDCHI2_OWNPV"})
 
 
 auto treeName = "DecayTree";
+auto testOutFileName = "/share/lazy/D2KKpi/dp_reduced_test.root";
 
-
-auto dpoutFileName = "/share/lazy/D2KKpi/dp_cut.root";
-dp_standardized.Snapshot(treeName, dpoutFileName, {"particle_MM", "particle_TAU", "particle_PX", "particle_PY", "particle_PZ", "particle_PT", "isDp", "Polarity"});
+dp_cut.Snapshot(treeName, testOutFileName, {"Kminus_ID", "Dplus_P", "Kplus_PE", "Kminus_X", "Dplus_DIRA_OWNPV", "Dplus_FDCHI2_OWNPV", "Kminus_PY", "Piplus_MC15TuneV1_ProbNNpi", "Dplus_PE", "Kplus_ID", "Piplus_PZ", "Dplus_PT", "Kminus_P", "Piplus_PT", "Piplus_isMuon", "Dplus_IPCHI2_OWNPV", "Kplus_IPCHI2_OWNPV", "Piplus_MC15TuneV1_ProbNNp", "Kminus_PZ", "Kplus_PT", "Kplus_Y", "Piplus_PY", "Piplus_X", "Dplus_TAU", "Kplus_M", "Kminus_PT", "Kminus_PX", "Kplus_MC15TuneV1_ProbNNk", "Kplus_PY", "Piplus_ID", "Kminus_M", "Dplus_PX", "Kminus_Y", "Piplus_Y", "Kminus_PE", "Dplus_M", "Dplus_PY", "Dplus_PZ", "Kplus_PZ", "Kplus_PX", "Kplus_X", "Piplus_PX", "Dplus_ENDVERTEX_CHI2", "Kminus_IPCHI2_OWNPV", "Kminus_MC15TuneV1_ProbNNk", "Kplus_isMuon", "Kplus_P", "Piplus_PE", "Piplus_P", "Piplus_M", "Kplus_PIDe", "Piplus_PIDe", "Piplus_IPCHI2_OWNPV", "Dplus_ID", "runNumber", "Polarity"});
 
 
 
