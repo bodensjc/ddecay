@@ -25,7 +25,7 @@ void combined_cut_fit::Begin(TTree * /*tree*/)
    TString option = GetOption();
 
 //*********Initialization Section**********
-dpdspFit = new TF1("dpdspFit",fit1MeV_DoubleGaussian_DoubleCB_ExpBG,1790,2050, 16);
+dpdspFit = new TF1("dpdspFit",fit1MeV_DoubleGaussian_DoubleCB_ExpBG,1835,2040, 16);
 	dpdspFit->SetParName(0, "nSignal1");
 	dpdspFit->SetParName(1, "mu1");	
 	dpdspFit->SetParName(2, "rms_wdth1");	
@@ -96,7 +96,9 @@ Bool_t combined_cut_fit::Process(Long64_t entry)
 
 	Bool_t takeData = ((*particle_MM < cutoffMass) && (*isDp == 1)) || ((*particle_MM >= cutoffMass) && (*isDp == 0));
 
-	if (takeData) {
+
+
+	if (takeData && *Polarity == 1) {
 		dpdspHist->Fill(*particle_MM);
 	}
 
@@ -147,32 +149,32 @@ cout << "exp coef: " << expCoefGuess << endl;
 
 
 dpdspFit->SetParameter(0,nSignal1Guess);//nSignal
-	dpdspFit->SetParLimits(0,4000000,5000000);//this is a yikes... need to address
+	//dpdspFit->SetParLimits(0,4000000,5000000);//this is a yikes... need to address
 	dpdspFit->SetParameter(1,1869);//mu
 	dpdspFit->SetParameter(2,4.);//rms of double gaussian
-	dpdspFit->SetParLimits(2,0.,20.);
+	//dpdspFit->SetParLimits(2,0.,20.);
 	dpdspFit->SetParameter(3,7);//sigma_1 of primary gaussian
-	dpdspFit->SetParLimits(3,1,15);
-	dpdspFit->SetParameter(4,0.85);//fraction of signal in primary gaussian
-	dpdspFit->SetParLimits(4,0.00001,0.33333);
+	//dpdspFit->SetParLimits(3,1,15);
+	dpdspFit->SetParameter(4,0.1);//fraction of signal in primary gaussian
+	dpdspFit->SetParLimits(4,0.000001,0.65);
 	dpdspFit->SetParameter(5, 1.5);//crystal ball alpha
 	dpdspFit->SetParameter(6,2.5);//crystal ball n
 	dpdspFit->SetParLimits(6,1.00001,6.);
 	dpdspFit->SetParameter(7,nSignal2Guess);//nSignal
-	dpdspFit->SetParLimits(7,7000000,8000000);//this is a yikes... need to address
+	//dpdspFit->SetParLimits(7,7000000,8000000);//this is a yikes... need to address
 	dpdspFit->SetParameter(8,1969);//mu
 	dpdspFit->SetParameter(9,4.);//rms of double gaussian
-	dpdspFit->SetParLimits(9,0.,20.);
+	//dpdspFit->SetParLimits(9,0.,20.);
 	dpdspFit->SetParameter(10,7);//sigma_2 of primary gaussian
-	dpdspFit->SetParLimits(10,1,15);
-	dpdspFit->SetParameter(11,0.85);//fraction of signal in primary gaussian
-	dpdspFit->SetParLimits(11,0.000001,0.33333);
+	//dpdspFit->SetParLimits(10,1,15);
+	dpdspFit->SetParameter(11,0.1);//fraction of signal in primary gaussian
+	dpdspFit->SetParLimits(11,0.000001,0.65);
 	dpdspFit->SetParameter(12, 1.5);//crystal ball alpha
 	dpdspFit->SetParameter(13,2.5);//crystal ball n
 	dpdspFit->SetParLimits(13,1.00001,6.);
-	dpdspFit->SetParameter(14,firstbin);//exp intercept
-	dpdspFit->SetParameter(15,expCoefGuess);//coefficient background exponential
-	dpdspFit->SetParLimits(15, 0, -0.001);
+	dpdspFit->SetParameter(14,2000);//exp intercept
+	dpdspFit->SetParameter(15,-0.012);//coefficient background exponential
+	//dpdspFit->SetParLimits(15, 0, -0.001);
 
 
 
@@ -182,7 +184,7 @@ auto totalpullcan = new TCanvas("totalpullcan", "totalpullcan", 1000, 800);
 totalpullcan->SetLogy();
 dpdspHist->Draw();
 
-totalpullcan->SaveAs("image/aaaa_Dp_Dsp_fit_log.png");
+totalpullcan->SaveAs("image/magup_Dp_Dsp_fit_log.png");
 
 
 
