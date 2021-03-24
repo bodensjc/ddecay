@@ -1,8 +1,11 @@
-#define combined_cut_fit_cxx
-#include "combined_cut_fit.h"
+#define mass_diff_fit_cxx
+#include "mass_diff_fit.h"
 #include <TH2.h>
 #include <TStyle.h>
 #include "scripts/fit_spectrum.C"
+
+
+
 
 //run by doing:
 //$ root -l /share/lazy/D2KKpi/combined_cut.root
@@ -15,7 +18,7 @@ Int_t cutoffMass = 1920; // above (inclusive) this mass we use ds data, below we
 TH1 * dpdspHist = NULL;
 TH1 * pullHist = NULL;
 
-TF1 * dpdspFit = NULL;
+TF1 * massDiffFit = NULL;
 
 
 
@@ -31,30 +34,33 @@ Int_t fitEnd = 2050;//2050 maximum
 
 
 
-void combined_cut_fit::Begin(TTree * /*tree*/)
+
+void mass_diff_fit::Begin(TTree * /*tree*/)
 {
    TString option = GetOption();
 
 //*********Initialization Section**********
-dpdspFit = new TF1("dpdspFit",fit1MeVspectrum_Gaussian_CB_ExpBG,fitStart,fitEnd, 16);
-	dpdspFit->SetParName(0, "nSignal1");
-	dpdspFit->SetParName(1, "mu1");	
-	dpdspFit->SetParName(2, "rms_wdth1");	
-	dpdspFit->SetParName(3, "sigma_11");	
-	dpdspFit->SetParName(4, "gaus_frac1");	
-	dpdspFit->SetParName(5, "CB_alpha1");	
-	dpdspFit->SetParName(6, "CB_n1");	
-	dpdspFit->SetParName(7, "nSignal2");	
-	dpdspFit->SetParName(8, "mu2");	
-	dpdspFit->SetParName(9, "rms_wdth2");	
-	dpdspFit->SetParName(10, "sigma_12");	
-	dpdspFit->SetParName(11, "gaus_frac2");	
-	dpdspFit->SetParName(12, "CB_alpha2");	
-	dpdspFit->SetParName(13, "CB_n2");	
-	dpdspFit->SetParName(14, "exp_int");
-	dpdspFit->SetParName(15, "exp_coef");
-	dpdspFit->SetLineColor(kRed);
-	dpdspFit->SetLineWidth(2);
+
+
+massDiffFit = new TF1("massDiffFit",fit1MeVdifference_Gaussian_CB_ExpBG,fitStart,fitEnd, 16);
+	massDiffFit->SetParName(0, "nSignal1");
+	massDiffFit->SetParName(1, "mu1");	
+	massDiffFit->SetParName(2, "rms_wdth1");	
+	massDiffFit->SetParName(3, "sigma_11");	
+	massDiffFit->SetParName(4, "gaus_frac1");	
+	massDiffFit->SetParName(5, "CB_alpha1");	
+	massDiffFit->SetParName(6, "CB_n1");	
+	massDiffFit->SetParName(7, "nSignal2");	
+	massDiffFit->SetParName(8, "massDiff");	
+	massDiffFit->SetParName(9, "rms_wdth2");	
+	massDiffFit->SetParName(10, "sigma_12");	
+	massDiffFit->SetParName(11, "gaus_frac2");	
+	massDiffFit->SetParName(12, "CB_alpha2");	
+	massDiffFit->SetParName(13, "CB_n2");	
+	massDiffFit->SetParName(14, "exp_int");
+	massDiffFit->SetParName(15, "exp_coef");
+	massDiffFit->SetLineColor(kRed);
+	massDiffFit->SetLineWidth(2);
 
 
 
@@ -94,7 +100,7 @@ secondGaussianFit = new TF1("secondGaussianFit",Gaussian,fitStart,fitEnd, 7);
 	secondGaussianFit->SetLineWidth(2);
 secondCBFit = new TF1("secondCBFit", CB, fitStart, fitEnd, 7);
 	secondCBFit->SetParName(0, "nSignal1");
-	secondCBFit->SetParName(1, "mu1");	
+	secondCBFit->SetParName(1, "mu2");	
 	secondCBFit->SetParName(2, "rms_wdth1");	
 	secondCBFit->SetParName(3, "sigma_11");	
 	secondCBFit->SetParName(4, "gaus_frac1");	
@@ -114,7 +120,6 @@ backgroundFit = new TF1("backgroundFit",backgroundExp,fitStart,fitEnd, 2);
 
 
 
-
 dpdspHist = new TH1D("dpdspHist","D^{+}_{(s)} #rightarrow K^{+}K^{-}#pi^{+} Cut and Fit",260,1790,2050);
 	dpdspHist->SetStats(0);
 	dpdspHist->SetTitleFont(43);
@@ -126,9 +131,6 @@ dpdspHist = new TH1D("dpdspHist","D^{+}_{(s)} #rightarrow K^{+}K^{-}#pi^{+} Cut 
 	dpdspHist->GetYaxis()->CenterTitle(true);
 	dpdspHist->SetLineColor(kBlack);
 	dpdspHist->SetLineWidth(3);
-
-
-
 
 pullHist = new TH1D("pullHist", "Pull Plot", 260,1790,2050);
 	pullHist->SetStats(0);
@@ -148,17 +150,11 @@ pullHist = new TH1D("pullHist", "Pull Plot", 260,1790,2050);
 	pullHist->SetBit(TH1::kNoTitle);
 	pullHist->GetYaxis()->SetNdivisions(7);
 
-
-
 }
 
+void mass_diff_fit::SlaveBegin(TTree * /*tree*/) {}
 
-
-void combined_cut_fit::SlaveBegin(TTree * /*tree*/) {}
-
-
-
-Bool_t combined_cut_fit::Process(Long64_t entry)
+Bool_t mass_diff_fit::Process(Long64_t entry)
 {
    fReader.SetLocalEntry(entry);
    GetEntry(entry);
@@ -179,25 +175,11 @@ Bool_t combined_cut_fit::Process(Long64_t entry)
    return kTRUE;
 }
 
+void mass_diff_fit::SlaveTerminate() {}
 
-
-void combined_cut_fit::SlaveTerminate() {}
-
-
-
-void combined_cut_fit::Terminate()
+void mass_diff_fit::Terminate()
 {
 //*********Wrap-up section********
-/*
-dpdspHist->GetXaxis()->SetRangeUser(1840,1900);
-Double_t dpPeak = dpdspHist->GetBinContent(dpdspHist->GetMaximumBin());
-dpdspHist->GetXaxis()->SetRangeUser(1940,2000);
-Double_t dspPeak = dpdspHist->GetBinContent(dpdspHist->GetMaximumBin());
-dpdspHist->GetXaxis()->setRangeUser(1790, 2050);
-
-cout << "signal 1 peak content: " << dpPeak << endl;
-cout << "signal 2 peak content: " << dspPeak << endl;
-*/
 Double_t dpPeak = 300000;
 Double_t dspPeak = 500000;
 
@@ -221,57 +203,58 @@ cout << "exp coef: " << expCoefGuess << endl;
 //dsp: 7-8 mil
 
 //dp mass peak
-	dpdspFit->SetParameter(0,nSignal1Guess);//nSignal
-	//dpdspFit->SetParLimits(0,4000000,5000000);
-	dpdspFit->SetParameter(1,1869);//mu
-	dpdspFit->SetParameter(2,4.);//rms of gaussian
-	//dpdspFit->SetParLimits(2,0.,20.);
-	dpdspFit->SetParameter(3,7);//sigma of gaussian
-	//dpdspFit->SetParLimits(3,1,15);
-	dpdspFit->SetParameter(4,0.1);//fraction of signal in  gaussian
-	dpdspFit->SetParLimits(4,0.000001,0.99999);
-	dpdspFit->SetParameter(5, 1.5);//crystal ball alpha
-	dpdspFit->SetParameter(6,2.5);//crystal ball n
-	//dpdspFit->SetParLimits(6,1.00001,6.);
-//dsp mass peak
-	dpdspFit->SetParameter(7,nSignal2Guess);//nSignal
-	//dpdspFit->SetParLimits(7,7000000,8000000);
-	dpdspFit->SetParameter(8,1969);//mu
-	dpdspFit->SetParameter(9,4.);//rms of gaussian
-	//dpdspFit->SetParLimits(9,0.,20.);
-	dpdspFit->SetParameter(10,7);//sigma_2 of gaussian
-	//dpdspFit->SetParLimits(10,1,15);
-	dpdspFit->SetParameter(11,0.1);//fraction of signal in gaussian
-	dpdspFit->SetParLimits(11,0.000001,0.99999);
-	dpdspFit->SetParameter(12, 1.5);//crystal ball alpha
-	dpdspFit->SetParameter(13,2.5);//crystal ball n
-	//dpdspFit->SetParLimits(13,1.00001,6.);
+	massDiffFit->SetParameter(0,nSignal1Guess);//nSignal
+	//massDiffFit->SetParLimits(0,4000000,5000000);
+	massDiffFit->SetParameter(1,1869);//mu
+	massDiffFit->SetParameter(2,4.);//rms of gaussian
+	//massDiffFit->SetParLimits(2,0.,20.);
+	massDiffFit->SetParameter(3,7);//sigma of gaussian
+	//massDiffFit->SetParLimits(3,1,15);
+	massDiffFit->SetParameter(4,0.1);//fraction of signal in  gaussian
+	massDiffFit->SetParLimits(4,0.000001,0.99999);
+	massDiffFit->SetParameter(5, 1.5);//crystal ball alpha
+	massDiffFit->SetParameter(3,2.5);//crystal ball n
+	//massDiffFit->SetParLimits(6,1.00001,6.);
+//dsp mass peak (this is where the mass difference vairable is )
+	massDiffFit->SetParameter(7,nSignal2Guess);//nSignal
+	//massDiffFit->SetParLimits(7,7000000,8000000);
+	massDiffFit->SetParameter(8,100);//mu
+	massDiffFit->SetParameter(9,4.);//rms of gaussian
+	//massDiffFit->SetParLimits(9,0.,20.);
+	massDiffFit->SetParameter(10,7);//sigma_2 of gaussian
+	//massDiffFit->SetParLimits(10,1,15);
+	massDiffFit->SetParameter(11,0.1);//fraction of signal in gaussian
+	massDiffFit->SetParLimits(11,0.000001,0.99999);
+	massDiffFit->SetParameter(12, 1.5);//crystal ball alpha
+	massDiffFit->SetParameter(13,2.5);//crystal ball n
+	//massDiffFit->SetParLimits(13,1.00001,6.);
 //exponential background
-	dpdspFit->SetParameter(14,firstbin);//exp intercept
-	dpdspFit->SetParameter(15,expCoefGuess);//coefficient background exponential
-	//dpdspFit->SetParLimits(15, 0, -0.001);
+	massDiffFit->SetParameter(14,firstbin);//exp intercept
+	massDiffFit->SetParameter(15,expCoefGuess);//coefficient background exponential
+	//massDiffFit->SetParLimits(15, 0, -0.001);
 
 
 //get the parameters back for isolated signal plotting
 //signal 2
-	Double_t nSignal1   = dpdspFit->GetParameter(0);
-	Double_t mu1        = dpdspFit->GetParameter(1);
-	Double_t rms1       = dpdspFit->GetParameter(2);
-	Double_t sigma1     = dpdspFit->GetParameter(3);
-	Double_t f1         = dpdspFit->GetParameter(4);
-	Double_t CB_alpha1  = dpdspFit->GetParameter(5);
-	Double_t CB_n1      = dpdspFit->GetParameter(6);
+	Double_t nSignal1   = massDiffFit->GetParameter(0);
+	Double_t mu1        = massDiffFit->GetParameter(1);
+	Double_t rms1       = massDiffFit->GetParameter(2);
+	Double_t sigma1     = massDiffFit->GetParameter(3);
+	Double_t f1         = massDiffFit->GetParameter(4);
+	Double_t CB_alpha1  = massDiffFit->GetParameter(5);
+	Double_t CB_n1      = massDiffFit->GetParameter(6);
 //signal 2
-	Double_t nSignal2   = dpdspFit->GetParameter(7);
-	Double_t mu2        = dpdspFit->GetParameter(8);
-	Double_t rms2       = dpdspFit->GetParameter(9);
-	Double_t sigma2     = dpdspFit->GetParameter(10);
-	Double_t f2         = dpdspFit->GetParameter(11);
-	Double_t CB_alpha2  = dpdspFit->GetParameter(12);
-	Double_t CB_n2      = dpdspFit->GetParameter(13);
+	Double_t nSignal2   = massDiffFit->GetParameter(7);
+	Double_t massDiff   = massDiffFit->GetParameter(8);
+		Double_t mu2    = mu1+massDiff;
+	Double_t rms2       = massDiffFit->GetParameter(9);
+	Double_t sigma2     = massDiffFit->GetParameter(10);
+	Double_t f2         = massDiffFit->GetParameter(11);
+	Double_t CB_alpha2  = massDiffFit->GetParameter(12);
+	Double_t CB_n2      = massDiffFit->GetParameter(13);
 //exp background
-	Double_t exp_int    = dpdspFit->GetParameter(14);
-	Double_t exp_coef   = dpdspFit->GetParameter(15);
+	Double_t exp_int    = massDiffFit->GetParameter(14);
+	Double_t exp_coef   = massDiffFit->GetParameter(15);
 
 
 
@@ -332,7 +315,7 @@ cout << "exp coef: " << expCoefGuess << endl;
 
 auto totalpullcan = new TCanvas("totalpullcan", "totalpullcan", 1000, 800);
 totalpullcan->SetLogy();
-dpdspHist->Fit("dpdspFit","R");
+dpdspHist->Fit("massDiffFit","R");
 dpdspHist->Draw();
 firstGaussianFit->Draw("same");
 firstCBFit->Draw("same");
@@ -340,9 +323,6 @@ secondGaussianFit->Draw("same");
 secondCBFit->Draw("same");
 backgroundFit->Draw("same");
 
-totalpullcan->SaveAs("image/aaafinal_dp_dsp_gaus-cb-exp_log.png");
-
-
-
+totalpullcan->SaveAs("image/aaafinal_dp_dsp_massDiff_gaus-cb-exp_log.png");
 
 }

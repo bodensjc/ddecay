@@ -39,7 +39,8 @@ mySet3 = set(myLst3)
 print('step 1 contains step 2 variables: ',mySet1 > mySet2)
 print('step 1 contains step 3 variables: ',mySet1 > mySet3)
 
-
+print('there are ',len(varbs),' variables in the main ntuples')
+print('there are ',len(mySet1),' variables in the reduced ntuples')
 
 
 
