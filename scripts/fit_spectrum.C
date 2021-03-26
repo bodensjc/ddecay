@@ -162,7 +162,8 @@ Double_t  backgroundExp (Double_t *v, Double_t *par)
 //mass difference fitting
 //should produce the same results as fit1MeVspectrum_Gaussian_CB_ExpBG but gives us the error of mass difference
 
-Double_t fit1MeVdifference_Gaussian_CB_ExpBG(Double_t *v, Double_t *par) {
+Double_t fit1MeVdifference_Gaussian_CB_ExpBG(Double_t *v, Double_t *par)
+{
 
       Double_t nSignal = par[0];
       Double_t mu = par[1];

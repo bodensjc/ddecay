@@ -218,7 +218,8 @@ cout << "exp coef: " << expCoefGuess << endl;
 //dsp mass peak (this is where the mass difference vairable is )
 	massDiffFit->SetParameter(7,nSignal2Guess);//nSignal
 	//massDiffFit->SetParLimits(7,7000000,8000000);
-	massDiffFit->SetParameter(8,100);//mu
+	massDiffFit->SetParameter(8,100);//mass Difference
+		massDiffFit->SetParLimits(8,95,105);
 	massDiffFit->SetParameter(9,4.);//rms of gaussian
 	//massDiffFit->SetParLimits(9,0.,20.);
 	massDiffFit->SetParameter(10,7);//sigma_2 of gaussian
@@ -234,79 +235,6 @@ cout << "exp coef: " << expCoefGuess << endl;
 	//massDiffFit->SetParLimits(15, 0, -0.001);
 
 
-//get the parameters back for isolated signal plotting
-//signal 2
-	Double_t nSignal1   = massDiffFit->GetParameter(0);
-	Double_t mu1        = massDiffFit->GetParameter(1);
-	Double_t rms1       = massDiffFit->GetParameter(2);
-	Double_t sigma1     = massDiffFit->GetParameter(3);
-	Double_t f1         = massDiffFit->GetParameter(4);
-	Double_t CB_alpha1  = massDiffFit->GetParameter(5);
-	Double_t CB_n1      = massDiffFit->GetParameter(6);
-//signal 2
-	Double_t nSignal2   = massDiffFit->GetParameter(7);
-	Double_t massDiff   = massDiffFit->GetParameter(8);
-		Double_t mu2    = mu1+massDiff;
-	Double_t rms2       = massDiffFit->GetParameter(9);
-	Double_t sigma2     = massDiffFit->GetParameter(10);
-	Double_t f2         = massDiffFit->GetParameter(11);
-	Double_t CB_alpha2  = massDiffFit->GetParameter(12);
-	Double_t CB_n2      = massDiffFit->GetParameter(13);
-//exp background
-	Double_t exp_int    = massDiffFit->GetParameter(14);
-	Double_t exp_coef   = massDiffFit->GetParameter(15);
-
-
-
-
-
-
-
-//manually fill first gaussian
-	firstGaussianFit->SetParameter(0, nSignal1);
-	firstGaussianFit->SetParameter(1, mu1);
-	firstGaussianFit->SetParameter(2, rms1);
-	firstGaussianFit->SetParameter(3, sigma1);
-	firstGaussianFit->SetParameter(4, f1);
-	firstGaussianFit->SetParameter(5, CB_alpha1);
-	firstGaussianFit->SetParameter(6, CB_n1);
-//manually fill first CB
-	firstCBFit->SetParameter(0, nSignal1);
-	firstCBFit->SetParameter(1, mu1);
-	firstCBFit->SetParameter(2, rms1);
-	firstCBFit->SetParameter(3, sigma1);
-	firstCBFit->SetParameter(4, f1);
-	firstCBFit->SetParameter(5, CB_alpha1);
-	firstCBFit->SetParameter(6, CB_n1);
-
-//manually fill second gaussian
-	secondGaussianFit->SetParameter(0, nSignal2);
-	secondGaussianFit->SetParameter(1, mu2);
-	secondGaussianFit->SetParameter(2, rms2);
-	secondGaussianFit->SetParameter(3, sigma2);
-	secondGaussianFit->SetParameter(4, f2);
-	secondGaussianFit->SetParameter(5, CB_alpha2);
-	secondGaussianFit->SetParameter(6, CB_n2);
-//manually fill second CB
-	secondCBFit->SetParameter(0, nSignal2);
-	secondCBFit->SetParameter(1, mu2);
-	secondCBFit->SetParameter(2, rms2);
-	secondCBFit->SetParameter(3, sigma2);
-	secondCBFit->SetParameter(4, f2);
-	secondCBFit->SetParameter(5, CB_alpha2);
-	secondCBFit->SetParameter(6, CB_n2);
-
-//manually fill background exponential information
-	backgroundFit->SetParameter(0,exp_int);
-	backgroundFit->SetParameter(1,exp_coef);
-
-
-
-
-
-
-
-
 
 
 
@@ -316,6 +244,67 @@ cout << "exp coef: " << expCoefGuess << endl;
 auto totalpullcan = new TCanvas("totalpullcan", "totalpullcan", 1000, 800);
 totalpullcan->SetLogy();
 dpdspHist->Fit("massDiffFit","R");
+
+	//get the parameters back for isolated signal plotting
+	//signal 2
+		Double_t nSignal1   = massDiffFit->GetParameter(0);
+		Double_t mu1        = massDiffFit->GetParameter(1);
+		Double_t rms1       = massDiffFit->GetParameter(2);
+		Double_t sigma1     = massDiffFit->GetParameter(3);
+		Double_t f1         = massDiffFit->GetParameter(4);
+		Double_t CB_alpha1  = massDiffFit->GetParameter(5);
+		Double_t CB_n1      = massDiffFit->GetParameter(6);
+	//signal 2
+		Double_t nSignal2   = massDiffFit->GetParameter(7);
+		Double_t massDiff   = massDiffFit->GetParameter(8);
+			Double_t mu2    = mu1+massDiff;
+		Double_t rms2       = massDiffFit->GetParameter(9);
+		Double_t sigma2     = massDiffFit->GetParameter(10);
+		Double_t f2         = massDiffFit->GetParameter(11);
+		Double_t CB_alpha2  = massDiffFit->GetParameter(12);
+		Double_t CB_n2      = massDiffFit->GetParameter(13);
+	//exp background
+		Double_t exp_int    = massDiffFit->GetParameter(14);
+		Double_t exp_coef   = massDiffFit->GetParameter(15);
+
+	//manually fill first gaussian
+		firstGaussianFit->SetParameter(0, nSignal1);
+		firstGaussianFit->SetParameter(1, mu1);
+		firstGaussianFit->SetParameter(2, rms1);
+		firstGaussianFit->SetParameter(3, sigma1);
+		firstGaussianFit->SetParameter(4, f1);
+		firstGaussianFit->SetParameter(5, CB_alpha1);
+		firstGaussianFit->SetParameter(6, CB_n1);
+	//manually fill first CB
+		firstCBFit->SetParameter(0, nSignal1);
+		firstCBFit->SetParameter(1, mu1);
+		firstCBFit->SetParameter(2, rms1);
+		firstCBFit->SetParameter(3, sigma1);
+		firstCBFit->SetParameter(4, f1);
+		firstCBFit->SetParameter(5, CB_alpha1);
+		firstCBFit->SetParameter(6, CB_n1);
+
+	//manually fill second gaussian
+		secondGaussianFit->SetParameter(0, nSignal2);
+		secondGaussianFit->SetParameter(1, mu2);
+		secondGaussianFit->SetParameter(2, rms2);
+		secondGaussianFit->SetParameter(3, sigma2);
+		secondGaussianFit->SetParameter(4, f2);
+		secondGaussianFit->SetParameter(5, CB_alpha2);
+		secondGaussianFit->SetParameter(6, CB_n2);
+	//manually fill second CB
+		secondCBFit->SetParameter(0, nSignal2);
+		secondCBFit->SetParameter(1, mu2);
+		secondCBFit->SetParameter(2, rms2);
+		secondCBFit->SetParameter(3, sigma2);
+		secondCBFit->SetParameter(4, f2);
+		secondCBFit->SetParameter(5, CB_alpha2);
+		secondCBFit->SetParameter(6, CB_n2);
+
+	//manually fill background exponential information
+		backgroundFit->SetParameter(0,exp_int);
+		backgroundFit->SetParameter(1,exp_coef);
+
 dpdspHist->Draw();
 firstGaussianFit->Draw("same");
 firstCBFit->Draw("same");

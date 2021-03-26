@@ -252,70 +252,6 @@ cout << "exp coef: " << expCoefGuess << endl;
 	//dpdspFit->SetParLimits(15, 0, -0.001);
 
 
-//get the parameters back for isolated signal plotting
-//signal 2
-	Double_t nSignal1   = dpdspFit->GetParameter(0);
-	Double_t mu1        = dpdspFit->GetParameter(1);
-	Double_t rms1       = dpdspFit->GetParameter(2);
-	Double_t sigma1     = dpdspFit->GetParameter(3);
-	Double_t f1         = dpdspFit->GetParameter(4);
-	Double_t CB_alpha1  = dpdspFit->GetParameter(5);
-	Double_t CB_n1      = dpdspFit->GetParameter(6);
-//signal 2
-	Double_t nSignal2   = dpdspFit->GetParameter(7);
-	Double_t mu2        = dpdspFit->GetParameter(8);
-	Double_t rms2       = dpdspFit->GetParameter(9);
-	Double_t sigma2     = dpdspFit->GetParameter(10);
-	Double_t f2         = dpdspFit->GetParameter(11);
-	Double_t CB_alpha2  = dpdspFit->GetParameter(12);
-	Double_t CB_n2      = dpdspFit->GetParameter(13);
-//exp background
-	Double_t exp_int    = dpdspFit->GetParameter(14);
-	Double_t exp_coef   = dpdspFit->GetParameter(15);
-
-
-
-
-
-
-
-//manually fill first gaussian
-	firstGaussianFit->SetParameter(0, nSignal1);
-	firstGaussianFit->SetParameter(1, mu1);
-	firstGaussianFit->SetParameter(2, rms1);
-	firstGaussianFit->SetParameter(3, sigma1);
-	firstGaussianFit->SetParameter(4, f1);
-	firstGaussianFit->SetParameter(5, CB_alpha1);
-	firstGaussianFit->SetParameter(6, CB_n1);
-//manually fill first CB
-	firstCBFit->SetParameter(0, nSignal1);
-	firstCBFit->SetParameter(1, mu1);
-	firstCBFit->SetParameter(2, rms1);
-	firstCBFit->SetParameter(3, sigma1);
-	firstCBFit->SetParameter(4, f1);
-	firstCBFit->SetParameter(5, CB_alpha1);
-	firstCBFit->SetParameter(6, CB_n1);
-
-//manually fill second gaussian
-	secondGaussianFit->SetParameter(0, nSignal2);
-	secondGaussianFit->SetParameter(1, mu2);
-	secondGaussianFit->SetParameter(2, rms2);
-	secondGaussianFit->SetParameter(3, sigma2);
-	secondGaussianFit->SetParameter(4, f2);
-	secondGaussianFit->SetParameter(5, CB_alpha2);
-	secondGaussianFit->SetParameter(6, CB_n2);
-//manually fill second CB
-	secondCBFit->SetParameter(0, nSignal2);
-	secondCBFit->SetParameter(1, mu2);
-	secondCBFit->SetParameter(2, rms2);
-	secondCBFit->SetParameter(3, sigma2);
-	secondCBFit->SetParameter(4, f2);
-	secondCBFit->SetParameter(5, CB_alpha2);
-	secondCBFit->SetParameter(6, CB_n2);
-
-//manually fill background exponential information
-	backgroundFit->SetParameter(0,exp_int);
-	backgroundFit->SetParameter(1,exp_coef);
 
 
 
@@ -330,9 +266,86 @@ cout << "exp coef: " << expCoefGuess << endl;
 
 
 
-auto totalpullcan = new TCanvas("totalpullcan", "totalpullcan", 1000, 800);
-totalpullcan->SetLogy();
+
+auto totalpullcan = new TCanvas("totalpullcan", "totalpullcan", 1400, 800);
+
+TPad *pad1 = new TPad("pad1","pad1",0,0.25,0.75,1.0);//for the main hist
+TPad *pad2 = new TPad("pad2","pad2",0,0.0,0.75,0.25);//for the pull plot
+TPad *pad3 = new TPad("pad3","pad3",0.75,0.0,1.0,1.0);//for info
+	pad1->Draw();
+	pad2->Draw();
+	pad3->Draw();
+
+
+
+pad1->cd();
+	pad1->SetBottomMargin(0);
+	pad1->SetLeftMargin(0.15);
+	pad1->SetRightMargin(0.05);
+	pad1->SetLogy();
+	pad1->SetGridy();
+
 dpdspHist->Fit("dpdspFit","R");
+
+	//get the parameters back for isolated signal plotting
+	//signal 2
+		Double_t nSignal1   = dpdspFit->GetParameter(0);
+		Double_t mu1        = dpdspFit->GetParameter(1);
+		Double_t rms1       = dpdspFit->GetParameter(2);
+		Double_t sigma1     = dpdspFit->GetParameter(3);
+		Double_t f1         = dpdspFit->GetParameter(4);
+		Double_t CB_alpha1  = dpdspFit->GetParameter(5);
+		Double_t CB_n1      = dpdspFit->GetParameter(6);
+	//signal 2
+		Double_t nSignal2   = dpdspFit->GetParameter(7);
+		Double_t mu2        = dpdspFit->GetParameter(8);
+		Double_t rms2       = dpdspFit->GetParameter(9);
+		Double_t sigma2     = dpdspFit->GetParameter(10);
+		Double_t f2         = dpdspFit->GetParameter(11);
+		Double_t CB_alpha2  = dpdspFit->GetParameter(12);
+		Double_t CB_n2      = dpdspFit->GetParameter(13);
+	//exp background
+		Double_t exp_int    = dpdspFit->GetParameter(14);
+		Double_t exp_coef   = dpdspFit->GetParameter(15);
+
+	//manually fill first gaussian
+		firstGaussianFit->SetParameter(0, nSignal1);
+		firstGaussianFit->SetParameter(1, mu1);
+		firstGaussianFit->SetParameter(2, rms1);
+		firstGaussianFit->SetParameter(3, sigma1);
+		firstGaussianFit->SetParameter(4, f1);
+		firstGaussianFit->SetParameter(5, CB_alpha1);
+		firstGaussianFit->SetParameter(6, CB_n1);
+	//manually fill first CB
+		firstCBFit->SetParameter(0, nSignal1);
+		firstCBFit->SetParameter(1, mu1);
+		firstCBFit->SetParameter(2, rms1);
+		firstCBFit->SetParameter(3, sigma1);
+		firstCBFit->SetParameter(4, f1);
+		firstCBFit->SetParameter(5, CB_alpha1);
+		firstCBFit->SetParameter(6, CB_n1);
+
+	//manually fill second gaussian
+		secondGaussianFit->SetParameter(0, nSignal2);
+		secondGaussianFit->SetParameter(1, mu2);
+		secondGaussianFit->SetParameter(2, rms2);
+		secondGaussianFit->SetParameter(3, sigma2);
+		secondGaussianFit->SetParameter(4, f2);
+		secondGaussianFit->SetParameter(5, CB_alpha2);
+		secondGaussianFit->SetParameter(6, CB_n2);
+	//manually fill second CB
+		secondCBFit->SetParameter(0, nSignal2);
+		secondCBFit->SetParameter(1, mu2);
+		secondCBFit->SetParameter(2, rms2);
+		secondCBFit->SetParameter(3, sigma2);
+		secondCBFit->SetParameter(4, f2);
+		secondCBFit->SetParameter(5, CB_alpha2);
+		secondCBFit->SetParameter(6, CB_n2);
+
+	//manually fill background exponential information
+		backgroundFit->SetParameter(0,exp_int);
+		backgroundFit->SetParameter(1,exp_coef);
+
 dpdspHist->Draw();
 firstGaussianFit->Draw("same");
 firstCBFit->Draw("same");
@@ -340,6 +353,88 @@ secondGaussianFit->Draw("same");
 secondCBFit->Draw("same");
 backgroundFit->Draw("same");
 
+
+
+
+
+
+
+
+
+	pad2->cd();
+		pad2->SetTopMargin(0);
+		pad2->SetBottomMargin(0.4);
+		pad2->SetLeftMargin(0.15);
+		pad2->SetRightMargin(0.05);
+		pad2->SetGridx();
+
+
+	 Double_t xVals[260];
+	 Double_t yVals[260];
+	 for (Int_t i=1;i<260;i++) {
+	 Double_t x = dpdspHist->GetBinCenter(i);
+	 Double_t val = dpdspFit->Eval(dpdspHist->GetBinCenter(i));
+	 Double_t sigma = sqrt(val);
+	 Double_t pull = (dpdspHist->GetBinContent(i)-val)/sigma;
+	 pullHist->SetBinContent(i,pull);
+	   xVals[i]=x;
+	   yVals[i]=pull;
+	   }
+	pullHist->Draw();
+
+
+
+
+
+	pad3->cd();
+		//pad3->SetTopMargin(0);
+		pad3->SetBottomMargin(0);
+		pad3->SetLeftMargin(-0.15);
+		pad3->SetRightMargin(0);
+
+	auto fitlegend = new TLegend(00,0.77,0.8,0.925);//(0.7,0.7,0.9,0.9);
+		fitlegend->SetTextSize(0.08);
+		fitlegend->AddEntry(dpdspFit, "Total Fit", "l");
+		fitlegend->AddEntry(firstGaussianFit, "Gaussian Fit", "l");
+		fitlegend->AddEntry(firstCBFit, "CB Fit", "l");
+		fitlegend->AddEntry(backgroundFit, "Exp Fit", "l");
+		fitlegend->Draw();
+
+
+
+		TString mu1Str;
+			TString mu1Strpm;
+			mu1Str.Form("%5.6f\n",mu1);
+			mu1Strpm.Form("%5.6f\n",dpdspFit->GetParError(1));
+		TString nSignal1Str;
+			TString nSignal1Strpm;
+			nSignal1Str.Form("%5.0f\n",nSignal1);
+			nSignal1Strpm.Form("%5.0f\n",dpdspFit->GetParError(0));
+		TString mu2Str;
+			TString mu2Strpm;
+			mu2Str.Form("%5.6f\n",mu2);
+			mu2Strpm.Form("%5.6f\n",dpdspFit->GetParError(8));
+		TString nSignal2Str;
+			TString nSignal2Strpm;
+			nSignal2Str.Form("%5.0f\n",nSignal2);
+			nSignal2Strpm.Form("%5.0f\n",dpdspFit->GetParError(7));
+
+
+		auto lt = new TLatex();
+			lt->SetTextSize(0.05);
+			lt->DrawLatexNDC(0, 0.72, "m(D^{+}) = "+mu1Str+" #pm "+mu1Strpm+" MeV/c^{2}");
+			lt->DrawLatexNDC(0, 0.69, "D^{+} Signal Events = "+nSignal1Str+" #pm "+nSignal1Strpm);
+			lt->DrawLatexNDC(0, 0.45, "m(D_{s}) = "+mu2Str+" #pm "+mu2Strpm+" MeV/c^{2}");
+			lt->DrawLatexNDC(0, 0.42, "D_{s} Signal Events = "+nSignal2Str+" #pm "+nSignal2Strpm);
+
+
+
+
+
+
+
+
+totalpullcan->cd();
 totalpullcan->SaveAs("image/aaafinal_dp_dsp_gaus-cb-exp_log.png");
 
 
