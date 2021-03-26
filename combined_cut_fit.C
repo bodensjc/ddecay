@@ -402,30 +402,85 @@ backgroundFit->Draw("same");
 
 
 
-		TString mu1Str;
-			TString mu1Strpm;
-			mu1Str.Form("%5.6f\n",mu1);
-			mu1Strpm.Form("%5.6f\n",dpdspFit->GetParError(1));
 		TString nSignal1Str;
 			TString nSignal1Strpm;
 			nSignal1Str.Form("%5.0f\n",nSignal1);
 			nSignal1Strpm.Form("%5.0f\n",dpdspFit->GetParError(0));
-		TString mu2Str;
-			TString mu2Strpm;
-			mu2Str.Form("%5.6f\n",mu2);
-			mu2Strpm.Form("%5.6f\n",dpdspFit->GetParError(8));
+		TString mu1Str;
+			TString mu1Strpm;
+			mu1Str.Form("%5.6f\n",mu1);
+			mu1Strpm.Form("%5.6f\n",dpdspFit->GetParError(1));
+		TString rmsWidth1Str;
+			TString rmsWidth1Strpm;
+			rmsWidth1Str.Form("%5.0f\n",rms1);
+			rmsWidth1Strpm.Form("%5.0f\n",dpdspFit->GetParError(2));
+		TString gaus_frac1Str;
+			TString gaus_frac1Strpm;
+			gaus_frac1Str.Form("%5.0f\n",f1);
+			gaus_frac1Strpm.Form("%5.0f\n",dpdspFit->GetParError(4));
+		TString CBalpha1Str;
+			TString CBalpha1Strpm;
+			CBalpha1Str.Form("%5.0f\n",CB_alpha1);
+			CBalpha1Strpm.Form("%5.0f\n",dpdspFit->GetParError(5));
+		TString CBn1Str;
+			TString CBn1Strpm;
+			CBn1Str.Form("%5.0f\n",CB_n1);
+			CBn1Strpm.Form("%5.0f\n",dpdspFit->GetParError(6));
+
 		TString nSignal2Str;
 			TString nSignal2Strpm;
 			nSignal2Str.Form("%5.0f\n",nSignal2);
 			nSignal2Strpm.Form("%5.0f\n",dpdspFit->GetParError(7));
+		TString mu2Str;
+			TString mu2Strpm;
+			mu2Str.Form("%5.6f\n",mu2);
+			mu2Strpm.Form("%5.6f\n",dpdspFit->GetParError(8));
+		TString rmsWidth2Str;
+			TString rmsWidth2Strpm;
+			rmsWidth2Str.Form("%5.0f\n",rms2);
+			rmsWidth2Strpm.Form("%5.0f\n",dpdspFit->GetParError(9));
+		TString gaus_frac2Str;
+			TString gaus_frac2Strpm;
+			gaus_frac2Str.Form("%5.0f\n",f2);
+			gaus_frac2Strpm.Form("%5.0f\n",dpdspFit->GetParError(11));
+		TString CBalpha2Str;
+			TString CBalpha2Strpm;
+			CBalpha2Str.Form("%5.0f\n",CB_alpha2);
+			CBalpha2Strpm.Form("%5.0f\n",dpdspFit->GetParError(12));
+		TString CBn2Str;
+			TString CBn2Strpm;
+			CBn2Str.Form("%5.0f\n",CB_n2);
+			CBn2Strpm.Form("%5.0f\n",dpdspFit->GetParError(13));
+
+
+		TString expIntStr;
+			TString expIntStrpm;
+			expIntStr.Form("%5.0f\n",exp_int);
+			expIntStrpm.Form("%5.0f\n",dpdspFit->GetParError(14));
+		TString expCoefStr;
+			TString expCoefStrpm;
+			expCoefStr.Form("%5.0f\n",exp_coef)
+			expCoefStrpm.Form("%5.0f\n",dpdspFit->GetParError(15));
 
 
 		auto lt = new TLatex();
 			lt->SetTextSize(0.05);
-			lt->DrawLatexNDC(0, 0.72, "m(D^{+}) = "+mu1Str+" #pm "+mu1Strpm+" MeV/c^{2}");
-			lt->DrawLatexNDC(0, 0.69, "D^{+} Signal Events = "+nSignal1Str+" #pm "+nSignal1Strpm);
-			lt->DrawLatexNDC(0, 0.45, "m(D_{s}) = "+mu2Str+" #pm "+mu2Strpm+" MeV/c^{2}");
-			lt->DrawLatexNDC(0, 0.42, "D_{s} Signal Events = "+nSignal2Str+" #pm "+nSignal2Strpm);
+			lt->DrawLatexNDC(0, 0.72, "D^{+} Signal Events = "+nSignal1Str+" #pm "+nSignal1Strpm);
+			lt->DrawLatexNDC(0, 0.69, "m(D^{+}) = "+mu1Str+" #pm "+mu1Strpm+" MeV/c^{2}");
+			lt->DrawLatexNDC(0, 0.66, "D^{+} RMS Width = "+rmsWidth1Str+" #pm "+rmsWidth1Strpm);
+			lt->DrawLatexNDC(0, 0.63, "D^{+} Fraction Gaus = "+gaus_frac1Str+" #pm "+gaus_frac1Strpm);
+			lt->DrawLatexNDC(0, 0.60, "D^{+} CB alpha = "+CBalpha1Str+" #pm "+CBalpha1Strpm);
+			lt->DrawLatexNDC(0, 0.57, "D^{+} CB n = "+CBn1Str+" #pm "+CBn1Strpm);
+
+			lt->DrawLatexNDC(0, 0.50, "D_{s} Signal Events = "+nSignal2Str+" #pm "+nSignal2Strpm);
+			lt->DrawLatexNDC(0, 0.47, "m(D_{s}) = "+mu2Str+" #pm "+mu2Strpm+" MeV/c^{2}");
+			lt->DrawLatexNDC(0, 0.44, "D_{s} RMS Width = "+rmsWidth2Str+" #pm "+rmsWidth2Strpm);
+			lt->DrawLatexNDC(0, 0.41, "D_{s} Fraction Gaus = "+gaus_frac2Str+" #pm "+gaus_frac2Strpm);
+			lt->DrawLatexNDC(0, 0.38, "D_{s} CB alpha = "+CBalpha2Str+" #pm "+CBalpha2Strpm);
+			lt->DrawLatexNDC(0, 0.35, "D_{s} CB n = "+CBn2Str+" #pm "+CBn2Strpm);
+
+			lt->DrawLatexNDC(0, 0.38, "Exp Int. = "+expIntStr+" #pm "+expIntStrpm);
+			lt->DrawLatexNDC(0, 0.35, "Exp Coef. = "+expCoefStr+" #pm "+expCoefStrpm);
 
 
 
