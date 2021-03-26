@@ -1,4 +1,5 @@
 TCK information:
+-
 
 Both of the following contain both magup and magdown data:
 *OdinTCK 115617070	*OdinTCK 116117090
