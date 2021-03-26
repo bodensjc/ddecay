@@ -232,7 +232,7 @@ cout << "exp coef: " << expCoefGuess << endl;
 	dpdspFit->SetParLimits(4,0.000001,0.99999);
 	dpdspFit->SetParameter(5, 1.5);//crystal ball alpha
 	dpdspFit->SetParameter(6,2.5);//crystal ball n
-	//dpdspFit->SetParLimits(6,1.00001,6.);
+	//dpdspFit->SetParLimits(6,1.00001,10);
 //dsp mass peak
 	dpdspFit->SetParameter(7,nSignal2Guess);//nSignal
 	//dpdspFit->SetParLimits(7,7000000,8000000);
@@ -286,6 +286,8 @@ pad1->cd();
 	pad1->SetGridy();
 
 dpdspHist->Fit("dpdspFit","R");
+//TF1 *fit = dpdspHist->GetFunction("dpdspFit");
+//TFitResultPtr fitResultPointer = dpdspHist->Fit("dpdspFit","R");
 
 	//get the parameters back for isolated signal plotting
 	//signal 2
@@ -412,20 +414,20 @@ backgroundFit->Draw("same");
 			mu1Strpm.Form("%5.6f\n",dpdspFit->GetParError(1));
 		TString rmsWidth1Str;
 			TString rmsWidth1Strpm;
-			rmsWidth1Str.Form("%5.0f\n",rms1);
-			rmsWidth1Strpm.Form("%5.0f\n",dpdspFit->GetParError(2));
+			rmsWidth1Str.Form("%5.3f\n",rms1);
+			rmsWidth1Strpm.Form("%5.3f\n",dpdspFit->GetParError(2));
 		TString gaus_frac1Str;
 			TString gaus_frac1Strpm;
-			gaus_frac1Str.Form("%5.0f\n",f1);
-			gaus_frac1Strpm.Form("%5.0f\n",dpdspFit->GetParError(4));
+			gaus_frac1Str.Form("%5.3f\n",f1);
+			gaus_frac1Strpm.Form("%5.3f\n",dpdspFit->GetParError(4));
 		TString CBalpha1Str;
 			TString CBalpha1Strpm;
-			CBalpha1Str.Form("%5.0f\n",CB_alpha1);
-			CBalpha1Strpm.Form("%5.0f\n",dpdspFit->GetParError(5));
+			CBalpha1Str.Form("%5.3f\n",CB_alpha1);
+			CBalpha1Strpm.Form("%5.3f\n",dpdspFit->GetParError(5));
 		TString CBn1Str;
 			TString CBn1Strpm;
-			CBn1Str.Form("%5.0f\n",CB_n1);
-			CBn1Strpm.Form("%5.0f\n",dpdspFit->GetParError(6));
+			CBn1Str.Form("%5.3f\n",CB_n1);
+			CBn1Strpm.Form("%5.3f\n",dpdspFit->GetParError(6));
 
 		TString nSignal2Str;
 			TString nSignal2Strpm;
@@ -437,30 +439,34 @@ backgroundFit->Draw("same");
 			mu2Strpm.Form("%5.6f\n",dpdspFit->GetParError(8));
 		TString rmsWidth2Str;
 			TString rmsWidth2Strpm;
-			rmsWidth2Str.Form("%5.0f\n",rms2);
-			rmsWidth2Strpm.Form("%5.0f\n",dpdspFit->GetParError(9));
+			rmsWidth2Str.Form("%5.3f\n",rms2);
+			rmsWidth2Strpm.Form("%5.3f\n",dpdspFit->GetParError(9));
 		TString gaus_frac2Str;
 			TString gaus_frac2Strpm;
-			gaus_frac2Str.Form("%5.0f\n",f2);
-			gaus_frac2Strpm.Form("%5.0f\n",dpdspFit->GetParError(11));
+			gaus_frac2Str.Form("%5.3f\n",f2);
+			gaus_frac2Strpm.Form("%5.3f\n",dpdspFit->GetParError(11));
 		TString CBalpha2Str;
 			TString CBalpha2Strpm;
-			CBalpha2Str.Form("%5.0f\n",CB_alpha2);
-			CBalpha2Strpm.Form("%5.0f\n",dpdspFit->GetParError(12));
+			CBalpha2Str.Form("%5.3f\n",CB_alpha2);
+			CBalpha2Strpm.Form("%5.3f\n",dpdspFit->GetParError(12));
 		TString CBn2Str;
 			TString CBn2Strpm;
-			CBn2Str.Form("%5.0f\n",CB_n2);
-			CBn2Strpm.Form("%5.0f\n",dpdspFit->GetParError(13));
+			CBn2Str.Form("%5.3f\n",CB_n2);
+			CBn2Strpm.Form("%5.3f\n",dpdspFit->GetParError(13));
 
 
 		TString expIntStr;
 			TString expIntStrpm;
-			expIntStr.Form("%5.0f\n",exp_int);
-			expIntStrpm.Form("%5.0f\n",dpdspFit->GetParError(14));
+			expIntStr.Form("%5.3f\n",exp_int);
+			expIntStrpm.Form("%5.3f\n",dpdspFit->GetParError(14));
 		TString expCoefStr;
 			TString expCoefStrpm;
-			expCoefStr.Form("%5.0f\n",exp_coef)
-			expCoefStrpm.Form("%5.0f\n",dpdspFit->GetParError(15));
+			expCoefStr.Form("%5.3f\n",exp_coef);
+			expCoefStrpm.Form("%5.3f\n",dpdspFit->GetParError(15));
+
+		TString EDMStr;
+			Double_t EDMval = 0.000107573;
+			EDMStr.Form("%5.6f\n",EDMval);
 
 
 		auto lt = new TLatex();
@@ -479,8 +485,10 @@ backgroundFit->Draw("same");
 			lt->DrawLatexNDC(0, 0.38, "D_{s} CB alpha = "+CBalpha2Str+" #pm "+CBalpha2Strpm);
 			lt->DrawLatexNDC(0, 0.35, "D_{s} CB n = "+CBn2Str+" #pm "+CBn2Strpm);
 
-			lt->DrawLatexNDC(0, 0.38, "Exp Int. = "+expIntStr+" #pm "+expIntStrpm);
-			lt->DrawLatexNDC(0, 0.35, "Exp Coef. = "+expCoefStr+" #pm "+expCoefStrpm);
+			lt->DrawLatexNDC(0, 0.28, "Exp Int. = "+expIntStr+" #pm "+expIntStrpm);
+			lt->DrawLatexNDC(0, 0.25, "Exp Coef. = "+expCoefStr+" #pm "+expCoefStrpm);
+
+			lt->DrawLatexNDC(0, 0.15, "EDM = "+EDMStr);
 
 
 
