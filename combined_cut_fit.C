@@ -10,9 +10,21 @@
 //$ DecayTree->Process("combined_cut_fit.C")
 
 
+
+//************customization section**************88
+//these variables are changeable
+
 Int_t cutoffMass = 1920; // above (inclusive) this mass we use ds data, below we use dp data
 
 bool sameCB = 1; //1 if using sameCB, 0 otherwise
+
+Int_t fitStart = 1830;//1790 minimum
+Int_t fitEnd = 2010;//2050 maximum
+Int_t nBins = fitEnd - fitStart;
+
+
+bool takeMagUp = 1; //1:include, 0:dont
+bool takeMagDown = 0; //1:include, 0:dont
 
 
 
@@ -23,8 +35,6 @@ TH1 * pullHist = NULL;
 
 TF1 * dpdspFit = NULL;
 
-
-
 TF1 * backgroundFit = NULL;
 TF1 * firstGaussianFit = NULL;
 TF1 * firstCBFit = NULL;
@@ -32,10 +42,11 @@ TF1 * secondGaussianFit = NULL;
 TF1 * secondCBFit = NULL;
 
 
-Int_t fitStart = 1830;//1790 minimum
-Int_t fitEnd = 2010;//2050 maximum
-Int_t nBins = fitEnd - fitStart;
-
+//need to initialize these to resolve later confusions...
+TString CBn2Str;
+TString CBn2Strpm;
+TString CBalpha2Str;
+TString CBalpha2Strpm;
 
 
 void combined_cut_fit::Begin(TTree * /*tree*/)
@@ -179,9 +190,10 @@ Bool_t combined_cut_fit::Process(Long64_t entry)
 
 	Bool_t takeData = ((*particle_MM < cutoffMass) && (*isDp == 1)) || ((*particle_MM >= cutoffMass) && (*isDp == 0));
 
+	Bool_t goodPolarity = ((takeMagUp && (*Polarity == 1)) || (takeMagDown && (*Polarity == -1)));
 
 
-	if (takeData) // && *Polarity == 1
+	if (takeData && goodPolarity)
 	{
 		dpdspHist->Fill(*particle_MM);
 	}
@@ -323,6 +335,8 @@ if (sameCB) {
 		Double_t CB_alpha2 = CB_alpha1;
 		Double_t CB_n2 = CB_n1;
 }
+
+
 	//exp background
 		Double_t exp_int    = dpdspFit->GetParameter(14);
 		Double_t exp_coef   = dpdspFit->GetParameter(15);
@@ -436,11 +450,13 @@ backgroundFit->Draw("same");
 		TString CBalpha1Str;
 			TString CBalpha1Strpm;
 			CBalpha1Str.Form("%5.3f\n",CB_alpha1);
-			CBalpha1Strpm.Form("%5.3f\n",dpdspFit->GetParError(5));
+				Double_t CB_alpha_err = dpdspFit->GetParError(5);
+			CBalpha1Strpm.Form("%5.3f\n",CB_alpha_err);
 		TString CBn1Str;
 			TString CBn1Strpm;
 			CBn1Str.Form("%5.3f\n",CB_n1);
-			CBn1Strpm.Form("%5.3f\n",dpdspFit->GetParError(6));
+				Double_t CB_n_err = dpdspFit->GetParError(6);
+			CBn1Strpm.Form("%5.3f\n",CB_n_err);
 
 		TString nSignal2Str;
 			TString nSignal2Strpm;
@@ -458,27 +474,19 @@ backgroundFit->Draw("same");
 			TString gaus_frac2Strpm;
 			gaus_frac2Str.Form("%5.3f\n",f2);
 			gaus_frac2Strpm.Form("%5.3f\n",dpdspFit->GetParError(11));
-		TString CBalpha2Str;
-			TString CBalpha2Strpm;
-			CBalpha2Str.Form("%5.3f\n",CB_alpha1);//change if sameCB
-			CBalpha2Strpm.Form("%5.3f\n",dpdspFit->GetParError(12));
-		TString CBn2Str;
-			TString CBn2Strpm;
-			CBn2Str.Form("%5.3f\n",CB_n1);//change if s
-			CBn2Strpm.Form("%5.3f\n",dpdspFit->GetParError(13));
+
 
 if (sameCB) {
-		TString CBalpha2Str;
-			TString CBalpha2Strpm;
 			CBalpha2Str.Form("%5.3f\n",CB_alpha1);//change if sameCB
-			CBalpha2Strpm.Form("%5.3f\n",dpdspFit->GetParError(5));
-		TString CBn2Str;
-			TString CBn2Strpm;
+			CBalpha2Strpm.Form("%5.3f\n",CB_alpha_err);
 			CBn2Str.Form("%5.3f\n",CB_n1);//change if s
-			CBn2Strpm.Form("%5.3f\n",dpdspFit->GetParError(6));
+			CBn2Strpm.Form("%5.3f\n",CB_n_err);
+} else {
+			CBalpha2Str.Form("%5.3f\n",CB_alpha2);//change if sameCB
+			CBalpha2Strpm.Form("%5.3f\n",dpdspFit->GetParError(12));
+			CBn2Str.Form("%5.3f\n",CB_n2);//change if s
+			CBn2Strpm.Form("%5.3f\n",dpdspFit->GetParError(13));
 }
-
-
 
 
 
@@ -488,12 +496,13 @@ if (sameCB) {
 			expIntStrpm.Form("%5.3f\n",dpdspFit->GetParError(14));
 		TString expCoefStr;
 			TString expCoefStrpm;
-			expCoefStr.Form("%5.3f\n",exp_coef);
-			expCoefStrpm.Form("%5.3f\n",dpdspFit->GetParError(15));
+			expCoefStr.Form("%.3e\n",exp_coef);
+			expCoefStrpm.Form("%.3e\n",dpdspFit->GetParError(15));
 
 		TString EDMStr;
-			Double_t EDMval = 8.869e-07;//have to manually type this in for now...
+			Double_t EDMval = 9.290e-04;//have to manually type this in for now...
 			EDMStr.Form("%.3e\n",EDMval);
+
 
 
 		auto lt = new TLatex();
@@ -526,9 +535,9 @@ if (sameCB) {
 
 totalpullcan->cd();
 if (sameCB) {
-totalpullcan->SaveAs("image/aaafinal_dp_dsp_gaus-cb-exp_log_tighter_sameCB.png");
+totalpullcan->SaveAs("image/aaafinal_dp_dsp_gaus-cb-exp_log_tighter_sameCB_magup.png");
 } else {
-totalpullcan->SaveAs("image/aaafinal_dp_dsp_gaus-cb-exp_log_tighter.png");
+totalpullcan->SaveAs("image/aaafinal_dp_dsp_gaus-cb-exp_log_tighter_magup.png");
 }
 
 
