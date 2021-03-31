@@ -64,14 +64,12 @@ massDiffFit = new TF1("massDiffFit",fit1MeVdifference_Gaussian_CB_ExpBG,fitStart
 
 
 
-firstGaussianFit = new TF1("firstGaussianFit",Gaussian,fitStart,fitEnd, 7);
+firstGaussianFit = new TF1("firstGaussianFit",Gaussian,fitStart,fitEnd, 5);
 	firstGaussianFit->SetParName(0, "nSignal1");
 	firstGaussianFit->SetParName(1, "mu1");	
 	firstGaussianFit->SetParName(2, "rms_wdth1");	
 	firstGaussianFit->SetParName(3, "sigma_11");	
 	firstGaussianFit->SetParName(4, "gaus_frac1");	
-	firstGaussianFit->SetParName(5, "CB_alpha1");	
-	firstGaussianFit->SetParName(6, "CB_n1");	
 	firstGaussianFit->SetLineColor(kSpring-1);
 	firstGaussianFit->SetLineStyle(8);
 	firstGaussianFit->SetLineWidth(2);
@@ -87,14 +85,12 @@ firstCBFit = new TF1("firstCBFit", CB, fitStart, fitEnd, 7);
 	firstCBFit->SetLineStyle(5);
 	firstCBFit->SetLineWidth(2);
 
-secondGaussianFit = new TF1("secondGaussianFit",Gaussian,fitStart,fitEnd, 7);
+secondGaussianFit = new TF1("secondGaussianFit",Gaussian,fitStart,fitEnd, 5);
 	secondGaussianFit->SetParName(0, "nSignal2");
 	secondGaussianFit->SetParName(1, "mu2");	
 	secondGaussianFit->SetParName(2, "rms_wdth2");	
 	secondGaussianFit->SetParName(3, "sigma_12");	
 	secondGaussianFit->SetParName(4, "gaus_frac2");	
-	secondGaussianFit->SetParName(5, "CB_alpha2");	
-	secondGaussianFit->SetParName(6, "CB_n2");	
 	secondGaussianFit->SetLineColor(kSpring-1);
 	secondGaussianFit->SetLineStyle(8);
 	secondGaussianFit->SetLineWidth(2);
@@ -273,8 +269,7 @@ dpdspHist->Fit("massDiffFit","R");
 		firstGaussianFit->SetParameter(2, rms1);
 		firstGaussianFit->SetParameter(3, sigma1);
 		firstGaussianFit->SetParameter(4, f1);
-		firstGaussianFit->SetParameter(5, CB_alpha1);
-		firstGaussianFit->SetParameter(6, CB_n1);
+
 	//manually fill first CB
 		firstCBFit->SetParameter(0, nSignal1);
 		firstCBFit->SetParameter(1, mu1);
@@ -283,15 +278,12 @@ dpdspHist->Fit("massDiffFit","R");
 		firstCBFit->SetParameter(4, f1);
 		firstCBFit->SetParameter(5, CB_alpha1);
 		firstCBFit->SetParameter(6, CB_n1);
-
 	//manually fill second gaussian
 		secondGaussianFit->SetParameter(0, nSignal2);
 		secondGaussianFit->SetParameter(1, mu2);
 		secondGaussianFit->SetParameter(2, rms2);
 		secondGaussianFit->SetParameter(3, sigma2);
 		secondGaussianFit->SetParameter(4, f2);
-		secondGaussianFit->SetParameter(5, CB_alpha2);
-		secondGaussianFit->SetParameter(6, CB_n2);
 	//manually fill second CB
 		secondCBFit->SetParameter(0, nSignal2);
 		secondCBFit->SetParameter(1, mu2);

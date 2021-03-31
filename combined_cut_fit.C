@@ -3,6 +3,7 @@
 #include <TH2.h>
 #include <TStyle.h>
 #include "scripts/fit_spectrum.C"
+#include <iostream>
 
 //run by doing:
 //$ root -l /share/lazy/D2KKpi/combined_cut.root
@@ -10,6 +11,11 @@
 
 
 Int_t cutoffMass = 1920; // above (inclusive) this mass we use ds data, below we use dp data
+
+bool sameCB = 1; //1 if using sameCB, 0 otherwise
+
+
+
 
 //********Definition Section************
 TH1 * dpdspHist = NULL;
@@ -26,8 +32,9 @@ TF1 * secondGaussianFit = NULL;
 TF1 * secondCBFit = NULL;
 
 
-Int_t fitStart = 1790;//1790 minimum
-Int_t fitEnd = 2050;//2050 maximum
+Int_t fitStart = 1830;//1790 minimum
+Int_t fitEnd = 2010;//2050 maximum
+Int_t nBins = fitEnd - fitStart;
 
 
 
@@ -36,7 +43,16 @@ void combined_cut_fit::Begin(TTree * /*tree*/)
    TString option = GetOption();
 
 //*********Initialization Section**********
+
+
+
+
+
+if (sameCB) {
+dpdspFit = new TF1("dpdspFit",fit1MeVspectrum_Gaussian_sameCB_ExpBG,fitStart,fitEnd, 16);
+} else {
 dpdspFit = new TF1("dpdspFit",fit1MeVspectrum_Gaussian_CB_ExpBG,fitStart,fitEnd, 16);
+}
 	dpdspFit->SetParName(0, "nSignal1");
 	dpdspFit->SetParName(1, "mu1");	
 	dpdspFit->SetParName(2, "rms_wdth1");	
@@ -58,14 +74,12 @@ dpdspFit = new TF1("dpdspFit",fit1MeVspectrum_Gaussian_CB_ExpBG,fitStart,fitEnd,
 
 
 
-firstGaussianFit = new TF1("firstGaussianFit",Gaussian,fitStart,fitEnd, 7);
+firstGaussianFit = new TF1("firstGaussianFit",Gaussian,fitStart,fitEnd, 5);
 	firstGaussianFit->SetParName(0, "nSignal1");
 	firstGaussianFit->SetParName(1, "mu1");	
 	firstGaussianFit->SetParName(2, "rms_wdth1");	
 	firstGaussianFit->SetParName(3, "sigma_11");	
-	firstGaussianFit->SetParName(4, "gaus_frac1");	
-	firstGaussianFit->SetParName(5, "CB_alpha1");	
-	firstGaussianFit->SetParName(6, "CB_n1");	
+	firstGaussianFit->SetParName(4, "gaus_frac1");		
 	firstGaussianFit->SetLineColor(kSpring-1);
 	firstGaussianFit->SetLineStyle(8);
 	firstGaussianFit->SetLineWidth(2);
@@ -81,14 +95,12 @@ firstCBFit = new TF1("firstCBFit", CB, fitStart, fitEnd, 7);
 	firstCBFit->SetLineStyle(5);
 	firstCBFit->SetLineWidth(2);
 
-secondGaussianFit = new TF1("secondGaussianFit",Gaussian,fitStart,fitEnd, 7);
+secondGaussianFit = new TF1("secondGaussianFit",Gaussian,fitStart,fitEnd, 5);
 	secondGaussianFit->SetParName(0, "nSignal2");
 	secondGaussianFit->SetParName(1, "mu2");	
 	secondGaussianFit->SetParName(2, "rms_wdth2");	
 	secondGaussianFit->SetParName(3, "sigma_12");	
 	secondGaussianFit->SetParName(4, "gaus_frac2");	
-	secondGaussianFit->SetParName(5, "CB_alpha2");	
-	secondGaussianFit->SetParName(6, "CB_n2");	
 	secondGaussianFit->SetLineColor(kSpring-1);
 	secondGaussianFit->SetLineStyle(8);
 	secondGaussianFit->SetLineWidth(2);
@@ -115,7 +127,7 @@ backgroundFit = new TF1("backgroundFit",backgroundExp,fitStart,fitEnd, 2);
 
 
 
-dpdspHist = new TH1D("dpdspHist","D^{+}_{(s)} #rightarrow K^{+}K^{-}#pi^{+} Cut and Fit",260,1790,2050);
+dpdspHist = new TH1D("dpdspHist","D^{+}_{(s)} #rightarrow K^{+}K^{-}#pi^{+} Cut and Fit",nBins,fitStart,fitEnd);
 	dpdspHist->SetStats(0);
 	dpdspHist->SetTitleFont(43);
 	dpdspHist->SetTitleSize(35);
@@ -130,7 +142,7 @@ dpdspHist = new TH1D("dpdspHist","D^{+}_{(s)} #rightarrow K^{+}K^{-}#pi^{+} Cut 
 
 
 
-pullHist = new TH1D("pullHist", "Pull Plot", 260,1790,2050);
+pullHist = new TH1D("pullHist", "Pull Plot", nBins,fitStart,fitEnd);
 	pullHist->SetStats(0);
 	pullHist->GetYaxis()->SetTitle("Pull");
 	pullHist->GetYaxis()->SetTitleSize(30);
@@ -202,8 +214,8 @@ Double_t dpPeak = 300000;
 Double_t dspPeak = 500000;
 
 //roughly first and last bin to guess exponential background
-Double_t firstbin = dpdspHist->GetBinContent(5);//also used as exp_intercept guess
-Double_t lastbin = dpdspHist->GetBinContent(250);
+Double_t firstbin = dpdspHist->GetBinContent(1);//also used as exp_intercept guess
+Double_t lastbin = dpdspHist->GetBinContent(nBins);
 
 Double_t nSignal1Guess = (dpPeak-firstbin)*15;
 Double_t nSignal2Guess = (dspPeak-firstbin)*15;
@@ -306,6 +318,11 @@ dpdspHist->Fit("dpdspFit","R");
 		Double_t f2         = dpdspFit->GetParameter(11);
 		Double_t CB_alpha2  = dpdspFit->GetParameter(12);
 		Double_t CB_n2      = dpdspFit->GetParameter(13);
+if (sameCB) {
+		cout << "CB is same" << endl;
+		Double_t CB_alpha2 = CB_alpha1;
+		Double_t CB_n2 = CB_n1;
+}
 	//exp background
 		Double_t exp_int    = dpdspFit->GetParameter(14);
 		Double_t exp_coef   = dpdspFit->GetParameter(15);
@@ -316,8 +333,6 @@ dpdspHist->Fit("dpdspFit","R");
 		firstGaussianFit->SetParameter(2, rms1);
 		firstGaussianFit->SetParameter(3, sigma1);
 		firstGaussianFit->SetParameter(4, f1);
-		firstGaussianFit->SetParameter(5, CB_alpha1);
-		firstGaussianFit->SetParameter(6, CB_n1);
 	//manually fill first CB
 		firstCBFit->SetParameter(0, nSignal1);
 		firstCBFit->SetParameter(1, mu1);
@@ -333,8 +348,6 @@ dpdspHist->Fit("dpdspFit","R");
 		secondGaussianFit->SetParameter(2, rms2);
 		secondGaussianFit->SetParameter(3, sigma2);
 		secondGaussianFit->SetParameter(4, f2);
-		secondGaussianFit->SetParameter(5, CB_alpha2);
-		secondGaussianFit->SetParameter(6, CB_n2);
 	//manually fill second CB
 		secondCBFit->SetParameter(0, nSignal2);
 		secondCBFit->SetParameter(1, mu2);
@@ -371,9 +384,9 @@ backgroundFit->Draw("same");
 		pad2->SetGridx();
 
 
-	 Double_t xVals[260];
-	 Double_t yVals[260];
-	 for (Int_t i=1;i<260;i++) {
+	 Double_t xVals[nBins];
+	 Double_t yVals[nBins];
+	 for (Int_t i=1;i<nBins;i++) {
 	 Double_t x = dpdspHist->GetBinCenter(i);
 	 Double_t val = dpdspFit->Eval(dpdspHist->GetBinCenter(i));
 	 Double_t sigma = sqrt(val);
@@ -447,12 +460,26 @@ backgroundFit->Draw("same");
 			gaus_frac2Strpm.Form("%5.3f\n",dpdspFit->GetParError(11));
 		TString CBalpha2Str;
 			TString CBalpha2Strpm;
-			CBalpha2Str.Form("%5.3f\n",CB_alpha2);
+			CBalpha2Str.Form("%5.3f\n",CB_alpha1);//change if sameCB
 			CBalpha2Strpm.Form("%5.3f\n",dpdspFit->GetParError(12));
 		TString CBn2Str;
 			TString CBn2Strpm;
-			CBn2Str.Form("%5.3f\n",CB_n2);
+			CBn2Str.Form("%5.3f\n",CB_n1);//change if s
 			CBn2Strpm.Form("%5.3f\n",dpdspFit->GetParError(13));
+
+if (sameCB) {
+		TString CBalpha2Str;
+			TString CBalpha2Strpm;
+			CBalpha2Str.Form("%5.3f\n",CB_alpha1);//change if sameCB
+			CBalpha2Strpm.Form("%5.3f\n",dpdspFit->GetParError(5));
+		TString CBn2Str;
+			TString CBn2Strpm;
+			CBn2Str.Form("%5.3f\n",CB_n1);//change if s
+			CBn2Strpm.Form("%5.3f\n",dpdspFit->GetParError(6));
+}
+
+
+
 
 
 		TString expIntStr;
@@ -465,8 +492,8 @@ backgroundFit->Draw("same");
 			expCoefStrpm.Form("%5.3f\n",dpdspFit->GetParError(15));
 
 		TString EDMStr;
-			Double_t EDMval = 0.000107573;
-			EDMStr.Form("%5.6f\n",EDMval);
+			Double_t EDMval = 8.869e-07;//have to manually type this in for now...
+			EDMStr.Form("%.3e\n",EDMval);
 
 
 		auto lt = new TLatex();
@@ -498,8 +525,11 @@ backgroundFit->Draw("same");
 
 
 totalpullcan->cd();
-totalpullcan->SaveAs("image/aaafinal_dp_dsp_gaus-cb-exp_log.png");
-
+if (sameCB) {
+totalpullcan->SaveAs("image/aaafinal_dp_dsp_gaus-cb-exp_log_tighter_sameCB.png");
+} else {
+totalpullcan->SaveAs("image/aaafinal_dp_dsp_gaus-cb-exp_log_tighter.png");
+}
 
 
 
