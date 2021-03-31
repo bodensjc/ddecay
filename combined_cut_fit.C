@@ -16,7 +16,7 @@
 
 Int_t cutoffMass = 1920; // above (inclusive) this mass we use ds data, below we use dp data
 
-bool sameCB = 1; //1 if using sameCB, 0 otherwise
+bool sameCB = 0; //1 if using sameCB, 0 otherwise
 
 Int_t fitStart = 1830;//1790 minimum
 Int_t fitEnd = 2010;//2050 maximum
@@ -24,7 +24,7 @@ Int_t nBins = fitEnd - fitStart;
 
 
 bool takeMagUp = 1; //1:include, 0:dont
-bool takeMagDown = 0; //1:include, 0:dont
+bool takeMagDown = 1; //1:include, 0:dont
 
 
 
@@ -500,7 +500,7 @@ if (sameCB) {
 			expCoefStrpm.Form("%.3e\n",dpdspFit->GetParError(15));
 
 		TString EDMStr;
-			Double_t EDMval = 9.290e-04;//have to manually type this in for now...
+			Double_t EDMval = 1.537e-06;//have to manually type this in for now...
 			EDMStr.Form("%.3e\n",EDMval);
 
 
@@ -535,9 +535,9 @@ if (sameCB) {
 
 totalpullcan->cd();
 if (sameCB) {
-totalpullcan->SaveAs("image/aaafinal_dp_dsp_gaus-cb-exp_log_tighter_sameCB_magup.png");
+totalpullcan->SaveAs("image/aaafinal_dp_dsp_gaus-cb-exp_log_tighter_sameCB.png");
 } else {
-totalpullcan->SaveAs("image/aaafinal_dp_dsp_gaus-cb-exp_log_tighter_magup.png");
+totalpullcan->SaveAs("image/aaafinal_dp_dsp_gaus-cb-exp_log_tighter.png");
 }
 
 
