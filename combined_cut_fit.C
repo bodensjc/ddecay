@@ -11,7 +11,7 @@
 
 
 
-//************customization section**************88
+//************customization section**************
 //these variables are changeable
 
 Int_t cutoffMass = 1920; // above (inclusive) this mass we use ds data, below we use dp data
@@ -212,16 +212,7 @@ void combined_cut_fit::SlaveTerminate() {}
 void combined_cut_fit::Terminate()
 {
 //*********Wrap-up section********
-/*
-dpdspHist->GetXaxis()->SetRangeUser(1840,1900);
-Double_t dpPeak = dpdspHist->GetBinContent(dpdspHist->GetMaximumBin());
-dpdspHist->GetXaxis()->SetRangeUser(1940,2000);
-Double_t dspPeak = dpdspHist->GetBinContent(dpdspHist->GetMaximumBin());
-dpdspHist->GetXaxis()->setRangeUser(1790, 2050);
 
-cout << "signal 1 peak content: " << dpPeak << endl;
-cout << "signal 2 peak content: " << dspPeak << endl;
-*/
 Double_t dpPeak = 300000;
 Double_t dspPeak = 500000;
 
@@ -233,12 +224,8 @@ Double_t nSignal1Guess = (dpPeak-firstbin)*15;
 Double_t nSignal2Guess = (dspPeak-firstbin)*15;
 Double_t expCoefGuess = (lastbin-firstbin)/245000;
 
-
-
 cout << "first bin: " << firstbin << endl;
 cout << "last bin: " << lastbin << endl;
-cout << "exp coef: " << expCoefGuess << endl;
-
 
 //first bin is about 3k, use this for rough signal limits
 //dp: 4-5 mil
@@ -274,14 +261,6 @@ cout << "exp coef: " << expCoefGuess << endl;
 	dpdspFit->SetParameter(14,firstbin);//exp intercept
 	dpdspFit->SetParameter(15,expCoefGuess);//coefficient background exponential
 	//dpdspFit->SetParLimits(15, 0, -0.001);
-
-
-
-
-
-
-
-
 
 
 
@@ -524,7 +503,11 @@ if (sameCB) {
 			lt->DrawLatexNDC(0, 0.28, "Exp Int. = "+expIntStr+" #pm "+expIntStrpm);
 			lt->DrawLatexNDC(0, 0.25, "Exp Coef. = "+expCoefStr+" #pm "+expCoefStrpm);
 
-			lt->DrawLatexNDC(0, 0.15, "EDM = "+EDMStr);
+			lt->DrawLatexNDC(0, 0.18, "EDM = "+EDMStr);
+
+			if (sameCB) {lt->DrawLatexNDC(0,0.14, 'same CB params')}
+			if (takeMagUp) {lt->DrawLatexNDC(0,0.11, 'mag up data')}
+			if (takeMagDown) {lt->DrawLatexNDC(0,0.08, 'mag down data')}
 
 
 

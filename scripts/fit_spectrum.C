@@ -276,3 +276,49 @@ Double_t fit1MeVspectrum_Gaussian_sameCB_ExpBG(Double_t *v, Double_t *par) {
 
 
 
+Double_t fit1MeVdifference_Gaussian_sameCB_ExpBG(Double_t *v, Double_t *par)
+{
+
+      Double_t nSignal = par[0];
+      Double_t mu = par[1];
+      Double_t rms = par[2];
+      Double_t sigma1 = par[3];
+      Double_t f = par[4];
+      Double_t sigma2sq = (rms*rms - f *sigma1*sigma1) / (1-f);
+      Double_t sigma2 = TMath::Sqrt(sigma2sq);
+      Double_t binWidth = 1.;
+      Double_t CB_alpha = par[5];
+      Double_t CB_n = par[6];
+
+      Double_t arg1 = 0;
+      if (sigma1 != 0) arg1 = (v[0] - mu)/sigma1;
+
+      Double_t arg2 = 0;
+      if (sigma2 != 0) arg2 = (v[0] - mu)/sigma2;
+
+//  create a single Gaussian with CB
+      Double_t fitval = nSignal*(binWidth*f*TMath::Exp(-0.5*arg1*arg1)/(TMath::Sqrt(TMath::TwoPi())*sigma1) + binWidth*(1-f)*ROOT::Math::crystalball_pdf(v[0],CB_alpha,CB_n,sigma2,mu));
+
+
+//repeat above for second signal
+      Double_t nSignal2 = par[7];
+      Double_t massDiff = par[8];
+		Double_t mu2 = mu + massDiff;
+      Double_t rms2 = par[9];
+      Double_t sigma12 = par[10];
+      Double_t f2 = par[11];
+      Double_t sigma22sq = (rms2*rms2 - f2 *sigma12*sigma12) / (1-f2);
+      Double_t sigma22 = TMath::Sqrt(sigma22sq);
+      Double_t CB_alpha2 = par[12];
+      Double_t CB_n2 = par[13];
+
+      Double_t arg12 = 0;
+      if (sigma12 != 0) arg12 = (v[0] - mu2)/sigma12;
+
+	fitval = fitval + nSignal2*(binWidth*f2*TMath::Exp(-0.5*arg12*arg12)/(TMath::Sqrt(TMath::TwoPi())*sigma12) + binWidth*(1-f2)*ROOT::Math::crystalball_pdf(v[0],CB_alpha,CB_n,sigma22,mu2));
+      
+      fitval = fitval + par[14]*TMath::Exp(par[15]*(v[0]-1790.));
+
+      return fitval;
+
+}
