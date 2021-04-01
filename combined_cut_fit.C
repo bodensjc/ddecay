@@ -479,7 +479,7 @@ if (sameCB) {
 			expCoefStrpm.Form("%.3e\n",dpdspFit->GetParError(15));
 
 		TString EDMStr;
-			Double_t EDMval = 1.537e-06;//have to manually type this in for now...
+			Double_t EDMval = 9.290e-04;//have to manually type this in for now...
 			EDMStr.Form("%.3e\n",EDMval);
 
 
@@ -505,9 +505,9 @@ if (sameCB) {
 
 			lt->DrawLatexNDC(0, 0.18, "EDM = "+EDMStr);
 
-			if (sameCB) {lt->DrawLatexNDC(0,0.14, 'same CB params')}
-			if (takeMagUp) {lt->DrawLatexNDC(0,0.11, 'mag up data')}
-			if (takeMagDown) {lt->DrawLatexNDC(0,0.08, 'mag down data')}
+			if (sameCB) {lt->DrawLatexNDC(0,0.14, "same CB params");}
+			if (takeMagUp) {lt->DrawLatexNDC(0,0.11, "mag up data");}
+			if (takeMagDown) {lt->DrawLatexNDC(0,0.08, "mag down data");}
 
 
 
@@ -518,9 +518,9 @@ if (sameCB) {
 
 totalpullcan->cd();
 if (sameCB) {
-totalpullcan->SaveAs("image/aaafinal_dp_dsp_gaus-cb-exp_log_tighter_sameCB.png");
+totalpullcan->SaveAs("image/aaafinal_dp_dsp_gaus-cb-exp_log_tighter_sameCB_xx.png");
 } else {
-totalpullcan->SaveAs("image/aaafinal_dp_dsp_gaus-cb-exp_log_tighter.png");
+totalpullcan->SaveAs("image/aaafinal_dp_dsp_gaus-cb-exp_log_tighter_xx.png");
 }
 
 

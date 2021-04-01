@@ -484,9 +484,9 @@ if (sameCB) {
 
 			lt->DrawLatexNDC(0, 0.18, "EDM = "+EDMStr);
 
-			if (sameCB) {lt->DrawLatexNDC(0,0.14, 'same CB params')}
-			if (takeMagUp) {lt->DrawLatexNDC(0,0.11, 'mag up data')}
-			if (takeMagDown) {lt->DrawLatexNDC(0,0.08, 'mag down data')}
+			if (sameCB) {lt->DrawLatexNDC(0,0.14, "same CB params");}
+			if (takeMagUp) {lt->DrawLatexNDC(0,0.11, "mag up data");}
+			if (takeMagDown) {lt->DrawLatexNDC(0,0.08, "mag down data");}
 
 
 
