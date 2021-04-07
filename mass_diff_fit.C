@@ -20,8 +20,10 @@ Int_t cutoffMass = 1920; // above (inclusive) this mass we use ds data, below we
 bool sameCB = 0; //1 if using sameCB, 0 otherwise
 
 Int_t fitStart = 1830;//1790 minimum
-Int_t fitEnd = 2010;//2050 maximum
+Int_t fitEnd = 2040;//2050 maximum
 Int_t nBins = fitEnd - fitStart;
+
+
 
 
 bool takeMagUp = 1; //1:include, 0:dont
@@ -57,10 +59,14 @@ void mass_diff_fit::Begin(TTree * /*tree*/)
 
 //*********Initialization Section**********
 
+
+cout << fitStart << "\t" << fitEnd << "\t" << nBins << endl;
+
+
 if (sameCB) {
 massDiffFit = new TF1("massDiffFit",fit1MeVdifference_Gaussian_sameCB_ExpBG,fitStart,fitEnd, 16);
 } else {
-massDiffFit = new TF1("massDiffFit",fit1MeVdifference_Gaussian_CB_ExpBG,fitStart,fitEnd, 16);
+massDiffFit = new TF1("massDiffFit",fit1MeVdifference_Gaussian_CB_ExpBG,fitStart,fitEnd, 18);
 }
 	massDiffFit->SetParName(0, "nSignal1");
 	massDiffFit->SetParName(1, "mu1");	
@@ -135,7 +141,7 @@ backgroundFit = new TF1("backgroundFit",backgroundExp,fitStart,fitEnd, 2);
 
 
 
-dpdspHist = new TH1D("dpdspHist","D^{+}_{(s)} #rightarrow K^{+}K^{-}#pi^{+} Cut and Fit",260,1790,2050);
+dpdspHist = new TH1D("dpdspHist","D^{+}_{(s)} #rightarrow K^{+}K^{-}#pi^{+} Cut and Fit",nBins,fitStart,fitEnd);
 	dpdspHist->SetStats(0);
 	dpdspHist->SetTitleFont(43);
 	dpdspHist->SetTitleSize(35);
@@ -147,7 +153,7 @@ dpdspHist = new TH1D("dpdspHist","D^{+}_{(s)} #rightarrow K^{+}K^{-}#pi^{+} Cut 
 	dpdspHist->SetLineColor(kBlack);
 	dpdspHist->SetLineWidth(3);
 
-pullHist = new TH1D("pullHist", "Pull Plot", 260,1790,2050);
+pullHist = new TH1D("pullHist", "Pull Plot",nBins,fitStart,fitEnd);
 	pullHist->SetStats(0);
 	pullHist->GetYaxis()->SetTitle("Pull");
 	pullHist->GetYaxis()->SetTitleSize(30);
@@ -214,40 +220,41 @@ cout << "last bin: " << lastbin << endl;
 //dsp: 7-8 mil
 
 //dp mass peak
-	dpdspFit->SetParameter(0,nSignal1Guess);//nSignal
+	massDiffFit->SetParameter(0,nSignal1Guess);//nSignal
 	//dpdspFit->SetParLimits(0,4000000,5000000);
-	dpdspFit->SetParameter(1,1869);//mu
-	dpdspFit->SetParameter(2,4.);//rms of gaussian
+	massDiffFit->SetParameter(1,1869);//mu
+	massDiffFit->SetParameter(2,4.);//rms of gaussian
 	//dpdspFit->SetParLimits(2,0.,20.);
-	dpdspFit->SetParameter(3,7);//sigma of gaussian
+	massDiffFit->SetParameter(3,8);//sigma of gaussian
 	//dpdspFit->SetParLimits(3,1,15);
-	dpdspFit->SetParameter(4,0.1);//fraction of signal in  gaussian
-	dpdspFit->SetParLimits(4,0.000001,0.99999);
-	dpdspFit->SetParameter(5, 1.5);//crystal ball alpha
-	dpdspFit->SetParameter(6,2.5);//crystal ball n
+	massDiffFit->SetParameter(4,0.75);//fraction of signal in  gaussian
+	massDiffFit->SetParLimits(4,0.000001,0.99999);
+	massDiffFit->SetParameter(5, 1.5);//crystal ball alpha
+	massDiffFit->SetParameter(6,2.5);//crystal ball n
 	//dpdspFit->SetParLimits(6,1.00001,10);
 //dsp mass peak
-	dpdspFit->SetParameter(7,nSignal2Guess);//nSignal
+	massDiffFit->SetParameter(7,nSignal2Guess);//nSignal
 	//dpdspFit->SetParLimits(7,7000000,8000000);
 	//**********************************************
-	dpdspFit->SetParameter(8,100);//mass difference
+	massDiffFit->SetParameter(8,98);//mass difference
 	//**********************************************
-	dpdspFit->SetParameter(9,4.);//rms of gaussian
+	massDiffFit->SetParameter(9,4.);//rms of gaussian
 	//dpdspFit->SetParLimits(9,0.,20.);
-	dpdspFit->SetParameter(10,7);//sigma_2 of gaussian
+	massDiffFit->SetParameter(10,5.3);//sigma_2 of gaussian
 	//dpdspFit->SetParLimits(10,1,15);
-	dpdspFit->SetParameter(11,0.1);//fraction of signal in gaussian
-	dpdspFit->SetParLimits(11,0.000001,0.99999);
-	dpdspFit->SetParameter(12, 1.5);//crystal ball alpha
-	dpdspFit->SetParameter(13,2.5);//crystal ball n
+	massDiffFit->SetParameter(11,0.75);//fraction of signal in gaussian
+	massDiffFit->SetParLimits(11,0.000001,0.99999);
+	massDiffFit->SetParameter(12, 1.5);//crystal ball alpha
+	massDiffFit->SetParameter(13,2.5);//crystal ball n
 	//dpdspFit->SetParLimits(13,1.00001,6.);
 //exponential background
-	dpdspFit->SetParameter(14,firstbin);//exp intercept
-	dpdspFit->SetParameter(15,expCoefGuess);//coefficient background exponential
+	massDiffFit->SetParameter(14,firstbin);//exp intercept
+	massDiffFit->SetParameter(15,expCoefGuess);//coefficient background exponential
 	//dpdspFit->SetParLimits(15, 0, -0.001);
 
 
-
+	massDiffFit->SetParameter(16,0.03); //f3
+	massDiffFit->SetParameter(17,8); //set sigma3 to 8
 
 
 

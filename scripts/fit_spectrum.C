@@ -39,6 +39,10 @@
 //  par[15] = co-efficient of the exponential backbground
 
 
+//par[16] = f3 (fraction of second gaussian for Ds)
+//par[17] = sigma3 (sigma of second gaussian for Ds)
+
+
 
 
       Double_t nSignal = par[0];
@@ -58,6 +62,9 @@
       Double_t arg2 = 0;
       if (sigma2 != 0) arg2 = (v[0] - mu)/sigma2;
 
+
+
+
 //  create a single Gaussian with CB
       Double_t fitval = nSignal*(binWidth*f*TMath::Exp(-0.5*arg1*arg1)/(TMath::Sqrt(TMath::TwoPi())*sigma1) + binWidth*(1-f)*ROOT::Math::crystalball_pdf(v[0],CB_alpha,CB_n,sigma2,mu));
 
@@ -73,11 +80,27 @@
       Double_t CB_alpha2 = par[12];
       Double_t CB_n2 = par[13];
 
+	Double_t f3 = par[16];
+	Double_t sigma13 = par[17];
+
       Double_t arg12 = 0;
       if (sigma12 != 0) arg12 = (v[0] - mu2)/sigma12;
 
+      Double_t arg13 = 0;
+      if (sigma13 != 0) arg13 = (v[0] - mu2)/sigma13;
 
-	fitval = fitval + nSignal2*(binWidth*f2*TMath::Exp(-0.5*arg12*arg12)/(TMath::Sqrt(TMath::TwoPi())*sigma12) + binWidth*(1-f2)*ROOT::Math::crystalball_pdf(v[0],CB_alpha2,CB_n2,sigma22,mu2));
+
+
+//f1 and f3 for first and second gaussian
+//(1-f1-f3) fraction in CB
+
+//sigma3 for second gaussian
+
+
+	fitval = fitval + nSignal2*(binWidth*f2*TMath::Exp(-0.5*arg12*arg12)/(TMath::Sqrt(TMath::TwoPi())*sigma12)); 
+	fitval = fitval + nSignal2*(binWidth*f3*TMath::Exp(-0.5*arg13*arg13)/(TMath::Sqrt(TMath::TwoPi())*sigma13));
+
+	fitval = fitval + nSignal2*binWidth*(1-f2-f3)*ROOT::Math::crystalball_pdf(v[0],CB_alpha2,CB_n2,sigma22,mu2);
 
 
 
@@ -198,11 +221,27 @@ Double_t fit1MeVdifference_Gaussian_CB_ExpBG(Double_t *v, Double_t *par)
       Double_t CB_alpha2 = par[12];
       Double_t CB_n2 = par[13];
 
+	Double_t f3 = par[16];
+	Double_t sigma13 = par[17];
+
       Double_t arg12 = 0;
       if (sigma12 != 0) arg12 = (v[0] - mu2)/sigma12;
 
+      Double_t arg13 = 0;
+      if (sigma13 != 0) arg13 = (v[0] - mu2)/sigma13;
 
-	fitval = fitval + nSignal2*(binWidth*f2*TMath::Exp(-0.5*arg12*arg12)/(TMath::Sqrt(TMath::TwoPi())*sigma12) + binWidth*(1-f2)*ROOT::Math::crystalball_pdf(v[0],CB_alpha2,CB_n2,sigma22,mu2));
+
+
+//f1 and f3 for first and second gaussian
+//(1-f1-f3) fraction in CB
+
+//sigma3 for second gaussian
+
+
+	fitval = fitval + nSignal2*(binWidth*f2*TMath::Exp(-0.5*arg12*arg12)/(TMath::Sqrt(TMath::TwoPi())*sigma12)); 
+	fitval = fitval + nSignal2*(binWidth*f3*TMath::Exp(-0.5*arg13*arg13)/(TMath::Sqrt(TMath::TwoPi())*sigma13));
+
+	fitval = fitval + nSignal2*binWidth*(1-f2-f3)*ROOT::Math::crystalball_pdf(v[0],CB_alpha2,CB_n2,sigma22,mu2);
 
 
 

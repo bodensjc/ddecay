@@ -62,7 +62,7 @@ void combined_cut_fit::Begin(TTree * /*tree*/)
 if (sameCB) {
 dpdspFit = new TF1("dpdspFit",fit1MeVspectrum_Gaussian_sameCB_ExpBG,fitStart,fitEnd, 16);
 } else {
-dpdspFit = new TF1("dpdspFit",fit1MeVspectrum_Gaussian_CB_ExpBG,fitStart,fitEnd, 16);
+dpdspFit = new TF1("dpdspFit",fit1MeVspectrum_Gaussian_CB_ExpBG,fitStart,fitEnd, 18);
 }
 	dpdspFit->SetParName(0, "nSignal1");
 	dpdspFit->SetParName(1, "mu1");	
@@ -262,6 +262,9 @@ cout << "last bin: " << lastbin << endl;
 	dpdspFit->SetParameter(15,expCoefGuess);//coefficient background exponential
 	//dpdspFit->SetParLimits(15, 0, -0.001);
 
+	dpdspFit->SetParameter(16,0.03);//fraction in second gaussian
+	dpdspFit->SetParameter(17,8);//sigma of second gaussian
+
 
 
 
@@ -353,6 +356,11 @@ if (sameCB) {
 	//manually fill background exponential information
 		backgroundFit->SetParameter(0,exp_int);
 		backgroundFit->SetParameter(1,exp_coef);
+
+
+
+
+
 
 dpdspHist->Draw();
 firstGaussianFit->Draw("same");
