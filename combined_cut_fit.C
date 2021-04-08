@@ -296,7 +296,7 @@ dpdspHist->Fit("dpdspFit","R");
 //TFitResultPtr fitResultPointer = dpdspHist->Fit("dpdspFit","R");
 
 	//get the parameters back for isolated signal plotting
-	//signal 2
+	//signal 1
 		Double_t nSignal1   = dpdspFit->GetParameter(0);
 		Double_t mu1        = dpdspFit->GetParameter(1);
 		Double_t rms1       = dpdspFit->GetParameter(2);

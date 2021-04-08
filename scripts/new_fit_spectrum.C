@@ -94,7 +94,7 @@ Double_t customFit_Dp_Ds(Double_t *v, Double_t *par)
       Double_t sigmaGaus2Peak1 = par[21];
       Double_t f2Peak1 = par[22];
       Double_t sigmaGaus2Peak2 = par[23];
-      Double_t f2Peak2 = par[23];
+      Double_t f2Peak2 = par[24];
 
 
       if (isSameCBParams) {
