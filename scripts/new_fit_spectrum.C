@@ -19,7 +19,7 @@
 //                      
 
 
-Double_t customFit_Dplus_Ds(Double_t *v, Double_t *par)
+Double_t customFit_Dp_Ds(Double_t *v, Double_t *par)
 {
 //create a fitting function for a bimodal mass distributions usingan exponential
 //  background plus a (single/double) Gaussian + (same/different) CB signal
