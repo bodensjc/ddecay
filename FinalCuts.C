@@ -18,7 +18,7 @@
 //***************CUSTOMIZATION***************
 //change these variables to modify settings for the fit
 
-string extraStr = "x";//change this string to add something fancy to end of plot save file
+string extraFileStr = "x";//adds extra notation to end of plot save file
 
 Int_t fitStart = 1830; //1790 minimum
 Int_t fitEnd = 2040; //2050 maximum
@@ -48,14 +48,6 @@ TF1 * firstCBFit = NULL;
 TF1 * secondGaus1Fit = NULL;
 TF1 * secondGaus2Fit = NULL;
 TF1 * secondCBFit = NULL;
-
-
-//need to initialize these to resolve later confusions...
-TString CBn2Str;
-TString CBn2Strpm;
-TString CBalpha2Str;
-TString CBalpha2Strpm;
-
 
 
 
@@ -291,6 +283,7 @@ void FinalCuts::Terminate()
       Double_t nSignalPeak2 = dpdspFit->GetParameter(12);
       if (isMassDiff) {
             Double_t massDiff = dpdspFit->GetParameter(13);
+            Double_t muPeak2 = massDiff + muPeak1;
       } else {
             Double_t muPeak2 = dpdspFit->GetParameter(13);
       }
@@ -323,7 +316,7 @@ void FinalCuts::Terminate()
 		firstGaus1Fit->SetParameter(3, rmsPeak1);
 		firstGaus1Fit->SetParameter(4, sigmaGaus1Peak1);
 		firstGaus1Fit->SetParameter(5, f1Peak1);
-      //first secondary faussian
+      //first secondary gaussian
 		firstGaus2Fit->SetParameter(0, binWidth);
 		firstGaus2Fit->SetParameter(1, nSignalPeak1);
 		firstGaus2Fit->SetParameter(2, muPeak1);
@@ -347,7 +340,7 @@ void FinalCuts::Terminate()
 		secondGaus1Fit->SetParameter(3, rmsPeak2);
 		secondGaus1Fit->SetParameter(4, sigmaGaus1Peak2);
 		secondGaus1Fit->SetParameter(5, f1Peak2);
-      //second secondary faussian
+      //second secondary gaussian
 		secondGaus2Fit->SetParameter(0, binWidth);
 		secondGaus2Fit->SetParameter(1, nSignalPeak2);
 		secondGaus2Fit->SetParameter(2, muPeak2);
@@ -406,11 +399,11 @@ void FinalCuts::Terminate()
 		pad3->SetRightMargin(0);
 
       auto fitlegend = new TLegend(00,0.77,0.8,0.925);//(0.7,0.7,0.9,0.9);
-         fitlegend->SetTextSize(0.08);
+         fitlegend->SetTextSize(0.06);
          fitlegend->AddEntry(dpdspFit, "Total Fit", "l");
-         fitlegend->AddEntry(firstGaus1Fit, "Primary Gaus Fit", "l");
+         fitlegend->AddEntry(firstGaus1Fit, "Gaussian_{1} Fit", "l");
          if (isFirstPeakDoubleGaus || isSecondPeakDoubleGaus) {
-            fitlegend->AddEntry(firstGaus2Fit, "Secondary Gaus Fit", "l");
+            fitlegend->AddEntry(firstGaus2Fit, "Gaussian_{2} Fit", "l");
          }
          fitlegend->AddEntry(firstCBFit, "CB Fit", "l");
          fitlegend->AddEntry(backgroundFit, "Exp Fit", "l");
@@ -418,34 +411,116 @@ void FinalCuts::Terminate()
 
 
       //generating strings for the output information
-      TString nSignal1Str;
-			TString nSignal1Strpm;
-			nSignal1Str.Form("%5.0f\n",nSignalPeak1);
-			nSignal1Strpm.Form("%5.0f\n",dpdspFit->GetParError(5));
-		TString mu1Str;
-			TString mu1Strpm;
-			mu1Str.Form("%5.6f\n",muPeak1);
-			mu1Strpm.Form("%5.6f\n",dpdspFit->GetParError(6));
-		TString rmsWidth1Str;
-			TString rmsWidth1Strpm;
-			rmsWidth1Str.Form("%5.3f\n",rmsPeak1);
-			rmsWidth1Strpm.Form("%5.3f\n",dpdspFit->GetParError(7));
-      TString sigma1Peak1Str;
-			TString rmsWidth1Strpm;
-			rmsWidth1Str.Form("%5.3f\n",rms1);
-			rmsWidth1Strpm.Form("%5.3f\n",dpdspFit->GetParError(8));
-		TString gaus_frac1Peak1Str;
-			TString gaus_frac1Strpm;
-			gaus_frac1Str.Form("%5.3f\n",f1);
-			gaus_frac1Strpm.Form("%5.3f\n",dpdspFit->GetParError(9));
-		TString CBalpha1Str;
-			TString CBalpha1Strpm;
-			CBalpha1Str.Form("%5.3f\n",CB_alpha1);
-			CBalpha1Strpm.Form("%5.3f\n",dpdspFit->GetParError(10));
-		TString CBn1Str;
-			TString CBn1Strpm;
-			CBn1Str.Form("%5.3f\n",CB_n1);
-			CBn1Strpm.Form("%5.3f\n",dpdspFit->GetParError(11));
+      TString binWidthStr;
+         binWidthStr.Form("%5.0f\n",binWidth);
+      TString cutoffMassStr;
+         cutoffMassStr.Form("%5.0f\n",cutoffMass)
+
+      TString nSignalPeak1Str;
+			TString nSignalPeak1Strpm;
+			nSignalPeak1Str.Form("%5.0f\n",nSignalPeak1);
+			nSignalPeak1Strpm.Form("%5.0f\n",dpdspFit->GetParError(5));
+		TString muPeak1Str;
+			TString muPeak1Strpm;
+			muPeak1Str.Form("%5.6f\n",muPeak1);
+			muPeak1Strpm.Form("%5.6f\n",dpdspFit->GetParError(6));
+		TString rmsPeak1Str;
+			TString rmsPeak1Strpm;
+			rmsPeak1Str.Form("%5.3f\n",rmsPeak1);
+			rmsPeak1Strpm.Form("%5.3f\n",dpdspFit->GetParError(7));
+      TString sigmaGaus1Peak1Str;
+			TString sigmaGaus1Peak1Strpm;
+			sigmaGaus1Peak1Str.Form("%5.3f\n",sigmaGaus1Peak1);
+			sigmaGaus1Peak1Strpm.Form("%5.3f\n",dpdspFit->GetParError(8));
+		TString f1Peak1Str;
+			TString f1Peak1Strpm;
+			f1Peak1Str.Form("%5.3f\n",f1Peak1);
+			f1Peak1Strpm.Form("%5.3f\n",dpdspFit->GetParError(9));
+		TString CB_alphaPeak1Str;
+			TString CB_alphaPeak1Strpm;
+			CB_alphaPeak1Str.Form("%5.3f\n",CB_alphaPeak1);
+			CB_alphaPeak1Strpm.Form("%5.3f\n",dpdspFit->GetParError(10));
+		TString CB_nPeak1Str;
+			TString CB_nPeak1Strpm;
+			CB_nPeak1Str.Form("%5.3f\n",CB_nPeak1);
+			CB_nPeak1Strpm.Form("%5.3f\n",dpdspFit->GetParError(11));
+
+		TString nSignalPeak2Str;
+			TString nSignalPeak2Strpm;
+			nSignalPeak2Str.Form("%5.0f\n",nSignalPeak2);
+			nSignalPeak2Strpm.Form("%5.0f\n",dpdspFit->GetParError(12));
+      if (isMassDiff) {
+         TString massDiffStr;
+            TString massDiffStrStrpm;
+            massDiffStrStr.Form("%5.6f\n",massDiff);
+            massDiffStrStrpm.Form("%5.6f\n",dpdspFit->GetParError(13));
+      } else {
+         TString muPeak2Str;
+            TString muPeak2Strpm;
+            muPeak2Str.Form("%5.6f\n",muPeak2);
+            muPeak2Strpm.Form("%5.6f\n",dpdspFit->GetParError(13));
+      }
+		TString rmsPeak2Str;
+			TString rmsPeak2Strpm;
+			rmsPeak2Str.Form("%5.3f\n",rmsPeak2);
+			rmsPeak2Strpm.Form("%5.3f\n",dpdspFit->GetParError(14));
+		TString sigmaGaus1Peak2Str;
+			TString sigmaGaus1Peak2Strpm;
+			sigmaGaus1Peak2Str.Form("%5.3f\n",sigmaGaus1Peak2);
+			sigmaGaus1Peak2Strpm.Form("%5.3f\n",dpdspFit->GetParError(15));
+		TString f1Peak2Str;
+			TString f1Peak2Strpm;
+			f1Peak2Str.Form("%5.3f\n",f1Peak2);
+			f1Peak2Strpm.Form("%5.3f\n",dpdspFit->GetParError(16));
+		TString CB_alphaPeak2Str;
+			TString CB_alphaPeak2Strpm;
+			CB_alphaPeak2Str.Form("%5.3f\n",CB_alphaPeak2);
+			CB_alphaPeak2Strpm.Form("%5.3f\n",dpdspFit->GetParError(17));
+		TString CB_nPeak2Str;
+			TString CB_nPeak2Strpm;
+			CB_nPeak2Str.Form("%5.3f\n",CB_nPeak2);
+			CB_nPeak2Strpm.Form("%5.3f\n",dpdspFit->GetParError(18));
+
+		TString expIntStr;
+			TString expIntStrpm;
+			expIntStr.Form("%5.3f\n",exp_int);
+			expIntStrpm.Form("%5.3f\n",dpdspFit->GetParError(19));
+		TString expCoefStr;
+			TString expCoefStrpm;
+			expCoefStr.Form("%.3e\n",exp_coef);
+			expCoefStrpm.Form("%.3e\n",dpdspFit->GetParError(20));
+
+
+
+      
+      //write all of the information strings
+      auto lt = new TLatex();
+			lt->SetTextSize(0.05);
+			lt->DrawLatexNDC(0, 0.72, "D^{+} Signal Events = "+nSignalPeak1Str+" #pm "+nSignalPeak1Strpm);
+			lt->DrawLatexNDC(0, 0.69, "m(D^{+}) = "+muPeak1Str+" #pm "+muPeak1Strpm+" MeV/c^{2}");
+			lt->DrawLatexNDC(0, 0.66, "D^{+} RMS Width = "+rmsPeak1Str+" #pm "+rmsPeak1Strpm);
+			lt->DrawLatexNDC(0, 0.63, "D^{+} Fraction Gaus = "+f1Peak1Str+" #pm "+f1Peak1Strpm);
+			lt->DrawLatexNDC(0, 0.60, "D^{+} CB alpha = "+CB_alphaPeak1Str+" #pm "+CB_alphaPeak1Strpm);
+			lt->DrawLatexNDC(0, 0.57, "D^{+} CB n = "+CB_nPeak1Str+" #pm "+CB_nPeak1Strpm);
+
+			lt->DrawLatexNDC(0, 0.50, "D_{s} Signal Events = "+nSignalPeak2Str+" #pm "+nSignalPeak2Strpm);
+         if (isMassDiff) {
+            lt->DrawLatexNDC(0, 0.47, "m(D_{s} - D^{+}) = "+massDiffStr+" #pm "+massDiffStrpm+" MeV/c^{2}");
+         } else {
+			   lt->DrawLatexNDC(0, 0.47, "m(D_{s}) = "+muPeak2Str+" #pm "+muPeak2Strpm+" MeV/c^{2}");
+         }
+         lt->DrawLatexNDC(0, 0.44, "D_{s} RMS Width = "+rmsPeak2Str+" #pm "+rmsPeak2Strpm);
+			lt->DrawLatexNDC(0, 0.41, "D_{s} Fraction Gaus = "+f1Peak2Str+" #pm "+f1Peak2Strpm);
+			lt->DrawLatexNDC(0, 0.38, "D_{s} CB alpha = "+CB_alphaPeak2Str+" #pm "+CB_alphaPeak2Strpm);
+			lt->DrawLatexNDC(0, 0.35, "D_{s} CB n = "+CB_nPeak2Str+" #pm "+CB_nPeak2Strpm);
+
+			lt->DrawLatexNDC(0, 0.28, "Exp Int. = "+expIntStr+" #pm "+expIntStrpm);
+			lt->DrawLatexNDC(0, 0.25, "Exp Coef. = "+expCoefStr+" #pm "+expCoefStrpm);
+
+
+			if (isSameCB) {lt->DrawLatexNDC(0,0.14, "same CB params");}
+			if (takeMagUp) {lt->DrawLatexNDC(0,0.11, "mag up data");}
+			if (takeMagDown) {lt->DrawLatexNDC(0,0.08, "mag down data");}
 
 
 
@@ -457,18 +532,24 @@ void FinalCuts::Terminate()
 
 
 
-   //create a string to save the file name as something roughly unique and identifiying
-   string massDiffStr = (isMassDiff) ? "MassDiff_" : "DoubleMass_";
-   string binWidthStr = to_string(binWidth)+"MeV_";
-   string cutOffMassStr = to_string(cutoffMass)+"MeVcutoff_";
-   string magUpStr = (takeMagUp) ? "MagUp_" : "";
-   string magDownStr = (takeMagDown) ? "MagDown_" : "";
-   string firstDoubleGausStr = (isFirstPeakDoubleGaus) ? "DoubleGaus_" : "SingleGaus_";
-   string secondDoubleGausStr = (isSecondPeakDoubleGaus) ? "DoubleGaus_" : "SingleGaus_";
-   string sameCBStr = (isSameCB) ? "sameCB_" : "diffCB_";
+      
 
-   string fileName = "image/DpDspFit_"+massDiffStr+magUpStr+magDownStr+firstDoubleGausStr
-                     +secondDoubleGausStr+sameCBStr+"ExpBG_"+extraStr+".png";
+
+
+
+   totalPullCan->cd();
+      //create a string to save the file name as something roughly unique and identifiying
+      string massDiffStr = (isMassDiff) ? "MassDiff_" : "DoubleMass_";
+      string binWidthStr = to_string(binWidth)+"MeV_";
+      string cutOffMassStr = to_string(cutoffMass)+"MeVcutoff_";
+      string magUpStr = (takeMagUp) ? "MagUp_" : "";
+      string magDownStr = (takeMagDown) ? "MagDown_" : "";
+      string firstDoubleGausStr = (isFirstPeakDoubleGaus) ? "DoubleGaus_" : "SingleGaus_";
+      string secondDoubleGausStr = (isSecondPeakDoubleGaus) ? "DoubleGaus_" : "SingleGaus_";
+      string sameCBStr = (isSameCB) ? "sameCB_" : "diffCB_";
+
+      string fileName = "image/DpDspFit_"+massDiffStr+magUpStr+magDownStr+firstDoubleGausStr
+                        +secondDoubleGausStr+sameCBStr+"ExpBG_"+extraFileStr+".png";
 
    totalPullCan->SaveAs(fileName);
 }
