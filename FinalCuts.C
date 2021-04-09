@@ -18,11 +18,11 @@
 //***************CUSTOMIZATION***************
 //change these variables to modify settings for the fit
 
-string extraFileStr = "x";//adds extra notation to end of plot save file
+string extraFileStr = "bwTest";//adds extra notation to beginning of save file string
 
 Int_t fitStart = 1830; //1790 minimum
 Int_t fitEnd = 2040; //2050 maximum
-Double_t binWidth = 1; //MeV
+Double_t binWidth = 0.5; //MeV
    Int_t nBins = (fitEnd-fitStart)/binWidth;
 Int_t cutoffMass = 1920; //above (inclusive) this value we use Ds data, below is D+
 
@@ -134,6 +134,7 @@ ROOT::Math::MinimizerOptions::SetDefaultMaxFunctionCalls(5000);
       dpdspHist->SetTitleSize(35);
       dpdspHist->GetYaxis()->SetTitle("Candidates/(1 MeV/c^{2})");
       dpdspHist->SetMinimum(100);//set min so logy doesnt break and ignore uninteresting stuff
+		if (binWidth < 1) {dpdspHist->SetMinimum(10);}
       dpdspHist->GetYaxis()->SetTitleFont(43);
       dpdspHist->GetYaxis()->SetTitleSize(30);
       dpdspHist->GetYaxis()->CenterTitle(true);
@@ -423,7 +424,7 @@ void FinalCuts::Terminate()
 
       //generating strings for the output information
       TString binWidthStr;
-         binWidthStr.Form("%5.0f\n",binWidth);
+         binWidthStr.Form("%3.3f\n",binWidth);
       TString cutoffMassStr;
          cutoffMassStr.Form("%5.0d\n",cutoffMass);
 
@@ -608,8 +609,8 @@ void FinalCuts::Terminate()
       string secondDoubleGausStr = (isSecondPeakDoubleGaus) ? "DoubleGaus_" : "SingleGaus_";
       string sameCBStr = (isSameCB) ? "sameCB_" : "diffCB_";
 
-      TString fileName = "finalImages/DpDspFit_"+massDiffStr2+magUpStr+magDownStr+firstDoubleGausStr
-                        +secondDoubleGausStr+sameCBStr+"ExpBG_"+extraFileStr+".png";
+      TString fileName = "finalImages/"+extraFileStr+"_DpDspFit_"+massDiffStr2+magUpStr+magDownStr+firstDoubleGausStr
+                        +secondDoubleGausStr+sameCBStr+"ExpBG.png";
 
    totalPullCan->SaveAs(fileName);
 
