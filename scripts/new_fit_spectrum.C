@@ -166,8 +166,8 @@ Double_t customFit_Dp_Ds(Double_t *v, Double_t *par)
       }
 
 
-      fitval = fitval + exp_int*TMath::Exp(exp_coef*(v[0]-1790.));//add exponential background 
-      //1790 is a number just a bit before the "action" happens. not rigorous.
+      fitval = fitval + exp_int*TMath::Exp(exp_coef*(v[0]-1830.));//add exponential background 
+      //1830 is chosen since its the start of the fit range. not rigorous.
 
       return fitval;
 
@@ -234,7 +234,7 @@ Double_t  backgroundExp (Double_t *v, Double_t *par)
       Double_t exp_int = par[0];
       Double_t exp_coef = par[1];
 
-      Double_t fitval =  exp_int*TMath::Exp(exp_coef*(v[0]-1790.));
+      Double_t fitval =  exp_int*TMath::Exp(exp_coef*(v[0]-1830.));
 
       return fitval;
 }
