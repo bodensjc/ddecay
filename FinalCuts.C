@@ -29,8 +29,8 @@ Int_t cutoffMass = 1920; //above (inclusive) this value we use Ds data, below is
 Bool_t takeMagUp = 1; //1: include, 0: don't
 Bool_t takeMagDown = 1; //1: include, 0: don't
 
-Bool_t isSameCB = 1; //1: use same CB params for both peaks, 0: don't
-Bool_t isMassDiff = 1; //1: mass difference fit, 0: two mass fit
+Bool_t isSameCB = 0; //1: use same CB params for both peaks, 0: don't
+Bool_t isMassDiff = 0; //1: mass difference fit, 0: two mass fit
 Bool_t isFirstPeakDoubleGaus = 0; //1: double gaus in D+, 0: single
 Bool_t isSecondPeakDoubleGaus = 1; //1: double gaus in Ds, 0: single
 
@@ -58,6 +58,7 @@ void FinalCuts::Begin(TTree * /*tree*/)
 {
    TString option = GetOption();
    //***************INITIALIZATION SECTION***************
+ROOT::Math::MinimizerOptions::SetDefaultMaxFunctionCalls(5000);
 
    dpdspFit = new TF1("dpdspFit", customFit_Dp_Ds, fitStart, fitEnd, 25);
       dpdspFit->SetParName(0, "binWidth");
@@ -184,14 +185,16 @@ void FinalCuts::Terminate()
    //***************FINALIZATION SECTION***************
 
    //calculate first guess approximations for parameters
+	Int_t nSignal1Guess = 0;
+	Int_t nSignal2Guess = 0;
    if (takeMagUp && takeMagDown) {
       //numbers from perviously made graphs
-      Int_t nSignal1Guess = 4000000;
-      Int_t nSignal2Guess = 7000000;
+      nSignal1Guess = 4200000;
+      nSignal2Guess = 7200000;
    } else {
       //if only taking one polarity, approximately 1/2
-      Int_t nSignal1Guess = 2000000;
-      Int_t nSignal2Guess = 3500000;
+      nSignal1Guess = 2100000;
+      nSignal2Guess = 3600000;
    }
    Double_t firstBin = dpdspHist->GetBinContent(1);//used for exp_int guess
    Double_t lastBin = dpdspHist->GetBinContent(nBins);
@@ -207,12 +210,12 @@ void FinalCuts::Terminate()
    //first signal main parameters
    dpdspFit->SetParameter(5, nSignal1Guess);
    dpdspFit->SetParameter(6, 1869);//approx Dplus mass
-   dpdspFit->SetParameter(7, 4);//rms width
+   dpdspFit->SetParameter(7, 6);//rms width
    dpdspFit->SetParameter(8, 7);//sigma
-   dpdspFit->SetParameter(9, 0.6);//fraction in first gaus
+   dpdspFit->SetParameter(9, 0.7);//fraction in first gaus
       dpdspFit->SetParLimits(9, 0.000001, 0.999999);//ensure between 0 and 1
-   dpdspFit->SetParameter(10, 1.5);//CB alpha
-   dpdspFit->SetParameter(11, 2.5);//CB n
+   dpdspFit->SetParameter(10, 2);//CB alpha
+   dpdspFit->SetParameter(11, 3);//CB n
    //second signal main parameters
    dpdspFit->SetParameter(12, nSignal2Guess);
    if (isMassDiff) {
@@ -220,33 +223,33 @@ void FinalCuts::Terminate()
    } else {
       dpdspFit->SetParameter(13, 1969);//approx Ds mass
    }
-   dpdspFit->SetParameter(14, 4);//rms width
+   dpdspFit->SetParameter(14, 6);//rms width
    dpdspFit->SetParameter(15, 7);//sigma
-   dpdspFit->SetParameter(16, 0.6);//fraction in first gaus
+   dpdspFit->SetParameter(16, 0.7);//fraction in first gaus
       dpdspFit->SetParLimits(16, 0.000001, 0.999999);//ensure between 0 and 1
-   dpdspFit->SetParameter(17, 1.5);//CB alpha
-   dpdspFit->SetParameter(18, 2.5);//CB n
+   dpdspFit->SetParameter(17, 2);//CB alpha
+   dpdspFit->SetParameter(18, 3);//CB n
    //background parameters
    dpdspFit->SetParameter(19, firstBin);//exp_int
    dpdspFit->SetParameter(20, expCoefGuess);
    //extra parameters for double gaussians
    if (isFirstPeakDoubleGaus) {
-      dpdspFit->SetParameter(21, 8);//sigma2 of peak1
+      dpdspFit->SetParameter(21, 10);//sigma2 of peak1
       dpdspFit->SetParameter(22, 0.05);//fraction in second gaus
          dpdspFit->SetParLimits(22, 0.000001, 0.25);//small between 0 and 1
    } else {
       //make 0s so that the fit function still takes something, though meaningless
-      dpdspFit->SetParameter(21, 0);
-      dpdspFit->SetParameter(22, 0);
+      dpdspFit->FixParameter(21, 0);
+      dpdspFit->FixParameter(22, 0);
    }
    if (isSecondPeakDoubleGaus) {
-      dpdspFit->SetParameter(23, 8);//sigma2 of peak1
+      dpdspFit->SetParameter(23, 10);//sigma2 of peak1
       dpdspFit->SetParameter(24, 0.05);//fraction in second gaus
          dpdspFit->SetParLimits(24, 0.000001, 0.25);//small between 0 and 1
    } else {
       //make 0s so that the fit function still takes something, though meaningless
-      dpdspFit->SetParameter(23, 0);
-      dpdspFit->SetParameter(24, 0);
+      dpdspFit->FixParameter(23, 0);
+      dpdspFit->FixParameter(24, 0);
    }
 
 
@@ -281,11 +284,13 @@ void FinalCuts::Terminate()
 
       //second signal primaries
       Double_t nSignalPeak2 = dpdspFit->GetParameter(12);
+		Double_t muPeak2 = 0;
+		Double_t massDiff = 0;
       if (isMassDiff) {
-            Double_t massDiff = dpdspFit->GetParameter(13);
-            Double_t muPeak2 = massDiff + muPeak1;
+            massDiff = dpdspFit->GetParameter(13);
+            muPeak2 = massDiff + muPeak1;
       } else {
-            Double_t muPeak2 = dpdspFit->GetParameter(13);
+            muPeak2 = dpdspFit->GetParameter(13);
       }
       Double_t rmsPeak2 = dpdspFit->GetParameter(14);
       Double_t sigmaGaus1Peak2 = dpdspFit->GetParameter(15);
@@ -348,8 +353,8 @@ void FinalCuts::Terminate()
 		secondGaus2Fit->SetParameter(4, sigmaGaus2Peak2);
 		secondGaus2Fit->SetParameter(5, f2Peak2);
       //second Crystal Ball
-      secondCBFit->SetParameter(0, binWidth);
-      secondCBFit->SetParameter(1, nSignalPeak2);
+	 	secondCBFit->SetParameter(0, binWidth);
+	  	secondCBFit->SetParameter(1, nSignalPeak2);
 		secondCBFit->SetParameter(2, muPeak2);
 		secondCBFit->SetParameter(3, rmsPeak2);
 		secondCBFit->SetParameter(4, sigmaGaus1Peak2);
@@ -364,11 +369,13 @@ void FinalCuts::Terminate()
 
       //draw all the plots on pad1 (the main pad)
       dpdspHist->Draw();
-      firstGaussianFit->Draw("same");
+      firstGaus1Fit->Draw("same");
       firstCBFit->Draw("same");
-      secondGaussianFit->Draw("same");
+      secondGaus1Fit->Draw("same");
       secondCBFit->Draw("same");
       backgroundFit->Draw("same");
+		if (isFirstPeakDoubleGaus) {firstGaus2Fit->Draw("same");}
+		if (isSecondPeakDoubleGaus) {secondGaus2Fit->Draw("same");}
 
 
 	pad2->cd();
@@ -414,7 +421,7 @@ void FinalCuts::Terminate()
       TString binWidthStr;
          binWidthStr.Form("%5.0f\n",binWidth);
       TString cutoffMassStr;
-         cutoffMassStr.Form("%5.0f\n",cutoffMass)
+         cutoffMassStr.Form("%5.0d\n",cutoffMass);
 
       TString nSignalPeak1Str;
 			TString nSignalPeak1Strpm;
@@ -449,14 +456,14 @@ void FinalCuts::Terminate()
 			TString nSignalPeak2Strpm;
 			nSignalPeak2Str.Form("%5.0f\n",nSignalPeak2);
 			nSignalPeak2Strpm.Form("%5.0f\n",dpdspFit->GetParError(12));
+		TString massDiffStr;
+		TString massDiffStrpm;
+        TString muPeak2Str;
+        TString muPeak2Strpm;
       if (isMassDiff) {
-         TString massDiffStr;
-            TString massDiffStrStrpm;
-            massDiffStrStr.Form("%5.6f\n",massDiff);
-            massDiffStrStrpm.Form("%5.6f\n",dpdspFit->GetParError(13));
+            massDiffStr.Form("%5.6f\n",massDiff);
+            massDiffStrpm.Form("%5.6f\n",dpdspFit->GetParError(13));
       } else {
-         TString muPeak2Str;
-            TString muPeak2Strpm;
             muPeak2Str.Form("%5.6f\n",muPeak2);
             muPeak2Strpm.Form("%5.6f\n",dpdspFit->GetParError(13));
       }
@@ -539,8 +546,8 @@ void FinalCuts::Terminate()
 
    totalPullCan->cd();
       //create a string to save the file name as something roughly unique and identifiying
-      string massDiffStr = (isMassDiff) ? "MassDiff_" : "DoubleMass_";
-      string binWidthStr = to_string(binWidth)+"MeV_";
+/*
+      string massDiffStr2 = (isMassDiff) ? "MassDiff_" : "DoubleMass_";
       string cutOffMassStr = to_string(cutoffMass)+"MeVcutoff_";
       string magUpStr = (takeMagUp) ? "MagUp_" : "";
       string magDownStr = (takeMagDown) ? "MagDown_" : "";
@@ -548,8 +555,10 @@ void FinalCuts::Terminate()
       string secondDoubleGausStr = (isSecondPeakDoubleGaus) ? "DoubleGaus_" : "SingleGaus_";
       string sameCBStr = (isSameCB) ? "sameCB_" : "diffCB_";
 
-      string fileName = "image/DpDspFit_"+massDiffStr+magUpStr+magDownStr+firstDoubleGausStr
+      string fileName = "image/DpDspFit_"+massDiffStr2+magUpStr+magDownStr+firstDoubleGausStr
                         +secondDoubleGausStr+sameCBStr+"ExpBG_"+extraFileStr+".png";
 
-   totalPullCan->SaveAs(fileName);
+   totalPullCan->SaveAs(fileName);*/
+
+	totalPullCan->SaveAs("image/aaaaaaTEST2.png");
 }

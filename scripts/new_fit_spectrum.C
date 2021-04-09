@@ -76,11 +76,12 @@ Double_t customFit_Dp_Ds(Double_t *v, Double_t *par)
       Double_t CB_nPeak1 = par[11];
 
       Double_t nSignalPeak2 = par[12];
+	  Double_t muPeak2 = 0;
       if (isMassDiffFit) {//change this parameter depending on if it is a mass difference fit
             Double_t massDiff = par[13];
-            Double_t muPeak2 = muPeak1+massDiff;
+            muPeak2 = muPeak1+massDiff;
       } else {
-            Double_t muPeak2 = par[13];
+            muPeak2 = par[13];
       }
       Double_t rmsPeak2 = par[14];
       Double_t sigmaGaus1Peak2 = par[15];
@@ -102,7 +103,7 @@ Double_t customFit_Dp_Ds(Double_t *v, Double_t *par)
             CB_nPeak2 = CB_nPeak1;
       }
 
-
+	Double_t fitval = 0;//initializa fitval
 
 
       if (isFirstPeakDoubleGaus) {//if there are two gaussians in first peak
@@ -119,7 +120,7 @@ Double_t customFit_Dp_Ds(Double_t *v, Double_t *par)
             Double_t arg2 = 0;
             if (sigmaGaus2Peak1 != 0) arg2 = (v[0] - muPeak1)/sigmaGaus2Peak1;
 
-            Double_t fitval = nSignalPeak1*binWidth*f1Peak1*TMath::Exp(-0.5*arg1*arg1)/(TMath::Sqrt(TMath::TwoPi())*sigmaGaus1Peak1);//add gaus11            
+            fitval = nSignalPeak1*binWidth*f1Peak1*TMath::Exp(-0.5*arg1*arg1)/(TMath::Sqrt(TMath::TwoPi())*sigmaGaus1Peak1);//add gaus11            
             fitval = fitval + nSignalPeak1*binWidth*f2Peak1*TMath::Exp(-0.5*arg2*arg2)/(TMath::Sqrt(TMath::TwoPi())*sigmaGaus2Peak1);//add gaus12
             fitval = fitval + nSignalPeak1*binWidth*(1-f1Peak1-f2Peak1)*ROOT::Math::crystalball_pdf(v[0],CB_alphaPeak1,CB_nPeak1,sigmaCBPeak1,muPeak1);//add CB1
 
@@ -130,7 +131,7 @@ Double_t customFit_Dp_Ds(Double_t *v, Double_t *par)
             Double_t arg1 = 0;
             if (sigmaGaus1Peak1 != 0) arg1 = (v[0] - muPeak1)/sigmaGaus1Peak1;
 
-            Double_t fitval = nSignalPeak1*binWidth*f1Peak1*TMath::Exp(-0.5*arg1*arg1)/(TMath::Sqrt(TMath::TwoPi())*sigmaGaus1Peak1);//add gaus1
+            fitval = nSignalPeak1*binWidth*f1Peak1*TMath::Exp(-0.5*arg1*arg1)/(TMath::Sqrt(TMath::TwoPi())*sigmaGaus1Peak1);//add gaus1
             fitval = fitval + nSignalPeak1*binWidth*(1-f1Peak1)*ROOT::Math::crystalball_pdf(v[0],CB_alphaPeak1,CB_nPeak1,sigmaCBPeak1,muPeak1);//add CB1
       }
 
