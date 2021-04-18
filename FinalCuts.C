@@ -27,7 +27,7 @@ Double_t binWidth = 1; //MeV
 Int_t cutoffMass = 1920; //above (inclusive) this value we use Ds data, below is D+
 
 Bool_t takeMagUp = 1; //1: include, 0: don't
-Bool_t takeMagDown = 0; //1: include, 0: don't
+Bool_t takeMagDown = 1; //1: include, 0: don't
 
 Bool_t isSameCB = 1; //1: use same CB params for both peaks, 0: don't
 Bool_t isMassDiff = 1; //1: mass difference fit, 0: two mass fit
@@ -136,7 +136,7 @@ ROOT::Math::MinimizerOptions::SetDefaultMaxFunctionCalls(5000);
       dpdspHist->SetTitleSize(35);
 		//*********NEED TO FIX BELOW LINE TO CHANGE PER binWidth INPUT**********
       dpdspHist->GetYaxis()->SetTitle("Candidates/(1 MeV/c^{2})");
-      dpdspHist->SetMinimum(100);//set min so logy doesnt break and ignore uninteresting stuff
+      dpdspHist->SetMinimum(100);//set min to 100 for logy so it doesnt break and ignore uninteresting stuff
 		if (binWidth < 1) {dpdspHist->SetMinimum(10);}
       dpdspHist->GetYaxis()->SetTitleFont(43);
       dpdspHist->GetYaxis()->SetTitleSize(30);
