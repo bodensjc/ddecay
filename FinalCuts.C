@@ -18,7 +18,7 @@
 //***************CUSTOMIZATION***************
 //change these variables to modify settings for the fit
 
-string extraFileStr = "aaa";//adds extra notation to beginning of save file string
+string extraFileStr = "aaa_linear";//adds extra notation to beginning of save file string
 
 Int_t fitStart = 1830; //1790 minimum
 Int_t fitEnd = 2040; //2050 maximum
@@ -27,10 +27,10 @@ Double_t binWidth = 1; //MeV
 Int_t cutoffMass = 1920; //above (inclusive) this value we use Ds data, below is D+
 
 Bool_t takeMagUp = 1; //1: include, 0: don't
-Bool_t takeMagDown = 1; //1: include, 0: don't
+Bool_t takeMagDown = 0; //1: include, 0: don't
 
 Bool_t isSameCB = 1; //1: use same CB params for both peaks, 0: don't
-Bool_t isMassDiff = 0; //1: mass difference fit, 0: two mass fit
+Bool_t isMassDiff = 1; //1: mass difference fit, 0: two mass fit
 Bool_t isFirstPeakDoubleGaus = 0; //1: double gaus in D+, 0: single
 Bool_t isSecondPeakDoubleGaus = 1; //1: double gaus in Ds, 0: single
 
@@ -278,7 +278,7 @@ void FinalCuts::Terminate()
       pad1->SetBottomMargin(0);
       pad1->SetLeftMargin(0.15);
       pad1->SetRightMargin(0.05);
-      pad1->SetLogy();
+      //pad1->SetLogy();
       pad1->SetGridy();
 
       dpdspHist->Fit("dpdspFit","R");//fit the data
