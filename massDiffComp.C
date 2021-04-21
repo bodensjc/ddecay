@@ -41,7 +41,7 @@ double syszero[2] = {0,0};
 double uczero[1] = {0};
 	double ucmass[1] = {98.89};
 	double ucy[1] = {4};
-	double ucstat[1] = {0.005};
+	double ucstat[1] = {0.0036};
 
 auto statdp = new TGraphErrors(4, statmass, staty, stat, statzero);
 statdp->SetMarkerStyle(20);
@@ -70,10 +70,10 @@ maxLine->Draw();
 auto lt = new TLatex();
 lt->SetTextSize(0.025);
 lt->DrawLatexNDC(0.44, 0.811, "98.69 #pm 0.05 MeV");//PDG
-lt->DrawLatexNDC(0.50, 0.651, "#color[4]{98.89 #pm 0.005 #pm x.xxx MeV}");//UC
+lt->DrawLatexNDC(0.50, 0.651, "#color[4]{98.89 #pm 0.0036 #pm x.xxx MeV}");//UC
 lt->DrawLatexNDC(0.44, 0.491, "98.68 #pm 0.03 #pm 0.04 MeV");//LHCB
 lt->DrawLatexNDC(0.605, 0.36, "99.41 #pm 0.38 #pm 0.21 MeV");//CDF2
-lt->DrawLatexNDC(0.24, 0.20, "98.4 #pm 0.1 #pm 0.3 MeV");//BABR
+lt->DrawLatexNDC(0.22, 0.20, "98.4 #pm 0.1 #pm 0.3 MeV");//BABR
 
 
 
