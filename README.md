@@ -33,3 +33,6 @@ $dirac-dms-lfn-accessURL --File=lhcb-user-u-username.lfns > somefilename.txt
 ```
 
 5. Now run the "somefilename.txt" through a parser, selesting the accessURLs. Then these can hadd'd on lxplus, then rsync'd to UC from CERN.
+
+
+test2
