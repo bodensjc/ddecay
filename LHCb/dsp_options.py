@@ -39,7 +39,7 @@ dtt.Dsplus.addTupleTool('TupleToolPropertime')
 DaVinci().UserAlgorithms += [dtt]
 
 DaVinci().Turbo = True
-DaVinci().RootInTES = '/Event/Charmspec/Turbo'#Charmcharged no work
+DaVinci().RootInTES = '/Event/Charmspec/Turbo'#Charmcharged does not work
 DaVinci().InputType = 'MDST'
 #DaVinci().DDDBtag = 'dddb-20171030-3'
 DaVinci().Simulation = False
@@ -48,6 +48,3 @@ DaVinci().PrintFreq = 50000
 DaVinci().DataType = '2017'
 DaVinci().Lumi = False
 DaVinci().EvtMax = -1
-
-#IOHelper().inputFiles([
-#    'root://hake1.grid.surfsara.nl:1094/pnfs/grid.sara.nl/data/lhcb/LHCb/Collision17/CHARMCHARGED.MDST/00067727/0001/00067727_00012788_1.charmcharged.mdst'], clear=True)
