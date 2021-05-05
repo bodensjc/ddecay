@@ -1,5 +1,4 @@
 # LHCb Research
-## Data Collection and Analysis Repository
 Research measuring mass difference between D+ and Ds+ mesons. This repository includes all analysis files, including RDataFrames and the more standard MakeSelectors. Also included in the ```LHCb``` subdirectory are the Ganga scripts and DaVinci ntuple options used to collect the raw data.
 
 Some relevant links: 
@@ -8,7 +7,15 @@ Some relevant links:
  * [LHCb StarterKit Lessons](https://lhcb.github.io/starterkit-lessons/ "lhcb starterkit")
 
 
+## Data Collection
+All of the necessary files for this and more are stored in the [`/LHCb/` subdirectry](https://github.com/bodensjc/ddecay/tree/main/LHCb). This part of the tutorial assumes that you have a functioning grid certificate through CERN and are able to run Ganga jobs on DIRAC. This is covered in the LHCb StarterKit Lessons linked above. 
+List of files in `/LHCb/` and their purpose:
+ * 
 
+
+
+### Run the Ganga scripts:
+This is the first step of the analysis- collecting the data. The Ganga scripts used will save the data to EOS, a large area of disk space provided by CERN for users. 
 
 ### To get lfns from dirac:
 1. in lxplus open a dirac sub-shell and proxy to lhcb
@@ -16,23 +23,18 @@ Some relevant links:
 $ lb-dirac bash --norc 
 $ lhcb-proxy-init
 ```
-
 2. get a list of lfns older than d days, this will output "lhcb-user-u-username.lfns" into current directory ("u-username" in my case is j-jbodensc)
 ```
 $ dirac-dms-user-lfns --Days=d
 ```
-
 3. (optional) if you need to get rid of older data, run the above command isolating all data older than d days, then run the following command to remove these lfns. WARNING: they are not going to come back
 ```
 $ dirac-dms-remove-files --File=lhcb-user-u-username.lfns
 ```
-
 4. get the access URLs to the lfns, run the below command with your file containing the LFNs
 ```
 $dirac-dms-lfn-accessURL --File=lhcb-user-u-username.lfns > somefilename.txt 
 ```
-
 5. Now run the "somefilename.txt" through a parser, selesting the accessURLs. Then these can hadd'd on lxplus, then rsync'd to UC from CERN.
 
 
-test2
