@@ -19,14 +19,36 @@ List of files in `/LHCb/` and their purpose:
 * [`ListLFNs.py`](https://github.com/bodensjc/ddecay/blob/main/LHCb/ListLFNs.py): Saves the LFNs (output file locations) of a Ganga job to a .txt file.
 * [`lfn_parse.py`](https://github.com/bodensjc/ddecay/blob/main/LHCb/lfn_parse.py): File that is fairly unique to this decay and will almost certainly need to be revised if used again. It looks at the file produced by `ListLFNs.py` and extracts the important information and "chunks" it for data transfer purposes.
 * [`getEvents.py`](https://github.com/bodensjc/ddecay/blob/main/LHCb/getEvents.py): Not used in this analysis, but can collect some dms files.
-* [`TeslaTuplesDec15.py`](https://github.com/bodensjc/ddecay/blob/main/LHCb/TeslaTuplesDec15.py): File from Mike in 2015. I yoinked some code from here, specifically regarding the T stations. Excelent example of what a _good_ ntuple options file looks like.
+* [`TeslaTuplesDec15.py`](https://github.com/bodensjc/ddecay/blob/main/LHCb/TeslaTuplesDec15.py): File from Mike in 2015. I borrowed some code from here, specifically regarding the T stations. Great example of what a _good_ ntuple options file looks like.
 
 
 
 ### Run the Ganga scripts:
-This is the first step of the analysis- collecting the data. The Ganga scripts used will save the data to EOS, a large area of disk space provided by CERN for users. 
+This is the first step of the analysis- collecting the data. The ntuple options / Ganga scripts used will save the data to EOS, a large area of disk space provided by CERN for users. 
+1. Start by `ssh`-ing into CERN computers and navigating to the directory in which you have saved your job and options files.
+```
+$ ssh username@lxplus.cern.ch
+$ cd ddecay/
+```
+2. Enter Ganga and run the jobs. For the files I have created this will need to be done **four** times. Twice for each decay (D+ and Ds+) and again for each magnet polarity. As they are, the `job` and `options` files are set up to already discriminate between D+ and Ds+. To change between MagUp and MagDown data, lines 1, 11, 15, and 22 in the `job` script needs to be adjusted. Line 46 (`TupleFile`) in the `options` script should also be changed to match the output file name (line 22) in the `job` script.
+```
+$ ganga
+$ ganga dp_job.py
+```
+after that is done setting up:
+```
+$ ganga
+$ ganga dsp_job.py
+```
+After both of these are done, make the polarityt changes and repeat.
 
-### To get lfns from dirac:
+### Monitor your jobs
+Monitoring running jobs can be done on [DIRAC](https://lhcb-portal-dirac.cern.ch/DIRAC/). You will need your certificates functioning in your browser to properly access this site. The process to get this uip and running is well documented on CERN wikis and forums. You can 
+
+
+
+
+### Get the data:
 1. in lxplus open a dirac sub-shell and proxy to lhcb
 ```
 $ lb-dirac bash --norc 
