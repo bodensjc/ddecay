@@ -25,9 +25,10 @@ List of files in `/LHCb/` and their purpose:
 
 ### Run the Ganga scripts:
 This is the first step of the analysis- collecting the data. The ntuple options / Ganga scripts used will save the data to EOS, a large area of disk space provided by CERN for users. 
-1. Start by `ssh`-ing into CERN computers and navigating to the directory in which you have saved your job and options files.
+1. Start by `ssh`-ing into CERN computers, proxying into lhcb, and navigating to the directory in which you have saved your job and options files.
 ```
 $ ssh username@lxplus.cern.ch
+$ lhcb-proxy-init
 $ cd ddecay/
 ```
 2. Enter Ganga and run the jobs. For the files I have created this will need to be done **four** times. Twice for each decay (D+ and Ds+) and again for each magnet polarity. As they are, the `job` and `options` files are set up to already discriminate between D+ and Ds+. To change between MagUp and MagDown data, lines 1, 11, 15, and 22 in the `job` script needs to be adjusted. Line 46 (`TupleFile`) in the `options` script should also be changed to match the output file name (line 22) in the `job` script.
@@ -42,30 +43,29 @@ $ ganga dsp_job.py
 ```
 After both of these are done, make the polarityt changes and repeat.
 
+
 ### Monitor your jobs
-Monitoring running jobs can be done on [DIRAC](https://lhcb-portal-dirac.cern.ch/DIRAC/). You will need your certificates functioning in your browser to properly access this site. The process to get this uip and running is well documented on CERN wikis and forums. You can 
-
-
+Monitoring running jobs can be done on [DIRAC](https://lhcb-portal-dirac.cern.ch/DIRAC/). You will need your certificates functioning in your browser to properly access this site. The process to get this up and running is well documented on CERN wikis and forums. Using the "Job Monitor" tool on DIRAC you can change some parameters to monitor recently scheduled jobs. You can also reschedule jobs that happen to fail. More information about DIRAC including some useful guides can be found [here](http://diracgrid.org/).
 
 
 ### Get the data:
-1. in lxplus open a dirac sub-shell and proxy to lhcb
+1. In lxplus open a dirac sub-shell and proxy to lhcb.
 ```
 $ lb-dirac bash --norc 
 $ lhcb-proxy-init
 ```
-2. get a list of lfns older than d days, this will output "lhcb-user-u-username.lfns" into current directory ("u-username" in my case is j-jbodensc)
+2. Get a list of all lfns older than d days (probably fine to set d=0), this will output the file "lhcb-user-u-username.lfns" into current directory ("u-username" in my case is j-jbodensc)
 ```
 $ dirac-dms-user-lfns --Days=d
 ```
-3. (optional) if you need to get rid of older data, run the above command isolating all data older than d days, then run the following command to remove these lfns. WARNING: they are not going to come back
+3. (optional) if you need to get rid of older files, run the above command isolating all data older than d' days (d' > d, such that you only select files _older_ than what you are interested in), then run the following command to remove these lfns. WARNING: they are not going to come back! (Note: There is probably a cleaner way of doing this without [risking] removing older data. Just something to consdier.)
 ```
 $ dirac-dms-remove-files --File=lhcb-user-u-username.lfns
 ```
-4. get the access URLs to the lfns, run the below command with your file containing the LFNs
+4. Get the access URLs to the lfns by running the below command with your file containing the LFNs:
 ```
 $dirac-dms-lfn-accessURL --File=lhcb-user-u-username.lfns > somefilename.txt 
 ```
-5. Now run the "somefilename.txt" through a parser, selesting the accessURLs. Then these can hadd'd on lxplus, then rsync'd to UC from CERN.
+5. Now run the "somefilename.txt" through a parser, selesting the accessURLs. Then these can `hadd`'d on lxplus, then `rsync`'d to UC from CERN. I have created an `lfn_parse.py` script that does this for my lfns and can be modified to parse through your lfns also. I collect and move the data in chunks from CERN computers to UC computers so as to not exceed storage limits. This is also safer in the event that something "breaks"- only a small chunkneeds to be redone.
 
 
