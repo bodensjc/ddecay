@@ -18,7 +18,7 @@
 //***************CUSTOMIZATION***************
 //change these variables to modify settings for the fit
 
-string extraFileStr = "aaa_linear";//adds extra notation to beginning of save file string
+string extraFileStr = "aaa_aaa";//adds extra notation to beginning of save file string
 
 Int_t fitStart = 1830; //1790 minimum
 Int_t fitEnd = 2040; //2050 maximum
@@ -33,6 +33,12 @@ Bool_t isSameCB = 1; //1: use same CB params for both peaks, 0: don't
 Bool_t isMassDiff = 1; //1: mass difference fit, 0: two mass fit
 Bool_t isFirstPeakDoubleGaus = 0; //1: double gaus in D+, 0: single
 Bool_t isSecondPeakDoubleGaus = 1; //1: double gaus in Ds, 0: single
+
+// upper and lower limits for momentum-restricted plots (GeV)
+// make PLOWER 0 and PUPPER outrageously large to ignore this
+//t his is prtty new so the signalpeak guesses may need to be adjusted
+Int_t P_LOWER = 0;
+Int_t P_UPPER = 10000000000;
 
 
 
@@ -136,7 +142,7 @@ ROOT::Math::MinimizerOptions::SetDefaultMaxFunctionCalls(5000);
       dpdspHist->SetTitleSize(35);
 		//*********NEED TO FIX BELOW LINE TO CHANGE PER binWidth INPUT**********
       dpdspHist->GetYaxis()->SetTitle("Candidates/(1 MeV/c^{2})");
-      dpdspHist->SetMinimum(100);//set min to 100 for logy so it doesnt break and ignore uninteresting stuff
+      dpdspHist->SetMinimum(10);//set min to 100 for logy so it doesnt break and ignore uninteresting stuff
 		if (binWidth < 1) {dpdspHist->SetMinimum(10);}
       dpdspHist->GetYaxis()->SetTitleFont(43);
       dpdspHist->GetYaxis()->SetTitleSize(30);
@@ -175,7 +181,10 @@ Bool_t FinalCuts::Process(Long64_t entry)
 	Bool_t takeData = ((*particle_MM < cutoffMass) && (*isDp == 1)) || ((*particle_MM >= cutoffMass) && (*isDp == 0));
 	Bool_t goodPolarity = ((takeMagUp && (*Polarity == 1)) || (takeMagDown && (*Polarity == -1)));
 
-	if (takeData && goodPolarity)
+	Double_t particle_P = TMath::Sqrt(TMath::Power(*particle_PX,2) + TMath::Power(*particle_PY,2) + TMath::Power(*particle_PZ,2))/1000;
+	Bool_t goodMomentum = ((particle_P >= P_LOWER) && (particle_P < P_UPPER));
+
+	if (takeData && goodPolarity && goodMomentum)
 	{
 		dpdspHist->Fill(*particle_MM);
 	}
@@ -193,8 +202,8 @@ void FinalCuts::Terminate()
 	Int_t nSignal2Guess = 0;
    if (takeMagUp && takeMagDown) {
       //numbers from perviously made graphs
-      nSignal1Guess = 4200000;
-      nSignal2Guess = 7200000;
+      nSignal1Guess = 4200000;//4200000
+      nSignal2Guess = 7200000;//7200000
    } else {
       //if only taking one polarity, approximately 1/2
       nSignal1Guess = 2100000;
@@ -278,7 +287,7 @@ void FinalCuts::Terminate()
       pad1->SetBottomMargin(0);
       pad1->SetLeftMargin(0.15);
       pad1->SetRightMargin(0.05);
-      //pad1->SetLogy();
+      pad1->SetLogy();
       pad1->SetGridy();
 
       dpdspHist->Fit("dpdspFit","R");//fit the data
