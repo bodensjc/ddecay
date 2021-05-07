@@ -1,5 +1,5 @@
 # LHCb Research
-Research measuring mass difference between D+ and Ds+ mesons. This repository includes all analysis files, including RDataFrames and the more standard MakeSelectors. Also included in the ```LHCb``` subdirectory are the Ganga scripts and DaVinci ntuple options used to collect the raw data.
+Research measuring mass difference between D+ and Ds+ mesons. This repository includes all analysis files, including RDataFrames and the more standard MakeSelectors. Also included is the `LHCb` subdirectory, containing the Ganga scripts and DaVinci ntuple options used to collect the raw data.
 
 Some relevant links: 
  * [Precision measurement of D meson mass differences](https://arxiv.org/pdf/1304.6865.pdf "d meson mass differences")
