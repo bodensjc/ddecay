@@ -74,7 +74,7 @@ The following line can be done on either lxplus or UC computers, but I prefer to
 ```
 $ rsync -ap chunk1.root username@sleepy.geop.uc.edu:/share/lazy/yourfolder
 ```
-Done on UC computer (dot at end can be replaced with destination path, it's probably a good idea to put data in `share/lazy`):
+Alternatively on UC computers (dot at end can be replaced with destination path, it's probably a good idea to put data in `share/lazy`):
 ```
 $ rsync -ap username@lxplus.cern.ch:/path/to/chunk1.root .
 ```
