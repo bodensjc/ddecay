@@ -74,12 +74,20 @@ The following line can be done on either lxplus or UC computers, but I prefer to
 ```
 $ rsync -ap chunk1.root username@sleepy.geop.uc.edu:/share/lazy/yourfolder
 ```
-Alternatively on UC computers (dot at end can be replaced with destination path, it's probably a good idea to put data in `share/lazy`):
+Alternatively on UC computers (dot at end can be replaced with destination path, it's probably a good idea to put data in `/share/lazy`):
 ```
 $ rsync -ap username@lxplus.cern.ch:/path/to/chunk1.root .
 ```
 
 ## Data Analysis
-This is the crux of the research. Here we study the many variables of the decays, generating a great number of plots from which we can extract useful information regarding the signals and background.  The `image/` and `/finalImages` subdirectories are where I store any pltos I create, where more important (final) plots going into the `finalImagse/` folder. The subdirectories `old_C/` and `old_dsp/` are, as labeled: _old_. They contain my first attempts at analysis from Summer 2020. The methods used are sometimes similar to more recent code, but in general these are just saved for a rare reference to past work and will certainly **not** work on existing datasets. The `scripts/` subdirectory contains all fitting functions used. The most improtant file in this folder is `new_fit_spectrum.C`. It was created to make various fitting techniques "easier" in the Analysis stage, this will be seen later on. The "loose" files in the main `ddecay/` directory are what I used for analysis. Here is a brief description of the files:
+This is the crux of the research. Here we study the many variables of the decays, generating a great number of plots from which we can extract useful information regarding the signals and background.  The `/image/` and `/finalImages/` subdirectories are where I store any pltos I create, where more important (final) plots going into the `/finalImages/` folder. The subdirectories `/old_C/` and `/old_dsp/` are, as labeled: _old_. They contain my first attempts at analysis from Summer 2020. The methods used are sometimes similar to more recent code, but in general these are just saved for a rare reference to past work and will certainly **not** work on existing datasets. The `/scripts/` subdirectory contains all fitting functions used. The most improtant file in this folder is `new_fit_spectrum.C`. It was created to make various fitting techniques "easier" in the Analysis stage, this will be seen later on. The "loose" files in the main `ddecay/` directory are what I used for analysis. Here is a brief description of the files:
 
+Special files:
+ * [`differences.xlsx`](https://github.com/bodensjc/ddecay/blob/main/differences.xlsx): Quick excel sheet to find Δm(Ds-D+) for momentum regions
+ * [`quick.py`](https://github.com/bodensjc/ddecay/blob/main/quick.py): Quickply made python parser used to find what variables are used in Momentum Scaling code.
+ * [`notes.txt`](https://github.com/bodensjc/ddecay/blob/main/notes.txt): Notes file used when searching for ~~missing~~ TCKs. Also used to look at the "overlap region"
+ * `README.md`: Documentation.
+
+RDataFrame Files:
+ * 
 
