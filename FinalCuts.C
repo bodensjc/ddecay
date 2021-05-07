@@ -36,9 +36,9 @@ Bool_t isSecondPeakDoubleGaus = 1; //1: double gaus in Ds, 0: single
 
 // upper and lower limits for momentum-restricted plots (GeV)
 // make PLOWER 0 and PUPPER outrageously large to ignore this
-//t his is prtty new so the signalpeak guesses may need to be adjusted
+// this is prtty new so the signalpeak guesses may need to be adjusted
 Int_t P_LOWER = 0;
-Int_t P_UPPER = 10000000000;
+Int_t P_UPPER = 100000000;
 
 
 
@@ -142,7 +142,7 @@ ROOT::Math::MinimizerOptions::SetDefaultMaxFunctionCalls(5000);
       dpdspHist->SetTitleSize(35);
 		//*********NEED TO FIX BELOW LINE TO CHANGE PER binWidth INPUT**********
       dpdspHist->GetYaxis()->SetTitle("Candidates/(1 MeV/c^{2})");
-      dpdspHist->SetMinimum(10);//set min to 100 for logy so it doesnt break and ignore uninteresting stuff
+      dpdspHist->SetMinimum(1);//set min to 100 for logy so it doesnt break and ignore uninteresting stuff
 		if (binWidth < 1) {dpdspHist->SetMinimum(10);}
       dpdspHist->GetYaxis()->SetTitleFont(43);
       dpdspHist->GetYaxis()->SetTitleSize(30);
@@ -226,8 +226,8 @@ void FinalCuts::Terminate()
    dpdspFit->SetParameter(6, 1869);//approx Dplus mass
    dpdspFit->SetParameter(7, 6);//rms width
    dpdspFit->SetParameter(8, 7);//sigma
-   dpdspFit->SetParameter(9, 0.7);//fraction in first gaus
-      dpdspFit->SetParLimits(9, 0.000001, 0.999999);//ensure between 0 and 1
+   dpdspFit->SetParameter(9, 0.3);//fraction in first gaus
+      dpdspFit->SetParLimits(9, 0.000001, 0.99999);//ensure between 0 and 1
    dpdspFit->SetParameter(10, 2);//CB alpha
 		dpdspFit->SetParLimits(10, 0, 10);
    dpdspFit->SetParameter(11, 3);//CB n
@@ -241,16 +241,18 @@ void FinalCuts::Terminate()
    }
    dpdspFit->SetParameter(14, 6);//rms width
    dpdspFit->SetParameter(15, 7);//sigma
-   dpdspFit->SetParameter(16, 0.7);//fraction in first gaus
-      dpdspFit->SetParLimits(16, 0.000001, 0.999999);//ensure between 0 and 1
+   dpdspFit->SetParameter(16, 0.2);//fraction in first gaus
+      dpdspFit->SetParLimits(16, 0.000001, 0.99999);//ensure between 0 and 1
    dpdspFit->SetParameter(17, 2);//CB alpha
 		dpdspFit->SetParLimits(17, 0, 10);
    dpdspFit->SetParameter(18, 3);//CB n
 		dpdspFit->SetParLimits(18, 1.000001, 15);
+
    //background parameters
    dpdspFit->SetParameter(19, firstBin);//exp_int
 		//dpdspFit->SetParLimits(19, firstBin-20, firstBin+20);
    dpdspFit->SetParameter(20, expCoefGuess);
+
    //extra parameters for double gaussians
    if (isFirstPeakDoubleGaus) {
       dpdspFit->SetParameter(21, 10);//sigma2 of peak1
@@ -263,9 +265,9 @@ void FinalCuts::Terminate()
       dpdspFit->FixParameter(22, 0);
    }
    if (isSecondPeakDoubleGaus) {
-      dpdspFit->SetParameter(23, 10);//sigma2 of peak1
+      dpdspFit->SetParameter(23, 10);//sigma2 of peak2
 		dpdspFit->SetParLimits(23,1,15);
-      dpdspFit->SetParameter(24, 0.05);//fraction in second gaus
+      dpdspFit->SetParameter(24, 0.01);//fraction in second gaus
          dpdspFit->SetParLimits(24, 0.000001, 0.25);//small between 0 and 1
    } else {
       //make 0s so that the fit function still takes something, though meaningless
