@@ -31,7 +31,7 @@ $ ssh username@lxplus.cern.ch
 $ lhcb-proxy-init
 $ cd ddecay/
 ```
-2. Enter Ganga and run the jobs. For the files I have created this will need to be done **four** times. Twice for each decay (D+ and Ds+) and again for each magnet polarity. As they are, the `job` and `options` files are set up to already discriminate between D+ and Ds+. To change between MagUp and MagDown data, lines 1, 11, 15, and 22 in the `job` script needs to be adjusted. Line 46 (`TupleFile`) in the `options` script should also be changed to match the output file name (line 22) in the `job` script.
+2. Enter Ganga and run the jobs. For the files I have created this will need to be done **four** times. Twice for each decay (D+ and Ds+) and again for each magnet polarity. As they are, the `job` and `options` files are set up to already discriminate between D+ and Ds+ (As indicated by their names). To change between MagUp and MagDown data, lines 1, 11, 15, and 22 in the `job` scripts needs to be adjusted. Line 46 (`TupleFile`) in the `options` scripts should also be changed to match the output file name (line 22) in the `job` scripts.
 ```
 $ ganga
 $ ganga dp_job.py
@@ -41,7 +41,7 @@ after that is done setting up:
 $ ganga
 $ ganga dsp_job.py
 ```
-After both of these are done, make the polarityt changes and repeat.
+After both of these are done, make the polarity changes and repeat.
 
 
 ### Monitor your jobs
@@ -67,5 +67,18 @@ $ dirac-dms-remove-files --File=lhcb-user-u-username.lfns
 $dirac-dms-lfn-accessURL --File=lhcb-user-u-username.lfns > somefilename.txt 
 ```
 5. Now run the "somefilename.txt" through a parser, selesting the accessURLs. Then these can `hadd`'d on lxplus, then `rsync`'d to UC from CERN. I have created an `lfn_parse.py` script that does this for my lfns and can be modified to parse through your lfns also. I collect and move the data in chunks from CERN computers to UC computers so as to not exceed storage limits. This is also safer in the event that something "breaks"- only a small chunkneeds to be redone.
+```
+$ hadd chunk1.root smallfile1.root smallfile2.root ... smallfilen.root
+```
+The following line can be done on either lxplus or UC computers, but I prefer to do it on UC computers so I can have only one session of lxplus up where I am `hadd`ing chunks together. Done on lxplus:
+```
+$ rsync -ap chunk1.root username@sleepy.geop.uc.edu:/share/lazy/yourfolder
+```
+Done on UC computer (dot at end can be replaced with destination path, it's probably a good idea to put data in `share/lazy`):
+```
+$ rsync -ap username@lxplus.cern.ch:/path/to/chunk1.root .
+```
+
+## Data Analysis
 
 
