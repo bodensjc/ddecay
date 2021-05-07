@@ -1,4 +1,4 @@
-#print out the count of subjob statuses, "ganga jobstatus.py 73" 73 is job#
+#print out the count of subjob statuses, ex: "ganga jobstatus.py 73" 73 is job#
 
 import sys
 from collections import Counter
