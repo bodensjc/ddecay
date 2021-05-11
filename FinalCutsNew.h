@@ -1,12 +1,12 @@
 //////////////////////////////////////////////////////////
 // This class has been automatically generated on
-// Tue May 11 12:20:02 2021 by ROOT version 6.22/00
+// Tue May 11 12:44:52 2021 by ROOT version 6.22/00
 // from TTree DecayTree/DecayTree
 // found on file: /share/lazy/D2KKpi/combined_cut-5-21.root
 //////////////////////////////////////////////////////////
 
-#ifndef FinalCuts-5-21_h
-#define FinalCuts-5-21_h
+#ifndef FinalCutsNew_h
+#define FinalCutsNew_h
 
 #include <TROOT.h>
 #include <TChain.h>
@@ -19,7 +19,7 @@
 // Headers needed by this particular selector
 
 
-class FinalCuts-5-21 : public TSelector {
+class FinalCutsNew : public TSelector {
 public :
    TTreeReader     fReader;  //!the tree reader
    TTree          *fChain = 0;   //!pointer to the analyzed TTree or TChain
@@ -37,8 +37,8 @@ public :
    TTreeReaderValue<Short_t> Polarity = {fReader, "Polarity"};
 
 
-   FinalCuts-5-21(TTree * /*tree*/ =0) { }
-   virtual ~FinalCuts-5-21() { }
+   FinalCutsNew(TTree * /*tree*/ =0) { }
+   virtual ~FinalCutsNew() { }
    virtual Int_t   Version() const { return 2; }
    virtual void    Begin(TTree *tree);
    virtual void    SlaveBegin(TTree *tree);
@@ -53,14 +53,14 @@ public :
    virtual void    SlaveTerminate();
    virtual void    Terminate();
 
-   ClassDef(FinalCuts-5-21,0);
+   ClassDef(FinalCutsNew,0);
 
 };
 
 #endif
 
-#ifdef FinalCuts-5-21_cxx
-void FinalCuts-5-21::Init(TTree *tree)
+#ifdef FinalCutsNew_cxx
+void FinalCutsNew::Init(TTree *tree)
 {
    // The Init() function is called when the selector needs to initialize
    // a new tree or chain. Typically here the reader is initialized.
@@ -72,7 +72,7 @@ void FinalCuts-5-21::Init(TTree *tree)
    fReader.SetTree(tree);
 }
 
-Bool_t FinalCuts-5-21::Notify()
+Bool_t FinalCutsNew::Notify()
 {
    // The Notify() function is called when a new file is opened. This
    // can be either for a new TTree in a TChain or when when a new TTree
@@ -84,4 +84,4 @@ Bool_t FinalCuts-5-21::Notify()
 }
 
 
-#endif // #ifdef FinalCuts-5-21_cxx
+#endif // #ifdef FinalCutsNew_cxx

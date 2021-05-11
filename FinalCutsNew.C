@@ -1,5 +1,5 @@
-#define FinalCuts-5-21_cxx
-#include "FinalCuts-5-21.h"
+#define FinalCutsNew_cxx
+#include "FinalCutsNew.h"
 #include <TH2.h>
 #include <TStyle.h>
 #include "scripts/new_fit_spectrum.C"
@@ -7,7 +7,7 @@
 
 //run by doing:
 //$ root -l /share/lazy/D2KKpi/combined_cut.root
-//$ DecayTree->Process("FinalCuts-5-21.C")
+//$ DecayTree->Process("FinalCutsNew.C")
 
 //This will be my (second) final approach to analysis for the D->KKpi decay channel.
 //It should provide most* meaningful fits and corresponding plots.
@@ -18,7 +18,7 @@
 //***************CUSTOMIZATION***************
 //change these variables to modify settings for the fit
 
-string extraFileStr = "aaa_aaa";//adds extra notation to beginning of save file string
+string extraFileStr = "deltam/pos_110plus";//adds extra notation to beginning of save file string
 
 Int_t fitStart = 1830; //1790 minimum
 Int_t fitEnd = 2040; //2050 maximum
@@ -31,6 +31,9 @@ Bool_t takeMagDown = 1; //1: include, 0: don't
 
 Bool_t isSameCB = 1; //1: use same CB params for both peaks, 0: don't
 Bool_t isMassDiff = 1; //1: mass difference fit, 0: two mass fit
+// optimization sometimes runs differently when isMassDiff is toggled. I'm not too sure why
+// considering it should operate *roughly* the same. Might just be the order (?) of minimization
+
 Bool_t isFirstPeakDoubleGaus = 0; //1: double gaus in D+, 0: single
 Bool_t isSecondPeakDoubleGaus = 1; //1: double gaus in Ds, 0: single
 
@@ -42,7 +45,7 @@ Bool_t takeAntiparticle = 1; //1: take antiarticles (negative)
 // make PLOWER 0 and PUPPER outrageously large to ignore this
 // this is prtty new so the signalpeak guesses may need to be adjusted
 Int_t P_LOWER = 0;
-Int_t P_UPPER = 100000000;
+Int_t P_UPPER = 1000000;
 
 
 
@@ -68,7 +71,7 @@ TF1 * secondCBFit = NULL;
 
 
 
-void FinalCuts-5-21::Begin(TTree * /*tree*/)
+void FinalCutsNew::Begin(TTree * /*tree*/)
 {
    TString option = GetOption();
    //***************INITIALIZATION SECTION***************
@@ -148,7 +151,7 @@ ROOT::Math::MinimizerOptions::SetDefaultMaxFunctionCalls(5000);
       dpdspHist->SetTitleSize(35);
 		//*********NEED TO FIX BELOW LINE TO CHANGE PER binWidth INPUT**********
       dpdspHist->GetYaxis()->SetTitle("Candidates/(1 MeV/c^{2})");
-      dpdspHist->SetMinimum(1);//set min to 100 for logy so it doesnt break and ignore uninteresting stuff
+      dpdspHist->SetMinimum(100);//set min to 100 for logy so it doesnt break and ignore uninteresting stuff
 		if (binWidth < 1) {dpdspHist->SetMinimum(10);}
       dpdspHist->GetYaxis()->SetTitleFont(43);
       dpdspHist->GetYaxis()->SetTitleSize(30);
@@ -176,9 +179,9 @@ ROOT::Math::MinimizerOptions::SetDefaultMaxFunctionCalls(5000);
 
 }
 
-void FinalCuts-5-21::SlaveBegin(TTree * /*tree*/) {}
+void FinalCutsNew::SlaveBegin(TTree * /*tree*/) {}
 
-Bool_t FinalCuts-5-21::Process(Long64_t entry)
+Bool_t FinalCutsNew::Process(Long64_t entry)
 {
    fReader.SetLocalEntry(entry);
    GetEntry(entry);
@@ -190,7 +193,7 @@ Bool_t FinalCuts-5-21::Process(Long64_t entry)
 	Double_t particle_P = TMath::Sqrt(TMath::Power(*particle_PX,2) + TMath::Power(*particle_PY,2) + TMath::Power(*particle_PZ,2))/1000;
 	Bool_t goodMomentum = ((particle_P >= P_LOWER) && (particle_P < P_UPPER));
 
-   Bool_t goodCharge = ((particle_ID < 0) && (takeAntiparticle)) || ((particle_ID > 0) && (takeParticle))
+   Bool_t goodCharge = ((*particle_ID < 0) && (takeAntiparticle)) || ((*particle_ID > 0) && (takeParticle));
 
 	if (goodCutoff && goodPolarity && goodMomentum && goodCharge)
 	{
@@ -199,9 +202,9 @@ Bool_t FinalCuts-5-21::Process(Long64_t entry)
    return kTRUE;
 }
 
-void FinalCuts-5-21::SlaveTerminate() {}
+void FinalCutsNew::SlaveTerminate() {}
 
-void FinalCuts-5-21::Terminate()
+void FinalCutsNew::Terminate()
 {
    //***************FINALIZATION SECTION***************
 
