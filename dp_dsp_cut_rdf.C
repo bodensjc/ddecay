@@ -42,7 +42,9 @@ auto inv_m_func = [](double px1, double py1, double pz1, double pe1, double px2,
 auto prob_func = [](double prob1, double prob2) {return TMath::Log(prob1) - TMath::Log(prob2) ;};
 auto probNNx_func = [](double prob1, double prob2, double prob3) {return prob1*prob2*prob3 ;};
 
-auto rename_func = [](double varb) {return varb ;};//used to make columns with same name accross both dfs
+auto rename_func_double = [](double varb) {return varb ;};//used to make columns with same name accross both dfs
+auto rename_func_int = [](int varb) {return varb ;};//used to make columns with same name accross both dfs
+
 auto isdp_func = [](double varb) {return 1;}; //this and below used to differentiate between dp/dsp
 auto isdsp_func = [](double varb) {return 0;}; //1 meaning is dp, 0 meaning is dsp
 
@@ -98,21 +100,25 @@ auto dsp_cut = dspdf.Filter(cut_ipchi2, {"Dsplus_IPCHI2_OWNPV"})
 
 
 
-auto dp_standardized = dp_cut.Define("particle_MM", rename_func, {"Dplus_MM"})
-							 .Define("particle_TAU", rename_func, {"Dplus_TAU"})
-							 .Define("particle_PX", rename_func, {"Dplus_PX"})
-							 .Define("particle_PY", rename_func, {"Dplus_PY"})
-							 .Define("particle_PZ", rename_func, {"Dplus_PZ"})
-							 .Define("particle_PT", rename_func, {"Dplus_PT"})
+auto dp_standardized = dp_cut.Define("particle_MM", rename_func_double, {"Dplus_MM"})
+							 .Define("particle_TAU", rename_func_double, {"Dplus_TAU"})
+							 .Define("particle_P", rename_func_double, {"Dplus_P"})
+							 .Define("particle_PX", rename_func_double, {"Dplus_PX"})
+							 .Define("particle_PY", rename_func_double, {"Dplus_PY"})
+							 .Define("particle_PZ", rename_func_double, {"Dplus_PZ"})
+							 .Define("particle_PT", rename_func_double, {"Dplus_PT"})
+							 .Define("particle_ID", rename_func_int, {"Dplus_ID"})
 							 .Define("isDp", isdp_func, {"Dplus_MM"});
 
 
-auto dsp_standardized = dsp_cut.Define("particle_MM", rename_func, {"Dsplus_MM"})
-							 .Define("particle_TAU", rename_func, {"Dsplus_TAU"})
-							 .Define("particle_PX", rename_func, {"Dsplus_PX"})
-							 .Define("particle_PY", rename_func, {"Dsplus_PY"})
-							 .Define("particle_PZ", rename_func, {"Dsplus_PZ"})
-							 .Define("particle_PT", rename_func, {"Dsplus_PT"})
+auto dsp_standardized = dsp_cut.Define("particle_MM", rename_func_double, {"Dsplus_MM"})
+							 .Define("particle_TAU", rename_func_double, {"Dsplus_TAU"})
+							 .Define("particle_P", rename_func_double, {"Dsplus_P"})
+							 .Define("particle_PX", rename_func_double, {"Dsplus_PX"})
+							 .Define("particle_PY", rename_func_double, {"Dsplus_PY"})
+							 .Define("particle_PZ", rename_func_double, {"Dsplus_PZ"})
+							 .Define("particle_PT", rename_func_double, {"Dsplus_PT"})
+							 .Define("particle_ID", rename_func_int, {"Dsplus_ID"})
 							 .Define("isDp", isdsp_func, {"Dsplus_MM"});
 
 
@@ -120,11 +126,11 @@ auto dsp_standardized = dsp_cut.Define("particle_MM", rename_func, {"Dsplus_MM"}
 
 auto treeName = "DecayTree";
 
-auto dpoutFileName = "/share/lazy/D2KKpi/dp_cut.root";
-dp_standardized.Snapshot(treeName, dpoutFileName, {"particle_MM", "particle_TAU", "particle_PX", "particle_PY", "particle_PZ", "particle_PT", "isDp", "Polarity"});
+auto dpoutFileName = "/share/lazy/D2KKpi/dp_cut-5-21.root";
+dp_standardized.Snapshot(treeName, dpoutFileName, {"particle_MM", "particle_TAU", "particle_P", "particle_PX", "particle_PY", "particle_PZ", "particle_PT", "particle_ID", "isDp", "Polarity"});
 
-auto dspoutFileName = "/share/lazy/D2KKpi/dsp_cut.root";
-dsp_standardized.Snapshot(treeName, dspoutFileName, {"particle_MM", "particle_TAU", "particle_PX", "particle_PY", "particle_PZ", "particle_PT", "isDp", "Polarity"});
+auto dspoutFileName = "/share/lazy/D2KKpi/dsp_cut-5-21.root";
+dsp_standardized.Snapshot(treeName, dspoutFileName, {"particle_MM", "particle_TAU", "particle_P", "particle_PX", "particle_PY", "particle_PZ", "particle_PT", "particle_ID", "isDp", "Polarity"});
 
 
 
