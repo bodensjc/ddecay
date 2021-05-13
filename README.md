@@ -80,13 +80,17 @@ $ rsync -ap username@lxplus.cern.ch:/path/to/chunk1.root .
 ```
 
 ## Data Analysis
-This is the crux of the research. Here we study the many variables of the decays, generating a great number of plots from which we can extract useful information regarding the signals and background.  The `/image/` and `/finalImages/` subdirectories are where I store any pltos I create, where more important (final) plots going into the `/finalImages/` folder. The subdirectories `/old_C/` and `/old_dsp/` are, as labeled: _old_. They contain my first attempts at analysis from Summer 2020. The methods used are sometimes similar to more recent code, but in general these are just saved for a rare reference to past work and will certainly **not** work on existing datasets. The `/scripts/` subdirectory contains all fitting functions used. The most improtant file in this folder is `new_fit_spectrum.C`. It was created to make various fitting techniques "easier" in the Analysis stage, this will be seen later on. The "loose" files in the main `ddecay/` directory are what I used for analysis. Here is a brief description of the files:
+This is the crux of the research. Here we study the many variables of the decays, generating a great number of plots from which we can extract useful information regarding the signals and background.  The `/image/` and `/finalImages/` subdirectories are where I store any plots I create, more important (final) plots going into the `/finalImages/` folder. The subdirectories `/old_C/` and `/old_dsp/` are, as labeled, _old_. They contain my first attempts at analysis from Summer 2020. The methods used are sometimes similar to more recent code, but in general these are just saved for a rare reference to past work and will certainly **not** work on existing datasets. The `/scripts/` subdirectory contains all fitting functions used. The most improtant file in this folder is `new_fit_spectrum.C`. It was created to make various fitting techniques "easier" in the Analysis stage, this will be seen later on. The "loose" files in the main `ddecay/` directory are what I used for analysis. 
+
+Here are brief descriptions of the files:
 
 Special files:
  * [`differences.xlsx`](https://github.com/bodensjc/ddecay/blob/main/differences.xlsx): Quick excel sheet to find Δm(Ds-D+) for momentum regions
  * [`quick.py`](https://github.com/bodensjc/ddecay/blob/main/quick.py): Quickply made python parser used to find what variables are used in Momentum Scaling code.
- * [`notes.txt`](https://github.com/bodensjc/ddecay/blob/main/notes.txt): Notes file used when searching for ~~missing~~ TCKs. Also used to look at the "overlap region"
+ * [`notes.txt`](https://github.com/bodensjc/ddecay/blob/main/notes.txt): Notes file used when searching for ~~missing~~(ended up none missing) TCKs. Also used to look at the "overlap region".
  * `README.md`: Documentation.
+
+Due to the size of the data for this analysis some more "modern" ROOT techniques are applied, namely, `RDataFrames`. RDataFrames (RDFs) are fairly new to ROOT, as such they arenn't documented incredibly well and are not yet as powerful as their predecessor `MakeSelector`. The [official documentation](https://root.cern/doc/master/classROOT_1_1RDataFrame.html) provides a helpful cheat sheet on the functions that can be used with RDFs. In my case, I use RDFs to make my first analysis cuts on the larger data set. I make special use of the `Snapshot()` function to create smaller, more efficient data sets that include only necessary variables (for fitting, momentum scaling, etc.). I was not able to figure out if it was possible to do fitting in RDFs, so I do all fitting in a `MakeSelector`. Here is a list of my RDF files and analysis files as well as their purpose:
 
 RDataFrame Files:
  * 
