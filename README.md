@@ -10,12 +10,12 @@ Some relevant links:
 ## Data Collection
 All of the necessary files for this and more are stored in the [`/LHCb/`](https://github.com/bodensjc/ddecay/tree/main/LHCb) subdirectory. This part of the tutorial assumes that you have a functioning grid certificate through CERN and are able to run Ganga jobs on DIRAC. This is covered in the LHCb StarterKit Lessons linked above. 
 List of files in `/LHCb/` and their purpose:
- * [`dp_job.py`](https://github.com/bodensjc/ddecay/blob/main/LHCb/dp_job.py): Ganga job to get D+ -> KKpi data
+ * [`dp_job.py`](https://github.com/bodensjc/ddecay/blob/main/LHCb/dp_job.py): Ganga job to get D+ -> KKpi data.
    * [`dp_options.py`](https://github.com/bodensjc/ddecay/blob/main/LHCb/dp_options.py): Options file for D+ -> KKpi data. Tells what variables to collect.
- * [`dsp_job.py`](https://github.com/bodensjc/ddecay/blob/main/LHCb/dsp_job.py): Ganga job to get Ds+ -> KKpi data
+ * [`dsp_job.py`](https://github.com/bodensjc/ddecay/blob/main/LHCb/dsp_job.py): Ganga job to get Ds+ -> KKpi data.
    * [`dsp_options.py`](https://github.com/bodensjc/ddecay/blob/main/LHCb/dsp_options.py): Options file for Ds+ -> KKpi data. Tells what variables to collect.
 * [`symbols.py`](https://github.com/bodensjc/ddecay/blob/main/LHCb/symbols.py): Prints out particle symbols as interpreted by Ganga with some additional info.
-* [`jobstatus.py`](https://github.com/bodensjc/ddecay/blob/main/LHCb/jobstatus.py): Prints out status of subjobs of a running job
+* [`jobstatus.py`](https://github.com/bodensjc/ddecay/blob/main/LHCb/jobstatus.py): Prints out status of subjobs of a running job.
 * [`ListLFNs.py`](https://github.com/bodensjc/ddecay/blob/main/LHCb/ListLFNs.py): Saves the LFNs (output file locations) of a Ganga job to a .txt file.
 * [`lfn_parse.py`](https://github.com/bodensjc/ddecay/blob/main/LHCb/lfn_parse.py): File that is fairly unique to this decay and will almost certainly need to be revised if used again. It looks at the file produced by `ListLFNs.py` and extracts the important information and "chunks" it for data transfer purposes.
 * [`getEvents.py`](https://github.com/bodensjc/ddecay/blob/main/LHCb/getEvents.py): Not used in this analysis, but can collect some dms files.
@@ -81,17 +81,38 @@ $ rsync -ap username@lxplus.cern.ch:/path/to/chunk1.root .
 
 ## Data Analysis
 This is the crux of the research. Here we study the many variables of the decays, generating a great number of plots from which we can extract useful information regarding the signals and background.  The `/image/` and `/finalImages/` subdirectories are where I store any plots I create, more important (final) plots going into the `/finalImages/` folder. The subdirectories `/old_C/` and `/old_dsp/` are, as labeled, _old_. They contain my first attempts at analysis from Summer 2020. The methods used are sometimes similar to more recent code, but in general these are just saved for a rare reference to past work and will certainly **not** work on existing datasets. The `/scripts/` subdirectory contains all fitting functions used. The most improtant file in this folder is `new_fit_spectrum.C`. It was created to make various fitting techniques "easier" in the Analysis stage, this will be seen later on. The "loose" files in the main `ddecay/` directory are what I used for analysis. 
+### Cut the data
+Due to the size of the data for this analysis some more "modern" ROOT techniques are applied, namely, `RDataFrames`. RDataFrames (RDFs) are fairly new to ROOT, as such they arenn't documented incredibly well and are not yet as powerful as their predecessor `MakeSelector`. The [official documentation](https://root.cern/doc/master/classROOT_1_1RDataFrame.html) provides a helpful cheat sheet on the functions that can be used with RDFs. In my case, I use RDFs to make my first analysis cuts on the larger data set. I make special use of the `Snapshot()` function to create smaller, more efficient data sets that include only necessary variables (for fitting, momentum scaling, etc.). I was not able to figure out if it was possible to do fitting in RDFs, so I do all fitting in a `MakeSelector`. You _can_ make regular plots and histograms in RDFs, but I found the process to have some tedious additional steps- so I generally stuck to the aforementioned method of snapshots. Here is a list of my RDF files and analysis files as well as their purpose:
 
-Here are brief descriptions of the files:
+RDataFrame Files:
+ * **Useful**
+   * [`dp_dalitz_rdf.C](https://github.com/bodensjc/ddecay/blob/main/dp_dalitz_rdf.C): Dalitz plots of the D+ decay.
+   * [`dp_dsp_cut_rdf.C](https://github.com/bodensjc/ddecay/blob/main/dp_dsp_cut_rdf.C): The big one! This file contains the final cuts and "standardizes" the data so that I can make ONE ntuple containing both D+ and Ds data.
+   * [`dp_ms_reduced_rdf.C](https://github.com/bodensjc/ddecay/blob/main/dp_ms_reduced_rdf.C): Used in conjunction with `quick.py`, makes reduced ntuples that are cut and include only variables necessary for momentum scaling steps.
+   * [`extra_info_rdf.C](https://github.com/bodensjc/ddecay/blob/main/extra_info_rdf.C): Commented below the preamble are some helpful functions for getting properties of the ntuple/data (column names, number of entries, ...). Also used to investigate OdinTCKs and the overlap region (see `notes.txt`).
+ * **Old**
+   * [`dp_cuts_rdf.C](https://github.com/bodensjc/ddecay/blob/main/dp_cuts_rdf.C): Old D+ cuts with some attempts at fitting.
+   * [`dsp_cuts_rdf.C](https://github.com/bodensjc/ddecay/blob/main/dsp_cuts_rdf.C): Old Ds cuts with some attempts at fitting.
+   * [`dp_dsp_rdf.C](https://github.com/bodensjc/ddecay/blob/main/dp_dsp_rdf.C): Simple plots of the two decays with some cuts.
+   * [`dp_fit_rdf.C](https://github.com/bodensjc/ddecay/blob/main/dp_fit_rdf.C): Failed attempts at fitting.
+   * [`dp_mstest_rdf.C](https://github.com/bodensjc/ddecay/blob/main/dp_mstest_rdf.C): Old file used to make plots of the T-Stations for momentum scaling.
+   * [`dp_probtests_rdf.C](https://github.com/bodensjc/ddecay/blob/main/dp_probtests_rdf.C): Looking at ProbNNx in different regions.
+   * [`dp_tests_rdf.C](https://github.com/bodensjc/ddecay/blob/main/dp_tests_rdf.C): Looking at endvertex cuts.
+   * [`lifetime_rdf.C](https://github.com/bodensjc/ddecay/blob/main/lifetime_rdf.C): Trying to manually calculate lifetime before eventually remaking ntuples to include the `_TAU` variable.
 
-Special files:
- * [`differences.xlsx`](https://github.com/bodensjc/ddecay/blob/main/differences.xlsx): Quick excel sheet to find Δm(Ds-D+) for momentum regions
+Analysis files:
+ * **Useful**
+   * 
+ * **Old**
+   * 
+
+
+
+
+
+
+Here are brief descriptions of other files used:
+ * [`differences.xlsx`](https://github.com/bodensjc/ddecay/blob/main/differences.xlsx): Quick excel sheet to find Δm(Ds-D+) for momentum regions.
  * [`quick.py`](https://github.com/bodensjc/ddecay/blob/main/quick.py): Quickply made python parser used to find what variables are used in Momentum Scaling code.
  * [`notes.txt`](https://github.com/bodensjc/ddecay/blob/main/notes.txt): Notes file used when searching for ~~missing~~(ended up none missing) TCKs. Also used to look at the "overlap region".
  * `README.md`: Documentation.
-
-Due to the size of the data for this analysis some more "modern" ROOT techniques are applied, namely, `RDataFrames`. RDataFrames (RDFs) are fairly new to ROOT, as such they arenn't documented incredibly well and are not yet as powerful as their predecessor `MakeSelector`. The [official documentation](https://root.cern/doc/master/classROOT_1_1RDataFrame.html) provides a helpful cheat sheet on the functions that can be used with RDFs. In my case, I use RDFs to make my first analysis cuts on the larger data set. I make special use of the `Snapshot()` function to create smaller, more efficient data sets that include only necessary variables (for fitting, momentum scaling, etc.). I was not able to figure out if it was possible to do fitting in RDFs, so I do all fitting in a `MakeSelector`. Here is a list of my RDF files and analysis files as well as their purpose:
-
-RDataFrame Files:
- * 
-
