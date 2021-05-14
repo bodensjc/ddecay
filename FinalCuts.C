@@ -18,7 +18,7 @@
 //***************CUSTOMIZATION***************
 //change these variables to modify settings for the fit
 
-string extraFileStr = "aaa_aaa";//adds extra notation to beginning of save file string
+string extraFileStr = "/deltam/TEEEST";//adds extra notation to beginning of save file string
 
 Int_t fitStart = 1830; //1790 minimum
 Int_t fitEnd = 2040; //2050 maximum
@@ -181,10 +181,10 @@ Bool_t FinalCuts::Process(Long64_t entry)
 	Bool_t takeData = ((*particle_MM < cutoffMass) && (*isDp == 1)) || ((*particle_MM >= cutoffMass) && (*isDp == 0));
 	Bool_t goodPolarity = ((takeMagUp && (*Polarity == 1)) || (takeMagDown && (*Polarity == -1)));
 
-	Double_t particle_P = TMath::Sqrt(TMath::Power(*particle_PX,2) + TMath::Power(*particle_PY,2) + TMath::Power(*particle_PZ,2))/1000;
-	Bool_t goodMomentum = ((particle_P >= P_LOWER) && (particle_P < P_UPPER));
+	//Double_t particle_P = TMath::Sqrt(TMath::Power(*particle_PX,2) + TMath::Power(*particle_PY,2) + TMath::Power(*particle_PZ,2))/1000;
+	//Bool_t goodMomentum = ((particle_P >= P_LOWER) && (particle_P < P_UPPER));
 
-	if (takeData && goodPolarity && goodMomentum)
+	if (takeData && goodPolarity) // && goodMomentum
 	{
 		dpdspHist->Fill(*particle_MM);
 	}

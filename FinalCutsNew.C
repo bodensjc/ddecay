@@ -18,7 +18,7 @@
 //***************CUSTOMIZATION***************
 //change these variables to modify settings for the fit
 
-string extraFileStr = "deltam/pos_110plus";//adds extra notation to beginning of save file string
+string extraFileStr = "deltam/pos_neg/ALL_neg";//adds extra notation to beginning of save file string
 
 Int_t fitStart = 1830; //1790 minimum
 Int_t fitEnd = 2040; //2050 maximum
@@ -37,15 +37,23 @@ Bool_t isMassDiff = 1; //1: mass difference fit, 0: two mass fit
 Bool_t isFirstPeakDoubleGaus = 0; //1: double gaus in D+, 0: single
 Bool_t isSecondPeakDoubleGaus = 1; //1: double gaus in Ds, 0: single
 
+
+//cut on particles / antiparticles
 Bool_t takeParticle = 1; //1: take particles (positive)
 Bool_t takeAntiparticle = 1; //1: take antiarticles (negative)
 
-
 // upper and lower limits for momentum-restricted plots (GeV)
-// make PLOWER 0 and PUPPER outrageously large to ignore this
 // this is prtty new so the signalpeak guesses may need to be adjusted
+// make P_UPPER very large to "ignore" this cut
 Int_t P_LOWER = 0;
 Int_t P_UPPER = 1000000;
+
+//cut on decaytime
+// make TAU_UPPER very large to "ignore" this cut
+Double_t TAU_LOWER = 0; //probably leave at 0
+Double_t TAU_UPPER = 100000; //divide by 1000 to get picoseconds
+
+
 
 
 
@@ -151,7 +159,7 @@ ROOT::Math::MinimizerOptions::SetDefaultMaxFunctionCalls(5000);
       dpdspHist->SetTitleSize(35);
 		//*********NEED TO FIX BELOW LINE TO CHANGE PER binWidth INPUT**********
       dpdspHist->GetYaxis()->SetTitle("Candidates/(1 MeV/c^{2})");
-      dpdspHist->SetMinimum(100);//set min to 100 for logy so it doesnt break and ignore uninteresting stuff
+      dpdspHist->SetMinimum(1);//set min to 100 for logy so it doesnt break and ignore uninteresting stuff
 		if (binWidth < 1) {dpdspHist->SetMinimum(10);}
       dpdspHist->GetYaxis()->SetTitleFont(43);
       dpdspHist->GetYaxis()->SetTitleSize(30);
@@ -193,9 +201,13 @@ Bool_t FinalCutsNew::Process(Long64_t entry)
 	Double_t particle_P = TMath::Sqrt(TMath::Power(*particle_PX,2) + TMath::Power(*particle_PY,2) + TMath::Power(*particle_PZ,2))/1000;
 	Bool_t goodMomentum = ((particle_P >= P_LOWER) && (particle_P < P_UPPER));
 
-   Bool_t goodCharge = ((*particle_ID < 0) && (takeAntiparticle)) || ((*particle_ID > 0) && (takeParticle));
+	Bool_t goodTau = ((*particle_TAU >= TAU_LOWER) && (*particle_TAU < TAU_UPPER));
 
-	if (goodCutoff && goodPolarity && goodMomentum && goodCharge)
+	Bool_t goodCharge = ((*particle_ID < 0) && (takeAntiparticle)) || ((*particle_ID > 0) && (takeParticle));
+
+
+
+	if (goodCutoff && goodPolarity && goodMomentum && goodTau && goodCharge)
 	{
 		dpdspHist->Fill(*particle_MM);
 	}
@@ -212,13 +224,13 @@ void FinalCutsNew::Terminate()
 	Int_t nSignal1Guess = 0;
 	Int_t nSignal2Guess = 0;
    if (takeMagUp && takeMagDown) {
-      //numbers from perviously made graphs
-      nSignal1Guess = 4200000;//4200000
-      nSignal2Guess = 7200000;//7200000
+      //numbers from previously made graphs
+      nSignal1Guess = 1400000;//4200000
+      nSignal2Guess = 3600000;//7200000
    } else {
       //if only taking one polarity, approximately 1/2
       nSignal1Guess = 2100000;
-      nSignal2Guess = 3600000;
+      nSignal2Guess = 3700000;
    }
    Double_t firstBin = dpdspHist->GetBinContent(1);//used for exp_int guess
    Double_t lastBin = dpdspHist->GetBinContent(nBins);
@@ -237,12 +249,13 @@ void FinalCutsNew::Terminate()
    dpdspFit->SetParameter(6, 1869);//approx Dplus mass
    dpdspFit->SetParameter(7, 6);//rms width
    dpdspFit->SetParameter(8, 7);//sigma
-   dpdspFit->SetParameter(9, 0.3);//fraction in first gaus
+   dpdspFit->SetParameter(9, 0.2);//fraction in first gaus
       dpdspFit->SetParLimits(9, 0.000001, 0.99999);//ensure between 0 and 1
    dpdspFit->SetParameter(10, 2);//CB alpha
 		dpdspFit->SetParLimits(10, 0, 10);
    dpdspFit->SetParameter(11, 3);//CB n
 		dpdspFit->SetParLimits(11, 1.000001, 15);
+
    //second signal main parameters
    dpdspFit->SetParameter(12, nSignal2Guess);
    if (isMassDiff) {
