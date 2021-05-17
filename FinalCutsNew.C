@@ -18,7 +18,7 @@
 //***************CUSTOMIZATION***************
 //change these variables to modify settings for the fit
 
-string extraFileStr = "deltam/pos_neg/ALL_neg";//adds extra notation to beginning of save file string
+string extraFileStr = "xxx/xxx-xxx";//adds extra notation to beginning of save file string
 
 Int_t fitStart = 1830; //1790 minimum
 Int_t fitEnd = 2040; //2050 maximum
@@ -26,17 +26,23 @@ Double_t binWidth = 1; //MeV
    Int_t nBins = (fitEnd-fitStart)/binWidth;
 Int_t cutoffMass = 1920; //above (inclusive) this value we use Ds data, below is D+
 
-Bool_t takeMagUp = 1; //1: include, 0: don't
-Bool_t takeMagDown = 1; //1: include, 0: don't
-
 Bool_t isSameCB = 1; //1: use same CB params for both peaks, 0: don't
-Bool_t isMassDiff = 1; //1: mass difference fit, 0: two mass fit
+Bool_t isMassDiff = 0; //1: mass difference fit, 0: two mass fit
 // optimization sometimes runs differently when isMassDiff is toggled. I'm not too sure why
 // considering it should operate *roughly* the same. Might just be the order (?) of minimization
 
 Bool_t isFirstPeakDoubleGaus = 0; //1: double gaus in D+, 0: single
 Bool_t isSecondPeakDoubleGaus = 1; //1: double gaus in Ds, 0: single
 
+//when modifying the below parameters, it may be necessary to change the first guess for nSignal1 and nSignal2
+// found at begining of final section. Otherwise the fit may be poor.
+
+
+//magnet polarity
+Bool_t takeMagUp = 1; //1: include, 0: don't
+Bool_t takeMagDown = 1; //1: include, 0: don't
+
+//newer additions
 
 //cut on particles / antiparticles
 Bool_t takeParticle = 1; //1: take particles (positive)
@@ -46,12 +52,15 @@ Bool_t takeAntiparticle = 1; //1: take antiarticles (negative)
 // this is prtty new so the signalpeak guesses may need to be adjusted
 // make P_UPPER very large to "ignore" this cut
 Int_t P_LOWER = 0;
-Int_t P_UPPER = 1000000;
+Int_t P_UPPER = 100000;
 
 //cut on decaytime
-// make TAU_UPPER very large to "ignore" this cut
-Double_t TAU_LOWER = 0; //probably leave at 0
-Double_t TAU_UPPER = 100000; //divide by 1000 to get picoseconds
+// make TAU_LOWER 0 and TAU_UPPER very large to "ignore" this cut
+// divide by 1000 to get picoseconds
+Double_t TAU_LOWER = 0; 
+Double_t TAU_UPPER = 10000; 
+
+
 
 
 
@@ -221,21 +230,16 @@ void FinalCutsNew::Terminate()
    //***************FINALIZATION SECTION***************
 
    //calculate first guess approximations for parameters
-	Int_t nSignal1Guess = 0;
-	Int_t nSignal2Guess = 0;
-   if (takeMagUp && takeMagDown) {
-      //numbers from previously made graphs
-      nSignal1Guess = 1400000;//4200000
-      nSignal2Guess = 3600000;//7200000
-   } else {
-      //if only taking one polarity, approximately 1/2
-      nSignal1Guess = 2100000;
-      nSignal2Guess = 3700000;
-   }
+	//I would *like* to make signal guess fund the two local maxima
+	// then do some estimations from there (area of triangle), but I could not find
+	// a good way to do this.
+
+	Int_t nSignal1Guess = 4200000; // 4200000 if everything
+	Int_t nSignal2Guess = 7200000; // 7200000 if everything
+
    Double_t firstBin = dpdspHist->GetBinContent(1);//used for exp_int guess
    Double_t lastBin = dpdspHist->GetBinContent(nBins);
    Double_t expCoefGuess = (lastBin-firstBin)/(nBins*500);//might need to address this division
-
 
 
    //put in fixed parameters for fit settings
@@ -249,7 +253,7 @@ void FinalCutsNew::Terminate()
    dpdspFit->SetParameter(6, 1869);//approx Dplus mass
    dpdspFit->SetParameter(7, 6);//rms width
    dpdspFit->SetParameter(8, 7);//sigma
-   dpdspFit->SetParameter(9, 0.2);//fraction in first gaus
+   dpdspFit->SetParameter(9, 0.3);//fraction in first gaus
       dpdspFit->SetParLimits(9, 0.000001, 0.99999);//ensure between 0 and 1
    dpdspFit->SetParameter(10, 2);//CB alpha
 		dpdspFit->SetParLimits(10, 0, 10);
@@ -265,7 +269,7 @@ void FinalCutsNew::Terminate()
    }
    dpdspFit->SetParameter(14, 6);//rms width
    dpdspFit->SetParameter(15, 7);//sigma
-   dpdspFit->SetParameter(16, 0.2);//fraction in first gaus
+   dpdspFit->SetParameter(16, 0.3);//fraction in first gaus
       dpdspFit->SetParLimits(16, 0.000001, 0.99999);//ensure between 0 and 1
    dpdspFit->SetParameter(17, 2);//CB alpha
 		dpdspFit->SetParLimits(17, 0, 10);
