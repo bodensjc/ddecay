@@ -81,8 +81,11 @@ $ rsync -ap username@lxplus.cern.ch:/path/to/chunk1.root .
 
 ## Data Analysis
 This is the crux of the research. Here we study the many variables of the decays, generating a great number of plots from which we can extract useful information regarding the signals and background.  The `/image/` and `/finalImages/` subdirectories are where I store any plots I create, more important (final) plots going into the `/finalImages/` folder. The subdirectories `/old_C/` and `/old_dsp/` are, as labeled, _old_. They contain my first attempts at analysis from Summer 2020. The methods used are sometimes similar to more recent code, but in general these are just saved for a rare reference to past work and will certainly **not** work on existing datasets. The `/scripts/` subdirectory contains all fitting functions used. The most improtant file in this folder is `new_fit_spectrum.C`. It was created to make various fitting techniques "easier" in the Analysis stage, this will be seen later on. The "loose" files in the main `ddecay/` directory are what I used for analysis. 
+
 ### Cut the data
-Due to the size of the data for this analysis some more "modern" ROOT techniques are applied, namely, `RDataFrames`. RDataFrames (RDFs) are fairly new to ROOT, as such they arenn't documented incredibly well and are not yet as powerful as their predecessor `MakeSelector`. The [official documentation](https://root.cern/doc/master/classROOT_1_1RDataFrame.html) provides a helpful cheat sheet on the functions that can be used with RDFs. In my case, I use RDFs to make my first analysis cuts on the larger data set. I make special use of the `Snapshot()` function to create smaller, more efficient data sets that include only necessary variables (for fitting, momentum scaling, etc.). I was not able to figure out if it was possible to do fitting in RDFs, so I do all fitting in a `MakeSelector`. You _can_ make regular plots and histograms in RDFs, but I found the process to have some tedious additional steps- so I generally stuck to the aforementioned method of snapshots. Here is a list of my RDF files and analysis files as well as their purpose:
+Due to the size of the data for this analysis some more "modern" ROOT techniques are applied, namely, `RDataFrames`. RDataFrames (RDFs) are fairly new to ROOT, as such they arenn't documented incredibly well and are not yet as powerful as their predecessor `MakeSelector`. The [official documentation](https://root.cern/doc/master/classROOT_1_1RDataFrame.html) provides a helpful cheat sheet on the functions that can be used with RDFs. The most impactful function call is `EnableImplicitMT()`. Briefly, this enables multi-threading on the computer so ROOT can run in parallel- immensely speeding up the "cut" process. I encourage you to read more about it as there are a few cases where you **can't** use it.
+
+In my case, I use RDFs to make my first analysis cuts on the larger data set. I make special use of the `Snapshot()` function to create smaller, more efficient data sets that include only necessary variables (for fitting, momentum scaling, etc.). I was not able to figure out if it was possible to do fitting in RDFs, so I do all fitting in a `MakeSelector`. You _can_ make regular plots and histograms in RDFs, but I found the process to have some tedious additional steps- so I generally stuck to the aforementioned method of snapshots. Here is a list of my RDF files and analysis files as well as their purpose:
 
 RDataFrame Files:
  * **Useful**
@@ -100,15 +103,73 @@ RDataFrame Files:
    * [`dp_tests_rdf.C`](https://github.com/bodensjc/ddecay/blob/main/dp_tests_rdf.C): Looking at endvertex cuts.
    * [`lifetime_rdf.C`](https://github.com/bodensjc/ddecay/blob/main/lifetime_rdf.C): Trying to manually calculate lifetime before eventually remaking ntuples to include the `_TAU` variable.
 
+
+### MakeSelectors
+Once you have made cuts that you are happy with, you can then fit the data and do other sorts of analyses, such as momentum binning (see [`/finalImages/deltam/`](https://github.com/bodensjc/ddecay/tree/main/finalImages/deltam) and [`differences.xlsx`](https://github.com/bodensjc/ddecay/blob/main/differences.xlsx)). I was unfortunately unable to determine if RDFs could be used for fitting. I made some _minor_ progress, but overall was unsuccessful. As such, I use the slightly older `MakeSelector` for [most of] my analysis files. Here is how to make a `MakeSelector`:
+
+1. Load your data file into root.
+```
+$ ml root 
+$ root -l /path/to/data.root
+```
+2. (OPTIONAL) If your ntuple has more than one tree, you will need to `cd()` to the tree you want to analyze.
+```
+[0] myTree -> cd()
+```
+3. Assuming the tree name you are interested in is called "DecayTree", make the `MakeSelector`. (note the intentional lack of ".C" here)
+```
+[0] DecayTree -> MakeSelector("AnalysisFileName")
+```
+
+This will make two new files in your working directory: `AnalysisFileName.C` and `AnalysisFileName.h`. You shouldn't need to touch the header file. the `.C` file is where the analysis work will be done. Pages 48-50 of the [ROOT Workshop 2019](https://www.nevis.columbia.edu/~seligman/root-class/RootClass2019.pdf) explain more about creating `Makeselector`s and running them.
+
+Here is a rough outline of the four* parts of a `MakeSelector` (page 49 of the above):
+
+1. Definition Section
+  Define all plots and fits that are going to be used in the analysis.
+2. Initialization Section
+  Set features of the plots and fits, such as: ranges, parameter names, aesthetics, etc.
+3. Loop Section
+  Loop through the data in the ntuple and fill histograms. This is where cuts should be made.
+4. Wrap-up Section
+  Perform any fitting, get and print results, make canvases/pads for plots to live on. Don't forget to save plots!
+
+
+### Analyze the data
+
+After having prepared your `MakeSelector`, you are ready to analyze the data. This is done similarly to making the `MakeSelector`:
+
+1. Load your data file into root.
+```
+$ ml root 
+$ root -l /path/to/data.root
+```
+2. (OPTIONAL) If your ntuple has more than one tree, you will need to `cd()` to the tree you want to analyze.
+```
+[0] myTree -> cd()
+```
+3. Assuming the tree name you are interested in is called "DecayTree", process using your analysis file. (note the use of ".C" here)
+```
+[0] DecayTree -> Process("AnalysisFileName.C")
+```
+
+Shortly after, your analysis will either make a nice plot or fail! Here is a list of some analysis files I used:
+
+
 Analysis files:
  * **Useful**
-   * 
+   * [`FinalCutsNew.C/h`](https://github.com/bodensjc/ddecay/blob/main/FinalCutsNew.C): Update to FinalCuts. This is the most important analysis file - it makes plots with full spectrum fitting. This MakeSelector is different in that it is tuned for a slightly different data set (combined_cut-5-21.root). Has many options at start of file to customize fit on the fly.
+   * [`massDiffComp.C`](https://github.com/bodensjc/ddecay/blob/main/massDiffComp.C): makes a comparison plot of this new measurement and older measurements (LHCb, BABAR, CLEO, PDG).
  * **Old**
-   * 
+   * [`FinalCuts.C/h`](https://github.com/bodensjc/ddecay/blob/main/FinalCuts.C): First iteration of final analysis. Made plots with full spectrum fitting. Works with older data set (combined_cut.root).
+   * [`combined_cut_fit.C/h`](https://github.com/bodensjc/ddecay/blob/main/combined_cut_fit.C): First attempt at fitting final data where both masses are fit.
+   * [`mass_diff_fit.C/h`](https://github.com/bodensjc/ddecay/blob/main/FinalCuts.C): First attempt at fitting final data where D+ mass and Δm(Ds-D+) are fit.
+   * [`dp_cuts.C/h`](https://github.com/bodensjc/ddecay/blob/main/dp_cuts.C): Fitting just the D+ peak.
+  * [`dp_sample.C/h`](https://github.com/bodensjc/ddecay/blob/main/dp_sample.C): Fitting just a sample of the D+ peak.
 
 
 
-
+I also have a few spare files in the directory for quick and dirty work. These are by far not the "best" way of achieving their tasks, but sometimes a quick python script or excel sheet can save a lot of time for something simple.
 
 
 Here are brief descriptions of other files used:

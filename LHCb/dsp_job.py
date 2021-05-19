@@ -12,7 +12,7 @@ bkPath = '/LHCb/Collision17/Beam6500GeV-VeloClosed-MagDown/Real Data/Turbo04/940
 #magdown path: '/LHCb/Collision17/Beam6500GeV-VeloClosed-MagDown/Real Data/Turbo04/94000000/CHARMSPEC.MDST'
 #magup path: '/LHCb/Collision17/Beam6500GeV-VeloClosed-MagUp/Real Data/Turbo04/94000000/CHARMSPEC.MDST'
 data = BKQuery(bkPath, dqflag=['OK']).getDataset()
-j.inputdata = data[0:12693] #get all data files (magup - 13551) (magdown - 12693)
+j.inputdata = data[0:12693] #get all data files (magup - 13551) (magdown - 12693) get these numbers from bookkeeping
 j.backend = Dirac()
 
 #can use the below line to not run on russian servers if its going to be an issue again...

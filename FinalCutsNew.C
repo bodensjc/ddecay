@@ -6,7 +6,7 @@
 #include <iostream>
 
 //run by doing:
-//$ root -l /share/lazy/D2KKpi/combined_cut.root
+//$ root -l /share/lazy/D2KKpi/combined_cut-5-21.root
 //$ DecayTree->Process("FinalCutsNew.C")
 
 //This will be my (second) final approach to analysis for the D->KKpi decay channel.
