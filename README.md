@@ -153,7 +153,7 @@ $ root -l /path/to/data.root
 [0] DecayTree -> Process("AnalysisFileName.C")
 ```
 
-Shortly after, your analysis will either make a nice plot or fail! Here is a list of some analysis files I used:
+Shortly after, your analysis will either make a nice plot or fail! "Nothing ever works on the first try". Here is a list of some analysis files I used:
 
 
 Analysis files:
