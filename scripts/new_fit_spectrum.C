@@ -229,7 +229,7 @@ Double_t CB (Double_t *v, Double_t *par)
 Double_t  backgroundExp (Double_t *v, Double_t *par) 
 {
       //used to draw the exponential background
-      //heuristic 1790 also lives here, change as needed
+      //heuristic 1830 also lives here, change as needed
 
       Double_t exp_int = par[0];
       Double_t exp_coef = par[1];
