@@ -83,7 +83,7 @@ $ rsync -ap username@lxplus.cern.ch:/path/to/chunk1.root .
 This is the crux of the research. Here we study the many variables of the decays, generating a great number of plots from which we can extract useful information regarding the signals and background.  The `/image/` and `/finalImages/` subdirectories are where I store any plots I create, more important (final) plots going into the `/finalImages/` folder. The subdirectories `/old_C/` and `/old_dsp/` are, as labeled, _old_. They contain my first attempts at analysis from Summer 2020. The methods used are sometimes similar to more recent code, but in general these are just saved for a rare reference to past work and will certainly **not** work on existing datasets. The `/scripts/` subdirectory contains all fitting functions used. The most improtant file in this folder is [`new_fit_spectrum.C`](https://github.com/bodensjc/ddecay/blob/main/scripts/new_fit_spectrum.C). It was created to make various fitting techniques "easier" in the Analysis stage, this will be seen later on. The "loose" files in the main `ddecay/` directory are what I used for analysis. 
 
 ### Cut the data
-Due to the size of the data for this analysis some more "modern" ROOT techniques are applied, namely, `RDataFrames`. RDataFrames (RDFs) are fairly new to ROOT, as such they arenn't documented incredibly well and are not yet as powerful as their predecessor `MakeSelector`. The [official documentation](https://root.cern/doc/master/classROOT_1_1RDataFrame.html) provides a helpful cheat sheet on the functions that can be used with RDFs. The most impactful function call is `EnableImplicitMT()`. Briefly, this enables multi-threading on the computer so ROOT can run in parallel- immensely speeding up the "cut" process. I encourage you to read more about it as there are a few cases where you **can't** use it.
+Due to the size of the data for this analysis some more "modern" ROOT techniques are applied, namely, `RDataFrames`. `RDataFrames` (RDFs) are fairly new to ROOT, as such they aren't documented incredibly well and are not yet as powerful as their predecessor `MakeSelector`. The [official documentation](https://root.cern/doc/master/classROOT_1_1RDataFrame.html) provides a helpful cheat sheet on the functions that can be used with RDFs. The most impactful function call is `EnableImplicitMT()`. Briefly, this enables multi-threading on the computer so ROOT can run in parallel- immensely speeding up the "cut" process. I encourage you to read more about it as there are a few cases where you **can't** use it.
 
 In my case, I use RDFs to make my first analysis cuts on the larger data set. I make special use of the `Snapshot()` function to create smaller, more efficient data sets that include only necessary variables (for fitting, momentum scaling, etc.). I was not able to figure out if it was possible to do fitting in RDFs, so I do all fitting in a `MakeSelector`. You _can_ make regular plots and histograms in RDFs, but I found the process to have some tedious additional steps- so I generally stuck to the aforementioned method of snapshots. Here is a list of my RDF files and analysis files as well as their purpose:
 
@@ -105,23 +105,23 @@ RDataFrame Files:
 
 
 ### MakeSelectors
-Once you have made cuts that you are happy with, you can then fit the data and do other sorts of analyses, such as momentum binning (see [`/finalImages/deltam/`](https://github.com/bodensjc/ddecay/tree/main/finalImages/deltam) and [`differences.xlsx`](https://github.com/bodensjc/ddecay/blob/main/differences.xlsx)). I was unfortunately unable to determine if RDFs could be used for fitting. I made some _minor_ progress, but overall was unsuccessful. As such, I use the slightly older `MakeSelector` for [most of] my analysis files. Here is how to make a `MakeSelector`:
+Once you have made cuts that you are happy with, you can then fit the data and do other sorts of analyses, such as momentum binning (see [`/finalImages/deltam/`](https://github.com/bodensjc/ddecay/tree/main/finalImages/deltam) and [`differences.xlsx`](https://github.com/bodensjc/ddecay/blob/main/differences.xlsx)). I was unfortunately unable to determine if RDFs could be used for fitting. I made some _minor_ progress, but overall was unsuccessful. As such, I use the slightly older `MakeSelector` for [most of] my analysis files. Here is how to make a `MakeSelector` on `sleepy.geop.uc.edu`:
 
 1. Load your data file into root.
 ```
-$ ml root 
 $ root -l /path/to/data.root
 ```
+Attaches your file as `_file0`.
 2. (OPTIONAL) If your ntuple has more than one tree, you will need to `cd()` to the tree you want to analyze.
 ```
-[0] myTree -> cd()
+root [1] myTree -> cd()
 ```
-3. Assuming the tree name you are interested in is called "DecayTree", make the `MakeSelector`. (note the intentional lack of ".C" here)
+3. Assuming the tree you are interested in is called "DecayTree", make the `MakeSelector`. (note the intentional lack of ".C" here)
 ```
-[0] DecayTree -> MakeSelector("AnalysisFileName")
+root [1] DecayTree -> MakeSelector("AnalysisFileName")
 ```
 
-This will make two new files in your working directory: `AnalysisFileName.C` and `AnalysisFileName.h`. You shouldn't need to touch the header file. the `.C` file is where the analysis work will be done. Pages 48-50 of the [ROOT Workshop 2019](https://www.nevis.columbia.edu/~seligman/root-class/RootClass2019.pdf) explain more about creating `Makeselector`s and running them.
+This will make two new files in your working directory: `AnalysisFileName.C` and `AnalysisFileName.h`. You shouldn't need to touch the header file. The `.C` file is where the analysis work will be done. Pages 48-50 of the [ROOT Workshop 2019](https://www.nevis.columbia.edu/~seligman/root-class/RootClass2019.pdf) explain more about creating `Makeselector`s and running them.
 
 Here is a rough outline of the four* parts of a `MakeSelector` (page 49 of the above):
 
@@ -141,16 +141,16 @@ After having prepared your `MakeSelector`, you are ready to analyze the data. Th
 
 1. Load your data file into root.
 ```
-$ ml root 
 $ root -l /path/to/data.root
 ```
+Attaches your file as `_file0`.
 2. (OPTIONAL) If your ntuple has more than one tree, you will need to `cd()` to the tree you want to analyze.
 ```
-[0] myTree -> cd()
+root [1] myTree -> cd()
 ```
 3. Assuming the tree name you are interested in is called "DecayTree", process using your analysis file. (note the use of ".C" here)
 ```
-[0] DecayTree -> Process("AnalysisFileName.C")
+root [1] DecayTree -> Process("AnalysisFileName.C")
 ```
 
 Shortly after, your analysis will either make a nice plot or fail! "Nothing ever works on the first try". Here is a list of some analysis files I used:
