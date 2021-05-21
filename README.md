@@ -114,6 +114,7 @@ Once you have made cuts that you are happy with, you can then fit the data and d
 $ root -l /path/to/data.root
 ```
 This will attach your root file as `_file0`.
+
 2. (OPTIONAL) If your ntuple has more than one tree, you will need to `cd()` to the tree you want to analyze.
 ```
 root [1] myTree -> cd()
@@ -146,6 +147,7 @@ After having prepared your `MakeSelector`, you are ready to analyze the data. Th
 $ root -l /path/to/data.root
 ```
 This will attach your root file as `_file0`.
+
 2. (OPTIONAL) If your ntuple has more than one tree, you will need to `cd()` to the tree you want to analyze.
 ```
 root [1] myTree -> cd()
