@@ -91,19 +91,19 @@ In my case, I use RDFs to make my first analysis cuts on the larger data set. I 
 
 RDataFrame Files:
  * **Useful**
-   * [`dp_dalitz_rdf.C`](https://github.com/bodensjc/ddecay/blob/main/dp_dalitz_rdf.C): Dalitz plots of the D+ decay.
+   * [`dp_dalitz_rdf.C`](https://github.com/bodensjc/ddecay/blob/main/dp_dalitz_rdf.C): Dalitz plots of the D+ decay. [Example plot](https://github.com/bodensjc/ddecay/blob/main/image/dp_dalitz_nocuts.png)
    * [`dp_dsp_cut_rdf.C`](https://github.com/bodensjc/ddecay/blob/main/dp_dsp_cut_rdf.C): The big one! This file contains the final cuts and "standardizes" the data so that I can make ONE ntuple containing both D+ and Ds data.
    * [`dp_ms_reduced_rdf.C`](https://github.com/bodensjc/ddecay/blob/main/dp_ms_reduced_rdf.C): Used in conjunction with `quick.py`, makes reduced ntuples that are cut and include only variables necessary for momentum scaling steps.
    * [`extra_info_rdf.C`](https://github.com/bodensjc/ddecay/blob/main/extra_info_rdf.C): Commented below the preamble are some helpful functions for getting properties of the ntuple/data (column names, number of entries, ...). Also used to investigate OdinTCKs and the overlap region (see `notes.txt`).
  * **Old**
    * [`dp_cuts_rdf.C`](https://github.com/bodensjc/ddecay/blob/main/dp_cuts_rdf.C): Old D+ cuts with some attempts at fitting.
    * [`dsp_cuts_rdf.C`](https://github.com/bodensjc/ddecay/blob/main/dsp_cuts_rdf.C): Old Ds cuts with some attempts at fitting.
-   * [`dp_dsp_rdf.C`](https://github.com/bodensjc/ddecay/blob/main/dp_dsp_rdf.C): Simple plots of the two decays with some cuts.
+   * [`dp_dsp_rdf.C`](https://github.com/bodensjc/ddecay/blob/main/dp_dsp_rdf.C): Simple plots of the two decays with some cuts. [Example plot](https://github.com/bodensjc/ddecay/blob/main/image/dp_dsp_logy.png)
    * [`dp_fit_rdf.C`](https://github.com/bodensjc/ddecay/blob/main/dp_fit_rdf.C): Failed attempts at fitting.
-   * [`dp_mstest_rdf.C`](https://github.com/bodensjc/ddecay/blob/main/dp_mstest_rdf.C): Old file used to make plots of the T-Stations for momentum scaling.
-   * [`dp_probtests_rdf.C`](https://github.com/bodensjc/ddecay/blob/main/dp_probtests_rdf.C): Looking at ProbNNx in different regions.
-   * [`dp_tests_rdf.C`](https://github.com/bodensjc/ddecay/blob/main/dp_tests_rdf.C): Looking at endvertex cuts.
-   * [`lifetime_rdf.C`](https://github.com/bodensjc/ddecay/blob/main/lifetime_rdf.C): Trying to manually calculate lifetime before eventually remaking ntuples to include the `_TAU` variable.
+   * [`dp_mstest_rdf.C`](https://github.com/bodensjc/ddecay/blob/main/dp_mstest_rdf.C): Old file used to make plots of the T-Stations for momentum scaling. [Example plot](https://github.com/bodensjc/ddecay/blob/main/image/dp_XY_cut_km.png)
+   * [`dp_probtests_rdf.C`](https://github.com/bodensjc/ddecay/blob/main/dp_probtests_rdf.C): Looking at ProbNNx in different regions. [Example plot](https://github.com/bodensjc/ddecay/blob/main/image/dp_kaon_probnnp_masscut.png)
+   * [`dp_tests_rdf.C`](https://github.com/bodensjc/ddecay/blob/main/dp_tests_rdf.C): Looking at endvertex cuts. [Example plot](https://github.com/bodensjc/ddecay/blob/main/image/dp_endvertex_sigbg.png)
+   * [`lifetime_rdf.C`](https://github.com/bodensjc/ddecay/blob/main/lifetime_rdf.C): Trying to manually calculate lifetime before eventually remaking ntuples to include the `_TAU` variable. [Example plot](https://github.com/bodensjc/ddecay/blob/main/image/lifetime_dp_dsp.png)
 
 
 ### MakeSelectors
@@ -113,7 +113,7 @@ Once you have made cuts that you are happy with, you can then fit the data and d
 ```
 $ root -l /path/to/data.root
 ```
-Attaches your file as `_file0`.
+This will attach your root file as `_file0`.
 2. (OPTIONAL) If your ntuple has more than one tree, you will need to `cd()` to the tree you want to analyze.
 ```
 root [1] myTree -> cd()
@@ -145,7 +145,7 @@ After having prepared your `MakeSelector`, you are ready to analyze the data. Th
 ```
 $ root -l /path/to/data.root
 ```
-Attaches your file as `_file0`.
+This will attach your root file as `_file0`.
 2. (OPTIONAL) If your ntuple has more than one tree, you will need to `cd()` to the tree you want to analyze.
 ```
 root [1] myTree -> cd()
@@ -160,14 +160,14 @@ Shortly after, your analysis will either make a nice plot or fail! "Nothing ever
 
 Analysis files:
  * **Useful**
-   * [`FinalCutsNew.C/h`](https://github.com/bodensjc/ddecay/blob/main/FinalCutsNew.C): Update to FinalCuts. This is the most important analysis file - it makes plots with full spectrum fitting. This MakeSelector is different in that it is tuned for a slightly different data set (combined_cut-may-2021.root) than the original `FinalCuts.C`. Has many options at start of file to customize fit on the fly.
-   * [`massDiffComp.C`](https://github.com/bodensjc/ddecay/blob/main/massDiffComp.C): makes a comparison plot of this new measurement and older measurements (LHCb, BABAR, CLEO, PDG).
+   * [`FinalCutsNew.C/h`](https://github.com/bodensjc/ddecay/blob/main/FinalCutsNew.C): Update to FinalCuts. This is the most important analysis file - it makes plots with full spectrum fitting. This MakeSelector is different in that it is tuned for a slightly different data set (combined_cut-may-2021.root) than the original `FinalCuts.C`. Has many options at start of file to customize fit on the fly. [Example plot](https://github.com/bodensjc/ddecay/blob/main/finalImages/aaa_DpDspFit_MassDiff_MagUp_MagDown_SingleGaus_DoubleGaus_sameCB_ExpBG.png)
+   * [`massDiffComp.C`](https://github.com/bodensjc/ddecay/blob/main/massDiffComp.C): makes a comparison plot of this new measurement and older measurements (LHCb, BABAR, CLEO, PDG). [Example plot](https://github.com/bodensjc/ddecay/blob/main/finalImages/dp_mass_comparison.png)
  * **Old**
-   * [`FinalCuts.C/h`](https://github.com/bodensjc/ddecay/blob/main/FinalCuts.C): First iteration of final analysis. Made plots with full spectrum fitting. Works with older data set (combined_cut.root).
+   * [`FinalCuts.C/h`](https://github.com/bodensjc/ddecay/blob/main/FinalCuts.C): First iteration of final analysis. Made plots with full spectrum fitting. Works with older data set (combined_cut.root). Plots from this file are similar in appearance to those made by `FinalCutsNew.C`.
    * [`combined_cut_fit.C/h`](https://github.com/bodensjc/ddecay/blob/main/combined_cut_fit.C): First attempt at fitting final data where both masses are fit.
    * [`mass_diff_fit.C/h`](https://github.com/bodensjc/ddecay/blob/main/FinalCuts.C): First attempt at fitting final data where D+ mass and Δm(Ds-D+) are fit.
-   * [`dp_cuts.C/h`](https://github.com/bodensjc/ddecay/blob/main/dp_cuts.C): Fitting just the D+ peak.
-  * [`dp_sample.C/h`](https://github.com/bodensjc/ddecay/blob/main/dp_sample.C): Fitting just a sample of the D+ peak.
+   * [`dp_cuts.C/h`](https://github.com/bodensjc/ddecay/blob/main/dp_cuts.C): Fitting just the D+ peak. [Example plot](https://github.com/bodensjc/ddecay/blob/main/image/dp_totalcut_pull_logy_magdown.png)
+  * [`dp_sample.C/h`](https://github.com/bodensjc/ddecay/blob/main/dp_sample.C): Fitting just a sample of the D+ peak. [Example plot](https://github.com/bodensjc/ddecay/blob/main/image/dp_fit_makeSelector.png)
 
 
 
