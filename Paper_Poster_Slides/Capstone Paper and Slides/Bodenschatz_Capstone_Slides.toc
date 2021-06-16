@@ -1,0 +1,9 @@
+\beamer@sectionintoc {1}{Motivation}{2}{0}{1}
+\beamer@subsectionintoc {1}{1}{QCD}{2}{0}{1}
+\beamer@subsectionintoc {1}{2}{Precision}{3}{0}{1}
+\beamer@sectionintoc {2}{Method}{4}{0}{2}
+\beamer@subsectionintoc {2}{1}{Getting the data}{4}{0}{2}
+\beamer@subsectionintoc {2}{2}{Cuts}{5}{0}{2}
+\beamer@sectionintoc {3}{Results}{7}{0}{3}
+\beamer@subsectionintoc {3}{1}{Mass difference measurement}{7}{0}{3}
+\beamer@subsectionintoc {3}{2}{Future work}{11}{0}{3}

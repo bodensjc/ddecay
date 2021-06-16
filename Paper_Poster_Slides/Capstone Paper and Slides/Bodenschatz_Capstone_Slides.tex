@@ -1,0 +1,282 @@
+\documentclass{beamer}%handout,pdftex,
+\usetheme{Madrid} 
+\graphicspath{ {./images/} }
+\usepackage{hyperref}
+\usepackage{bm}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{amsmath}
+\usepackage{tikz}
+\usepackage{verbatim}
+\usepackage{lipsum}
+\usepackage{physics}
+
+
+\definecolor{UCRed}{RGB}{224,1,34}
+\usecolortheme[named=UCRed]{structure}
+\useoutertheme{split}
+%\useinnertheme{rectangles}
+\setbeamertemplate{navigation symbols}{}
+
+\setbeamercolor{block title}{bg=UCRed!30,fg=black}
+\setbeamercolor{block body}{bg=UCRed!30,fg=black}
+
+\bibliographystyle{plain}
+\setbeamertemplate{bibliography item}[text]
+
+\newcommand\blfootnote[1]{%
+  \begingroup
+  \renewcommand\thefootnote{}\footnote{#1}%
+  \addtocounter{footnote}{-1}%
+  \endgroup
+}
+\newif\ifplacelogo % create a new conditional
+\placelogotrue % set it to true
+\logo{\ifplacelogo\includegraphics[height=0.8cm]{UC_ID_PrimaryBlackRed.pdf}\fi} % replace with your own command
+
+
+
+
+\title[$M(D^+_s) - M(D^+)$]{A more precise measurement of $m_{D^+_s} - m_{D^+}$ through $D^{+}_{(s)} \rightarrow K^{+}K^{-}\pi^{+}$ decay}
+\author[John Bodenschatz]{John Bodenschatz}
+\institute{Physics Capstone\\ \vspace*{1.2em} Advisor: Dr. Michael Sokoloff}
+\date{April 26, 2021}
+%\logo{\includegraphics[height=0.8cm]{UC_ID_PrimaryBlackRed.pdf}}
+
+%\titlegraphic{
+%\includegraphics[height=1.5cm]{lhcb_logo.jpg}\vspace*{13cm}
+%}
+
+%\addtobeamertemplate{navigation symbols}{}{%
+%    \usebeamerfont{footline}%
+%    \usebeamercolor[fg]{footline}%
+%    \hspace{1em}%
+%    \insertframenumber/\inserttotalframenumber
+%}
+
+\begin{document}
+
+\frame{\titlepage
+\begin{tikzpicture}[remember picture,overlay]
+    \node[xshift=1.0cm,yshift=1.05cm] at (current page.south west){\includegraphics[width=.14\linewidth]{lhcb_logo.jpg}};
+        \node[xshift=0.0cm,yshift=1.2cm] at (current page.south){\includegraphics[width=.12\linewidth]{nsflogo.png}};
+\end{tikzpicture}
+
+}
+
+
+%\begin{frame}{Outline of talk}
+%\tableofcontents
+%\end{frame}
+
+
+
+
+\section{Motivation}
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~MOTIVATION~~~~~~~~~~~~~~~~~~~~~~~~~~
+  
+  
+\subsection{QCD}
+  \begin{frame}
+    %\frametitle{QCD implications}
+Why are meson mass difference measurements important to Quantum Chromodynamics (QCD)?
+\vspace{1em}
+\begin{block}{}
+"...in a rather direct manner [meson mass differences] permit to extract the ratios of quark masses which are fundamental parameters of QCD.\cite{theory}"
+\end{block}
+\vspace{1em}
+Meson mass differences can help determine fundamental constants such as $m_c/m_b$
+
+{\large
+\begin{center}
+$\ket{D^+} = \ket{c\bar{d}}$ \\
+$\ket{D^+_s} = \ket{c\bar{s}}$ 
+\end{center}
+}
+  \end{frame}
+  
+  
+  
+  \subsection{Precision}
+  \begin{frame}
+
+    {\Large For the $m_{D^+_s} - m_{D^+}$ measurement:}
+    \vspace{0.5em}
+\begin{itemize}
+\setlength\itemsep{1.1em}
+{\large
+\item Most recent precision measurement was conducted on LHC Run 1 data from 2011\cite{lhcb}. $98.68 \pm 0.03\text{(stat)} \pm 0.04\text{(syst)}$ MeV
+\item Using data from Run 2 could reduce statistical error by a factor of 10+
+}
+\item Reduce systematic uncertainty 
+\end{itemize}
+
+\end{frame}
+
+
+\section{Method}
+%~~~~~~~~~~~~~~~~~~~~~~~~~METHOD~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+\subsection{Getting the data}
+
+\begin{frame}
+%\frametitle{Method: Getting data from CERN}
+
+\begin{figure}
+\includegraphics[width=1.0\linewidth]{lhcb_run_2_data_flow.png}
+\end{figure}
+%\vspace{0.5em}
+{\Large \begin{center}
+Run 2 (2017) $D^{+}_{(s)} \rightarrow K^{+}K^{-}\pi^{+}$ decay data: 1.28 TB
+
+
+\blfootnote{\href{https://lhcb.github.io/starterkit-lessons/first-analysis-steps/run-2-data-flow.html}{Image from LHCb StarterKit Lessons}}
+\end{center}}
+
+\end{frame}
+
+
+\subsection{Cuts}
+
+\begin{frame}
+%\frametitle{Method: Cuts}
+\textbf{Cuts}: set of selection criteria the events must meet to be selected for fitting. \underline{Isolate the signal peaks from background noise.}
+
+
+\vspace{1.5em}
+
+Examples of cuts used:
+\begin{itemize}
+\item P($K^+$), P($K^-$) $\geq 10,000$ MeV
+\item PID probability cut on $K^+$, $K^-$, $\pi^+$
+\item $ D^{+}_{(s)} \rightarrow \phi(1020)\pi^+ \rightarrow K^{+}K^{-}\pi^{+}$
+\end{itemize}
+
+\vspace{1.5em}
+
+After all cuts and variable reduction are applied: \textbf{380 MB} of data
+\end{frame}
+
+
+
+
+\begin{frame}
+%\frametitle{Method: Dalitz Plot - $\phi(1080)$ Cut}
+\begin{figure}
+\includegraphics[width=0.77\linewidth]{dalitz.png}
+\end{figure}
+\end{frame}
+
+
+
+%\placelogotrue
+
+
+
+\section{Results}
+%~~~~~~~~~~~~~~~~~~~~~~~~~RESULTS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+\subsection{Mass difference measurement}
+
+\placelogofalse
+\begin{frame}
+%\frametitle{Method: mass difference measurement}
+\begin{figure}
+\includegraphics[width=1.00\linewidth]{bigfit.png}
+\end{figure}
+\end{frame}
+
+
+\begin{frame}
+%\frametitle{Method: mass difference measurement}
+\begin{figure}
+\includegraphics[width=0.8\linewidth]{linfitonly.png}
+\end{figure}
+\end{frame}
+
+
+\placelogotrue
+
+
+\begin{frame}
+\frametitle{Other $D^{+}_{(s)} \rightarrow K^{+}K^{-}\pi^{+}$ analyses}
+
+\begin{table}
+\bgroup
+\def\arraystretch{1.3}
+{\footnotesize
+\begin{tabular}{l | c | c | c}
+
+Organization &  Year & $m_{D^+_s} - m_{D^+}$ [MeV] & $D^+_s$ Signal Events\\
+\hline \hline
+BaBar\cite{babar} & 2002 & $98.4 \pm 0.1\text{(stat)}\pm 0.3\text{(syst)}$ & $47,794 \pm 311$\\ 
+LHCb\cite{lhcb} & 2013 & $98.68 \pm 0.03\text{(stat)}\pm 0.04\text{(syst)}$ & $248,694 \pm 540$\\
+LHCb - UC & 2020 & $98.97 \pm 0.1\text{(stat)}$ & $12,529 \pm 1602$\\ 
+LHCb - UC & 2021 & $98.89 \pm 0.0036\text{(stat)} \pm 0.xxx\text{(syst)}$ & $8,524,400 \pm 17,505$\\ 
+
+\end{tabular}
+}
+\egroup
+\end{table}
+
+\blfootnote{LHCb Preliminary}
+\end{frame}
+
+
+
+
+\begin{frame}
+%\frametitle{Method: comparison picture}
+\begin{figure}
+\includegraphics[width=0.83\linewidth]{dp_mass_comparison.png}
+\end{figure}
+\end{frame}
+
+
+
+
+
+
+\subsection{Future work}
+  \begin{frame}
+    %\frametitle{BLANK RESULTS FRAME}
+\begin{itemize}
+\setlength\itemsep{1.5em}
+{\LARGE
+\item Momentum scaling corrections
+\item Calculate other systematic errors
+\item Refine fit
+\item Publish!
+}
+\end{itemize}
+  \end{frame}
+
+
+%linear sum
+%1968.77 - 1869.80 = 98.97 ± 0.1 MeV/c^2
+%quadratic sum
+%1968.77 - 1869.80 = 98.97 ± 0.1 MeV/c^2
+\section*{}
+\subsection*{References}
+\begin{frame}
+\begin{thebibliography}{3}
+
+\bibitem{theory}
+Jose L. Goity, Chandana P. Jayalath,
+\textit{Strong and Electromagnetic Mass Splittings in Heavy Mesons},
+\href{https://arxiv.org/pdf/hep-ph/0701245.pdf}{\texttt{arXiv:hep-ph/0701245}}
+
+\bibitem{lhcb} 
+LHCb Collaboration, R. Aaij \textit{et al.},
+\textit{Precision measurement of D meson mass differences},
+\href{https://arxiv.org/pdf/1304.6865.pdf}{\texttt{arXiv:hep-ex/1304.6865}}
+
+\bibitem{babar} 
+BaBar Collaboration, B. Aubert \textit{et al.},
+\textit{Measurement of $D^+_s$ and $D^{*+}_s$ production in B meson decays and from continuum $e^+e^-$ annihilation at $\sqrt{s} = 10.6$ GeV},
+Phys. Rev. \textbf{D65} (2002) 091104, \href{https://arxiv.org/pdf/hep-ex/0201041.pdf}{\texttt{arXiv:hep-ex/0201041}}
+
+\end{thebibliography}
+\end{frame}
+
+\end{document}
